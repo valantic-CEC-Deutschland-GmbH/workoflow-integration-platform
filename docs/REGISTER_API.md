@@ -385,4 +385,4 @@ Password: test_api_password
 For technical support or questions about the Registration API:
 - Documentation: https://docs.workoflow.com/api/register
 - Support Email: support@workoflow.com
-- GitHub Issues: https://github.com/workoflow/integration-platform/issues
+- GitHub Issues: https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/issues

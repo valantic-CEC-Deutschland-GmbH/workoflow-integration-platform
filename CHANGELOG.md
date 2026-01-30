@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Repository moved to official valantic organization: valantic-CEC-Deutschland-GmbH
 - Added proprietary license — usage requires a valid commercial license from valantic CEC Deutschland GmbH
+- Updated all GitHub links in footer and release notes to point to the new valantic organization
 
 ## 2026-01-26
 
