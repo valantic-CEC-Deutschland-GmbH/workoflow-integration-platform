@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Repository moved to official valantic organization: valantic-CEC-Deutschland-GmbH
 - Added proprietary license — usage requires a valid commercial license from valantic CEC Deutschland GmbH
 - Updated all GitHub links in footer and release notes to point to the new valantic organization
+- **Members, Channel, and Files pages are now admin-only** — Only administrators can access these pages; non-admin users will no longer see them in the navigation menu
 
 ## 2026-01-26
 

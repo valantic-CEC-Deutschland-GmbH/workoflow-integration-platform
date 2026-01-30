@@ -58,6 +58,7 @@ class OrganisationController extends AbstractController
     }
 
     #[Route('/members', name: 'app_organisation_members')]
+    #[IsGranted('ROLE_ADMIN')]
     public function members(Request $request, UserRepository $userRepository): Response
     {
         /** @var User $user */
