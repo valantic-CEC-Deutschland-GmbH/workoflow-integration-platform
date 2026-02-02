@@ -32,7 +32,7 @@ class SharePointService
         }
     }
 
-    public function search(array $credentials, string $kqlQuery, int $limit = 25): array
+    public function search(array $credentials, string $kqlQuery, int $limit = 25, ?string $userQuery = null): array
     {
         try {
             error_log('SharePoint search called with KQL: ' . $kqlQuery . ', limit: ' . $limit);
@@ -76,83 +76,7 @@ class SharePointService
             error_log('Search API full response: ' . json_encode($searchData));
 
             if (isset($searchData['value'][0]['hitsContainers'])) {
-                foreach ($searchData['value'][0]['hitsContainers'] as $container) {
-                    error_log('Processing container with entityType: ' . ($container['@odata.type'] ?? 'unknown'));
-                    error_log('Container has ' . (isset($container['hits']) ? count($container['hits']) : 0) . ' hits');
-
-                    if (isset($container['hits'])) {
-                        foreach ($container['hits'] as $hit) {
-                            if (isset($hit['resource'])) {
-                                $resource = $hit['resource'];
-                                error_log('Hit resource type: ' . ($resource['@odata.type'] ?? 'unknown'));
-
-                                // Log all available fields for debugging
-                                error_log('Resource fields: ' . json_encode(array_keys($resource)));
-
-                                // Determine the type based on @odata.type for proper grouping
-                                $odataType = $resource['@odata.type'] ?? 'unknown';
-                                $resultType = 'page'; // default
-
-                                if (str_contains($odataType, 'driveItem')) {
-                                    // Files in document libraries
-                                    $resultType = 'file';
-                                } elseif (str_contains($odataType, 'site')) {
-                                    // SharePoint sites
-                                    $resultType = 'site';
-                                } elseif (str_contains($odataType, 'listItem')) {
-                                    // List items (includes pages)
-                                    $resultType = 'page';
-                                } elseif (str_contains($odataType, 'list')) {
-                                    // SharePoint lists
-                                    $resultType = 'list';
-                                } elseif (str_contains($odataType, 'drive')) {
-                                    // Document libraries
-                                    $resultType = 'drive';
-                                }
-
-                                // Extract siteId properly based on the resource type
-                                $extractedSiteId = $resource['siteId'] ?? '';
-
-                                // For driveItems, try to extract siteId from parentReference if not directly available
-                                if (empty($extractedSiteId) && isset($resource['parentReference']['siteId'])) {
-                                    $extractedSiteId = $resource['parentReference']['siteId'];
-                                }
-
-                                // If still no siteId and we have a webUrl, try to extract it
-                                if (empty($extractedSiteId) && !empty($resource['webUrl'])) {
-                                    // Try to extract site ID from the webUrl
-                                    // SharePoint URLs typically follow: https://domain.sharepoint.com/sites/sitename/...
-                                    if (preg_match('/https:\/\/[^\/]+\.sharepoint\.com\/sites\/([^\/]+)/', $resource['webUrl'], $matches)) {
-                                        // We have the site name, but need to note this for the user
-                                        $extractedSiteId = $matches[1]; // This is actually a site name, not ID
-                                        error_log('Warning: Using site name "' . $extractedSiteId . '" extracted from URL as siteId placeholder');
-                                    }
-                                }
-
-                                // Extract driveId from parentReference for proper file access
-                                $driveId = $resource['parentReference']['driveId'] ?? '';
-
-                                $results[] = [
-                                    'type' => $resultType,
-                                    'id' => $resource['id'] ?? '',
-                                    'driveId' => $driveId,
-                                    'title' => $resource['title'] ?? $resource['name'] ?? $hit['summary'] ?? '',
-                                    'name' => $resource['name'] ?? '',
-                                    'webUrl' => $resource['webUrl'] ?? '',
-                                    'description' => $resource['description'] ?? $hit['summary'] ?? '',
-                                    'createdDateTime' => $resource['createdDateTime'] ?? '',
-                                    'lastModifiedDateTime' => $resource['lastModifiedDateTime'] ?? '',
-                                    'siteId' => $extractedSiteId,
-                                    'siteName' => $resource['displayName'] ?? '',
-                                    'siteUrl' => $resource['webUrl'] ?? '',
-                                    'summary' => $hit['summary'] ?? '',
-                                    'resourceType' => $odataType,
-                                    'parentReference' => $resource['parentReference'] ?? null
-                                ];
-                            }
-                        }
-                    }
-                }
+                $results = $this->processHitsContainers($searchData['value'][0]['hitsContainers']);
             } else {
                 error_log('No hitsContainers found in search response');
                 error_log('Response structure: ' . json_encode(array_keys($searchData)));
@@ -160,15 +84,71 @@ class SharePointService
 
             error_log('Search API found ' . count($results) . ' results');
 
+            // Auto-retry without path: filter if 0 results and KQL contains path: filter
+            $autoBroadened = false;
+            if (count($results) === 0 && preg_match('/path:"[^"]*"/', $kqlQuery)) {
+                $broadenedKql = trim(preg_replace('/\s*path:"[^"]*"\s*/', ' ', $kqlQuery));
+                // Clean up leftover AND/OR at start/end
+                $broadenedKql = trim(preg_replace('/^\s*(AND|OR)\s+/i', '', $broadenedKql));
+                $broadenedKql = trim(preg_replace('/\s+(AND|OR)\s*$/i', '', $broadenedKql));
+
+                if (!empty($broadenedKql)) {
+                    error_log('Auto-retry: stripping path: filter, broadened KQL: ' . $broadenedKql);
+
+                    $broadenedRequest = [
+                        'requests' => [
+                            [
+                                'entityTypes' => ['driveItem', 'site', 'listItem', 'list', 'drive'],
+                                'query' => [
+                                    'queryString' => $broadenedKql
+                                ],
+                                'size' => $limit,
+                                'fields' => [
+                                    'title', 'name', 'webUrl', 'description',
+                                    'createdDateTime', 'lastModifiedDateTime',
+                                    'siteId', 'id', 'fileSystemInfo', 'size', 'parentReference'
+                                ]
+                            ]
+                        ]
+                    ];
+
+                    $broadenedResponse = $this->httpClient->request('POST', self::GRAPH_API_BASE . '/search/query', [
+                        'auth_bearer' => $credentials['access_token'],
+                        'json' => $broadenedRequest
+                    ]);
+
+                    $broadenedData = $broadenedResponse->toArray();
+
+                    if (isset($broadenedData['value'][0]['hitsContainers'])) {
+                        $results = $this->processHitsContainers($broadenedData['value'][0]['hitsContainers']);
+                        if (count($results) > 0) {
+                            $autoBroadened = true;
+                            $kqlQuery = $broadenedKql . ' (auto-broadened: path filter removed)';
+                            error_log('Auto-retry found ' . count($results) . ' results after removing path: filter');
+                        }
+                    }
+                }
+            }
+
+            // Apply server-side relevance scoring when userQuery is provided
+            $relevanceScored = false;
+            if ($userQuery !== null && $userQuery !== '' && count($results) > 0) {
+                $results = $this->scoreResults($results, $userQuery);
+                $relevanceScored = true;
+                error_log('Results scored and sorted by relevance for userQuery: ' . $userQuery);
+            }
+
             // Group results by type for better user experience (matching SharePoint native search UI)
             $groupedResults = $this->groupResultsByType($results);
 
             return [
-                'value' => $results,  // Keep flat list for backward compatibility
-                'grouped_results' => $groupedResults,  // New grouped format
+                'value' => $results,
+                'grouped_results' => $groupedResults,
                 'count' => count($results),
                 'grouped_summary' => $this->createGroupedSummary($groupedResults),
-                'searchQuery' => $kqlQuery
+                'searchQuery' => $kqlQuery,
+                'relevanceScored' => $relevanceScored,
+                'autoBroadened' => $autoBroadened,
             ];
         } catch (\Exception $e) {
             error_log('SharePoint Pages Search Error: ' . $e->getMessage());
@@ -189,6 +169,69 @@ class SharePointService
                     'check_token' => 'Verify access token is valid and not expired',
                     'check_search_api' => 'Confirm Microsoft Graph Search API is enabled in tenant'
                 ]
+            ];
+        }
+    }
+
+    /**
+     * List accessible SharePoint sites
+     *
+     * @param array $credentials Authentication credentials
+     * @param string|null $searchQuery Optional search query to filter sites
+     * @return array List of accessible sites
+     */
+    public function listSites(array $credentials, ?string $searchQuery = null): array
+    {
+        try {
+            $search = $searchQuery ?? '*';
+            error_log('Listing SharePoint sites with search: ' . $search);
+
+            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
+                'auth_bearer' => $credentials['access_token'],
+                'query' => [
+                    'search' => $search,
+                    '$top' => 100,
+                    '$select' => 'id,displayName,name,webUrl,description'
+                ]
+            ]);
+
+            $data = $response->toArray();
+            $sites = [];
+
+            if (isset($data['value'])) {
+                foreach ($data['value'] as $site) {
+                    $webUrl = $site['webUrl'] ?? '';
+                    $hostname = '';
+                    if (!empty($webUrl)) {
+                        $parsed = parse_url($webUrl);
+                        $hostname = $parsed['host'] ?? '';
+                    }
+
+                    $sites[] = [
+                        'id' => $site['id'] ?? '',
+                        'displayName' => $site['displayName'] ?? '',
+                        'name' => $site['name'] ?? '',
+                        'webUrl' => $webUrl,
+                        'description' => $site['description'] ?? '',
+                        'hostname' => $hostname,
+                    ];
+                }
+            }
+
+            error_log('Listed ' . count($sites) . ' SharePoint sites');
+
+            return [
+                'sites' => $sites,
+                'count' => count($sites),
+            ];
+        } catch (\Exception $e) {
+            error_log('SharePoint List Sites Error: ' . $e->getMessage());
+
+            return [
+                'sites' => [],
+                'count' => 0,
+                'error' => true,
+                'error_message' => $e->getMessage(),
             ];
         }
     }
@@ -1150,6 +1193,214 @@ class SharePointService
         }
 
         return trim($text);
+    }
+
+    /**
+     * Score and sort search results by relevance to the user's original query
+     *
+     * @param array $results Search results to score
+     * @param string $userQuery The user's original search query
+     * @return array Scored and sorted results (highest relevance first)
+     */
+    private function scoreResults(array $results, string $userQuery): array
+    {
+        $terms = $this->extractQueryTerms($userQuery);
+
+        if (empty($terms)) {
+            return $results;
+        }
+
+        $termCount = count($terms);
+
+        foreach ($results as &$result) {
+            $score = 0;
+
+            $title = strtolower($result['title'] ?? '');
+            $name = strtolower($result['name'] ?? '');
+            $summary = strtolower($result['summary'] ?? '');
+            $description = strtolower($result['description'] ?? '');
+
+            // Title match: up to 40 points (weighted by term count)
+            $titleMatches = 0;
+            foreach ($terms as $term) {
+                if (str_contains($title, $term)) {
+                    $titleMatches++;
+                }
+            }
+            if ($termCount > 0) {
+                $score += (int) round(40 * ($titleMatches / $termCount));
+            }
+
+            // Filename match: up to 30 points
+            $nameMatches = 0;
+            foreach ($terms as $term) {
+                if (str_contains($name, $term)) {
+                    $nameMatches++;
+                }
+            }
+            if ($termCount > 0) {
+                $score += (int) round(30 * ($nameMatches / $termCount));
+            }
+
+            // Snippet/description relevance: up to 20 points
+            $snippetText = $summary . ' ' . $description;
+            $snippetMatches = 0;
+            foreach ($terms as $term) {
+                if (str_contains($snippetText, $term)) {
+                    $snippetMatches++;
+                }
+            }
+            if ($termCount > 0) {
+                $score += (int) round(20 * ($snippetMatches / $termCount));
+            }
+
+            // Recency bonus: up to 10 points (decays over 365 days)
+            $lastModified = $result['lastModifiedDateTime'] ?? '';
+            if (!empty($lastModified)) {
+                try {
+                    $modifiedTime = new \DateTimeImmutable($lastModified);
+                    $now = new \DateTimeImmutable();
+                    $daysDiff = (int) $now->diff($modifiedTime)->days;
+                    $recencyScore = max(0, 10 - (int) round(10 * ($daysDiff / 365)));
+                    $score += $recencyScore;
+                } catch (\Exception $e) {
+                    // Ignore date parsing errors
+                }
+            }
+
+            // Type bonus: 5 points for files and pages (most useful result types)
+            $type = $result['type'] ?? '';
+            if ($type === 'file' || $type === 'page') {
+                $score += 5;
+            }
+
+            $result['relevanceScore'] = $score;
+        }
+        unset($result);
+
+        // Sort by relevance score descending
+        usort($results, function (array $a, array $b): int {
+            return ($b['relevanceScore'] ?? 0) <=> ($a['relevanceScore'] ?? 0);
+        });
+
+        return $results;
+    }
+
+    /**
+     * Extract meaningful query terms from a user query, stripping common stop words
+     *
+     * @param string $query The user's search query
+     * @return array Lowercase query terms
+     */
+    private function extractQueryTerms(string $query): array
+    {
+        $stopWords = [
+            // English
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+            'of', 'with', 'by', 'from', 'is', 'it', 'this', 'that', 'are', 'was',
+            'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+            'should', 'may', 'can', 'not', 'no', 'all', 'any', 'my', 'your', 'our',
+            'find', 'search', 'show', 'get', 'me', 'about', 'what', 'where', 'how',
+            'please', 'i', 'we', 'you', 'they', 'he', 'she',
+            // German
+            'der', 'die', 'das', 'ein', 'eine', 'und', 'oder', 'aber', 'in', 'auf',
+            'an', 'zu', 'für', 'von', 'mit', 'aus', 'ist', 'es', 'ich', 'wir',
+            'sie', 'er', 'den', 'dem', 'des', 'im', 'am', 'um', 'nach', 'über',
+            'alle', 'mein', 'dein', 'unser', 'bitte', 'finde', 'suche', 'zeige',
+            'mir', 'mich', 'dir', 'was', 'wo', 'wie', 'welche', 'welcher',
+            // SharePoint context
+            'sharepoint', 'document', 'file', 'page', 'site', 'dokument', 'datei', 'seite',
+        ];
+
+        // Split on whitespace and common punctuation
+        $words = preg_split('/[\s,;:!?.()\[\]{}"\'+]+/', strtolower(trim($query)));
+        $words = array_filter($words, function (string $word) use ($stopWords): bool {
+            return strlen($word) >= 2 && !in_array($word, $stopWords, true);
+        });
+
+        return array_values($words);
+    }
+
+    /**
+     * Process hitsContainers from Microsoft Graph Search API response
+     *
+     * @param array $hitsContainers The hitsContainers array from the search response
+     * @return array Processed search results
+     */
+    private function processHitsContainers(array $hitsContainers): array
+    {
+        $results = [];
+
+        foreach ($hitsContainers as $container) {
+            error_log('Processing container with entityType: ' . ($container['@odata.type'] ?? 'unknown'));
+            error_log('Container has ' . (isset($container['hits']) ? count($container['hits']) : 0) . ' hits');
+
+            if (!isset($container['hits'])) {
+                continue;
+            }
+
+            foreach ($container['hits'] as $hit) {
+                if (!isset($hit['resource'])) {
+                    continue;
+                }
+
+                $resource = $hit['resource'];
+                error_log('Hit resource type: ' . ($resource['@odata.type'] ?? 'unknown'));
+                error_log('Resource fields: ' . json_encode(array_keys($resource)));
+
+                // Determine the type based on @odata.type for proper grouping
+                $odataType = $resource['@odata.type'] ?? 'unknown';
+                $resultType = 'page'; // default
+
+                if (str_contains($odataType, 'driveItem')) {
+                    $resultType = 'file';
+                } elseif (str_contains($odataType, 'site')) {
+                    $resultType = 'site';
+                } elseif (str_contains($odataType, 'listItem')) {
+                    $resultType = 'page';
+                } elseif (str_contains($odataType, 'list')) {
+                    $resultType = 'list';
+                } elseif (str_contains($odataType, 'drive')) {
+                    $resultType = 'drive';
+                }
+
+                // Extract siteId properly based on the resource type
+                $extractedSiteId = $resource['siteId'] ?? '';
+
+                if (empty($extractedSiteId) && isset($resource['parentReference']['siteId'])) {
+                    $extractedSiteId = $resource['parentReference']['siteId'];
+                }
+
+                if (empty($extractedSiteId) && !empty($resource['webUrl'])) {
+                    if (preg_match('/https:\/\/[^\/]+\.sharepoint\.com\/sites\/([^\/]+)/', $resource['webUrl'], $matches)) {
+                        $extractedSiteId = $matches[1];
+                        error_log('Warning: Using site name "' . $extractedSiteId . '" extracted from URL as siteId placeholder');
+                    }
+                }
+
+                $driveId = $resource['parentReference']['driveId'] ?? '';
+
+                $results[] = [
+                    'type' => $resultType,
+                    'id' => $resource['id'] ?? '',
+                    'driveId' => $driveId,
+                    'title' => $resource['title'] ?? $resource['name'] ?? $hit['summary'] ?? '',
+                    'name' => $resource['name'] ?? '',
+                    'webUrl' => $resource['webUrl'] ?? '',
+                    'description' => $resource['description'] ?? $hit['summary'] ?? '',
+                    'createdDateTime' => $resource['createdDateTime'] ?? '',
+                    'lastModifiedDateTime' => $resource['lastModifiedDateTime'] ?? '',
+                    'siteId' => $extractedSiteId,
+                    'siteName' => $resource['displayName'] ?? '',
+                    'siteUrl' => $resource['webUrl'] ?? '',
+                    'summary' => $hit['summary'] ?? '',
+                    'resourceType' => $odataType,
+                    'parentReference' => $resource['parentReference'] ?? null
+                ];
+            }
+        }
+
+        return $results;
     }
 
     /**
