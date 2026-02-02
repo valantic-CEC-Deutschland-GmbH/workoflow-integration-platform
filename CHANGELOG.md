@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-02
 
+### Fixed
+- **SharePoint AI agent no longer picks the wrong sub-site when searching** — Previously, the AI agent would guess which SharePoint sub-site a document lived on and restrict its search to that site, causing it to miss documents on other sites and sometimes read/summarize the wrong document. The agent now searches across all sites by default, only restricting to a specific site when you explicitly ask.
+
 ### Added
 - **SharePoint tenant selection** — When setting up SharePoint, you can now enter your SharePoint URL (e.g. valanticgroup.sharepoint.com) to connect to a specific Microsoft tenant. This allows access to SharePoint content on tenants where you are a guest, not just your home tenant.
 - **SharePoint site discovery** — AI agents can now discover all accessible SharePoint sites before searching, so they no longer need to guess site URLs. This prevents searches from failing when content lives on a different hostname than expected.

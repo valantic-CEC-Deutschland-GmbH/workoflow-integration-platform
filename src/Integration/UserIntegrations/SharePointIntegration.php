@@ -36,7 +36,7 @@ class SharePointIntegration implements PersonalizedSkillInterface
         return [
             new ToolDefinition(
                 'sharepoint_search',
-                'Search ALL SharePoint content (Files, Sites, Pages, Lists, Drives) using KQL (Keyword Query Language). Returns results grouped by type. Use sharepoint_list_sites first to discover correct site URLs for path: filters.',
+                'Search ALL SharePoint content (Files, Sites, Pages, Lists, Drives) using KQL (Keyword Query Language). Returns results grouped by type. Searches across all sites in the tenant by default. Only use path: filter if user explicitly asks to restrict to a specific site.',
                 [
                     [
                         'name' => 'kql',
@@ -47,7 +47,7 @@ class SharePointIntegration implements PersonalizedSkillInterface
 • Exact phrase: "project status report"
 • Wildcard: budget* (matches budget, budgets, budgeting)
 • Field filters: author:John, filename:report, filetype:pdf, filetype:docx, title:Q4
-• Site filter: path:"https://sitename.sharepoint.com" (MUST use full URL from sharepoint_list_sites)
+• Site filter: path:"https://sitename.sharepoint.com" (MUST use full tenant URL from context, do NOT narrow to sub-sites unless user explicitly asks)
 • Combined site filter: path:"https://yoursite.sharepoint.com" AND news* (search within a specific site)
 • Combined: (vacation OR Urlaub) AND filetype:docx
 • Date filter: LastModifiedTime>2024-01-01
@@ -64,18 +64,6 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                         'type' => 'string',
                         'required' => false,
                         'description' => 'The user\'s original search request in natural language. When provided, results are scored and sorted by relevance (title match, filename match, snippet relevance, recency). Each result gets a relevanceScore field.'
-                    ]
-                ]
-            ),
-            new ToolDefinition(
-                'sharepoint_list_sites',
-                'List all accessible SharePoint sites to discover correct site URLs and hostnames. Call this BEFORE using path: filters in sharepoint_search to get the correct site URL.',
-                [
-                    [
-                        'name' => 'searchQuery',
-                        'type' => 'string',
-                        'required' => false,
-                        'description' => 'Optional search query to filter sites by name (e.g., "HR", "Marketing"). If omitted, returns all accessible sites.'
                     ]
                 ]
             ),
@@ -210,10 +198,6 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                 $parameters['kql'],
                 min($parameters['limit'] ?? 25, 50),
                 $parameters['userQuery'] ?? null
-            ),
-            'sharepoint_list_sites' => $this->sharePointService->listSites(
-                $credentials,
-                $parameters['searchQuery'] ?? null
             ),
             'sharepoint_read_document' => $this->sharePointService->readDocument(
                 $credentials,
