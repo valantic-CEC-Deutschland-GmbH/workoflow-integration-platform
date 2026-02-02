@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-02
+
+### Fixed
+- **AI agent no longer falsely lists all integrations as connected** — When asked "Which tools do you have?" or similar questions, the AI agent now correctly explains that Workoflow is a configurable platform with skill categories, and directs you to manage your active Skills at the configuration portal instead of incorrectly listing all possible integrations as available
+
 ## 2026-01-30
+
+### Fixed
+- **More accurate employee skill search results** — When searching for employees with specific skills (e.g., "n8n"), the AI agent now clearly distinguishes between employees who explicitly list that skill and those with only related skills. Exact matches are shown first, and the agent transparently indicates when no exact match was found.
+- **Smarter verification of search results** — When asked to verify employee search results, the AI agent now checks the existing data instead of redundantly re-fetching each profile, providing faster and more accurate responses.
 
 ### Changed
 - Repository moved to official valantic organization: valantic-CEC-Deutschland-GmbH
