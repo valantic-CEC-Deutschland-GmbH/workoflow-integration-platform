@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - **AI agent no longer falsely lists all integrations as connected** — When asked "Which tools do you have?" or similar questions, the AI agent now correctly explains that Workoflow is a configurable platform with skill categories, and directs you to manage your active Skills at the configuration portal instead of incorrectly listing all possible integrations as available
+- **SharePoint search now respects specific site names** — When you mention a specific SharePoint site (e.g., "valanticgroup sharepoint"), the AI agent now correctly restricts search results to that site instead of searching across all sites and potentially returning results from the wrong one
 
 ## 2026-01-30
 

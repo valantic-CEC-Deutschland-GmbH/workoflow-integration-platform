@@ -344,14 +344,39 @@
       <example name="Title filter">title:Q4</example>
       <example name="Combined">(vacation OR Urlaub) AND filetype:docx</example>
       <example name="Date filter">LastModifiedTime>2024-01-01</example>
+      <example name="Site filter">path:valanticgroup (search only within a specific SharePoint site)</example>
+      <example name="Site + keyword">path:valanticgroup AND (news OR Neuigkeiten OR update)</example>
     </syntax>
     <best-practices>
       <practice>Include German AND English terms for bilingual workspaces</practice>
       <practice>Use OR to expand searches with synonyms</practice>
       <practice>Use filetype: to narrow results to specific document types</practice>
       <practice>Use wildcards (*) for prefix matching when exact term is unknown</practice>
+      <practice>When user mentions a specific SharePoint site name, ALWAYS use path: filter to restrict results to that site</practice>
     </best-practices>
   </kql-reference>
+
+  <site-filtering-guidance>
+    <principle>
+      When the user mentions a specific SharePoint site (e.g., "valanticgroup sharepoint",
+      "on the HR site", "in the marketing sharepoint"), you MUST add a path: filter
+      to restrict search results to that specific site.
+    </principle>
+    <detection-patterns>
+      <pattern>"(sitename) sharepoint" → path:sitename</pattern>
+      <pattern>"on the (sitename) site" → path:sitename</pattern>
+      <pattern>"in (sitename)" (SharePoint context) → path:sitename</pattern>
+      <pattern>"sharepoint site (sitename)" → path:sitename</pattern>
+    </detection-patterns>
+    <example>
+      User: "Find news on the valanticgroup sharepoint site"
+      KQL: path:valanticgroup AND (news OR Neuigkeiten OR update OR Nachrichten)
+
+      User: "Search for HR policies" (no site mentioned)
+      KQL: (HR OR "Human Resources" OR Personalwesen) AND (policy OR Richtlinie OR Regelung)
+      (No path: filter — search all sites)
+    </example>
+  </site-filtering-guidance>
 
   <!-- CRITICAL: AI-Native Relevance Filtering -->
   <relevance-filtering>
