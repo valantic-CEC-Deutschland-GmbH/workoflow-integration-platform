@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - **AI agent no longer falsely lists all integrations as connected** — When asked "Which tools do you have?" or similar questions, the AI agent now correctly explains that Workoflow is a configurable platform with skill categories, and directs you to manage your active Skills at the configuration portal instead of incorrectly listing all possible integrations as available
 - **SharePoint search now respects specific site names** — When you mention a specific SharePoint site (e.g., "valanticgroup sharepoint"), the AI agent now correctly restricts search results to that site instead of searching across all sites and potentially returning results from the wrong one
+- **SharePoint search no longer returns zero results for existing pages** — Fixed three compounding issues that caused SharePoint searches to fail: the site filter now uses the correct full-URL syntax required by Microsoft Graph API, the agent now uses resilient keyword search instead of fragile exact phrases (which fail on typos), and the agent now automatically retries with broader queries instead of immediately giving up when no results are found
 
 ## 2026-01-30
 

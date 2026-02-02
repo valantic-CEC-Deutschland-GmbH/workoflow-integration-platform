@@ -47,8 +47,8 @@ class SharePointIntegration implements PersonalizedSkillInterface
 • Exact phrase: "project status report"
 • Wildcard: budget* (matches budget, budgets, budgeting)
 • Field filters: author:John, filename:report, filetype:pdf, filetype:docx, title:Q4
-• Site filter: path:sitename (restricts results to a specific SharePoint site, e.g. path:valanticgroup)
-• Combined site filter: path:valanticgroup AND news* (search within a specific site)
+• Site filter: path:"https://sitename.sharepoint.com" (MUST use full URL, e.g. path:"https://valanticgroup.sharepoint.com")
+• Combined site filter: path:"https://valanticgroup.sharepoint.com" AND news* (search within a specific site)
 • Combined: (vacation OR Urlaub) AND filetype:docx
 • Date filter: LastModifiedTime>2024-01-01
 Tips: Use OR to include synonyms and translations (German+English) for bilingual workspaces.'
