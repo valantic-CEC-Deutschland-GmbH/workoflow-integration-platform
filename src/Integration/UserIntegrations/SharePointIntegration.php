@@ -267,7 +267,7 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                 'SharePoint URL',
                 'valanticmore.sharepoint.com',
                 true,
-                'Enter your SharePoint URL (e.g. valanticgroup.sharepoint.com). This is required so AI agents know which tenant to search.'
+                'Enter your SharePoint URL (e.g. valanticmore.sharepoint.com). This is required so AI agents know which tenant to search.'
             ),
             new CredentialField(
                 'oauth',
