@@ -382,6 +382,13 @@ class IntegrationController extends AbstractController
                 $tempConfig->setName($name);
                 $tempConfig->setActive(false);
 
+                // Save non-OAuth credential fields (e.g. sharepoint_url for tenant selection)
+                if (!empty($credentials)) {
+                    $tempConfig->setEncryptedCredentials(
+                        $this->encryptionService->encrypt(json_encode($credentials))
+                    );
+                }
+
                 $this->entityManager->persist($tempConfig);
                 $this->entityManager->flush();
 

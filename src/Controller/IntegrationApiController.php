@@ -203,6 +203,9 @@ class IntegrationApiController extends AbstractController
             $parameters['organisationId'] = $organisation->getId();
             $parameters['organisationUuid'] = $organisation->getUuid();
             $parameters['workflowUserId'] = $workflowUserId;
+            if ($configId) {
+                $parameters['configId'] = $configId;
+            }
 
             // Log tool execution start with sanitized request payload
             $this->auditLogService->logWithOrganisation(

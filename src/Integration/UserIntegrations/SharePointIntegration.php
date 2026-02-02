@@ -48,7 +48,7 @@ class SharePointIntegration implements PersonalizedSkillInterface
 • Wildcard: budget* (matches budget, budgets, budgeting)
 • Field filters: author:John, filename:report, filetype:pdf, filetype:docx, title:Q4
 • Site filter: path:"https://sitename.sharepoint.com" (MUST use full URL from sharepoint_list_sites)
-• Combined site filter: path:"https://valanticgroup.sharepoint.com" AND news* (search within a specific site)
+• Combined site filter: path:"https://yoursite.sharepoint.com" AND news* (search within a specific site)
 • Combined: (vacation OR Urlaub) AND filetype:docx
 • Date filter: LastModifiedTime>2024-01-01
 Tips: Use OR to include synonyms and translations (German+English) for bilingual workspaces. If path: filter returns 0 results, the server auto-retries without it.'
@@ -199,6 +199,9 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
         // Handle token refresh if needed
         if (isset($credentials['expires_at']) && time() >= $credentials['expires_at']) {
             $credentials = $this->refreshTokenIfNeeded($credentials);
+            if (isset($parameters['configId'])) {
+                $this->persistRefreshedCredentials((int) $parameters['configId'], $credentials);
+            }
         }
 
         return match ($toolName) {
@@ -257,8 +260,15 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
 
     public function getCredentialFields(): array
     {
-        // SharePoint uses OAuth2, so we return a special oauth type field
         return [
+            new CredentialField(
+                'sharepoint_url',
+                'text',
+                'SharePoint URL',
+                'valanticmore.sharepoint.com',
+                true,
+                'Enter your SharePoint URL (e.g. valanticgroup.sharepoint.com). This is required so AI agents know which tenant to search.'
+            ),
             new CredentialField(
                 'oauth',
                 'oauth',
@@ -272,11 +282,37 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
 
     public function getSystemPrompt(?IntegrationConfig $config = null): string
     {
+        $sharepointUrl = null;
+        if ($config && $config->getEncryptedCredentials()) {
+            $creds = json_decode(
+                $this->encryptionService->decrypt($config->getEncryptedCredentials()),
+                true
+            );
+            $sharepointUrl = $creds['sharepoint_url'] ?? null;
+        }
+
         return $this->twig->render('skills/prompts/sharepoint_full.xml.twig', [
             'api_base_url' => $_ENV['APP_URL'] ?? 'https://subscribe-workflows.vcec.cloud',
             'tool_count' => count($this->getTools()),
             'integration_id' => $config?->getId() ?? 'XXX',
+            'sharepoint_url' => $sharepointUrl,
         ]);
+    }
+
+    private function persistRefreshedCredentials(int $configId, array $credentials): void
+    {
+        try {
+            $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+            if ($config) {
+                $config->setEncryptedCredentials(
+                    $this->encryptionService->encrypt(json_encode($credentials))
+                );
+                $this->entityManager->flush();
+            }
+        } catch (\Exception $e) {
+            // Log but don't break tool execution
+            error_log('Failed to persist refreshed SharePoint credentials for config ' . $configId . ': ' . $e->getMessage());
+        }
     }
 
     private function refreshTokenIfNeeded(array $credentials): array

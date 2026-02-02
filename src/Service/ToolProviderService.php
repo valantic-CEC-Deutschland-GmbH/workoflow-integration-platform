@@ -306,7 +306,8 @@ class ToolProviderService
         return match ($integrationType) {
             'jira', 'confluence' => $credentials['url'] ?? null,
             'gitlab' => $credentials['gitlab_url'] ?? null,
-            default => null  // SharePoint, Trello, or future integrations without URL
+            'sharepoint' => $credentials['sharepoint_url'] ?? null,
+            default => null
         };
     }
 }

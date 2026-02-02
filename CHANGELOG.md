@@ -7,13 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-02
 
 ### Added
+- **SharePoint tenant selection** — When setting up SharePoint, you can now enter your SharePoint URL (e.g. valanticgroup.sharepoint.com) to connect to a specific Microsoft tenant. This allows access to SharePoint content on tenants where you are a guest, not just your home tenant.
 - **SharePoint site discovery** — AI agents can now discover all accessible SharePoint sites before searching, so they no longer need to guess site URLs. This prevents searches from failing when content lives on a different hostname than expected.
+- **SharePoint tenant URL shown in AI tool descriptions** — AI agents can now see which SharePoint tenant each tool belongs to (e.g. "valanticmore.sharepoint.com") directly in the tool list, eliminating guesswork about which tenant to search
 
 ### Changed
+- **SharePoint URL is now required when setting up SharePoint** — The SharePoint URL field is now mandatory for new SharePoint integrations, ensuring the AI agent always knows which tenant to search without wasting API calls on site discovery
 - **SharePoint search results ranked by relevance** — Search results are now scored and sorted by how well they match your original query (based on title, filename, and content relevance), so the most important results appear first.
 - **SharePoint search automatically broadens when site filter returns no results** — If a search restricted to a specific SharePoint site returns nothing, the system now automatically retries across all sites instead of reporting "no results found."
 
 ### Fixed
+- **SharePoint document reading now works for files in non-default drives** — AI agents now pass the drive ID when reading documents found through search, fixing "resource not found" errors for files stored in SiteAssets, secondary document libraries, or other non-default drives
+- **SharePoint AI agent no longer searches for wrong terms** — Fixed an issue where hardcoded example URLs in the AI agent's instructions caused it to confuse example site names with the user's actual SharePoint tenant, leading to irrelevant search results
+- **SharePoint no longer re-authenticates with Microsoft on every API call** — Refreshed access tokens are now saved back to the database, so subsequent requests reuse the valid token instead of requesting a new one each time
 - **AI agent no longer falsely lists all integrations as connected** — When asked "Which tools do you have?" or similar questions, the AI agent now correctly explains that Workoflow is a configurable platform with skill categories, and directs you to manage your active Skills at the configuration portal instead of incorrectly listing all possible integrations as available
 - **SharePoint search now respects specific site names** — When you mention a specific SharePoint site (e.g., "valanticgroup sharepoint"), the AI agent now correctly restricts search results to that site instead of searching across all sites and potentially returning results from the wrong one
 - **SharePoint search no longer returns zero results for existing pages** — Fixed three compounding issues that caused SharePoint searches to fail: the site filter now uses the correct full-URL syntax required by Microsoft Graph API, the agent now uses resilient keyword search instead of fragile exact phrases (which fail on typos), and the agent now automatically retries with broader queries instead of immediately giving up when no results are found

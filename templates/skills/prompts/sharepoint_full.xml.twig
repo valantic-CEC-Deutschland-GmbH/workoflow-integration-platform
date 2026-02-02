@@ -238,6 +238,19 @@
     <current-date>{{ '{{' }} $now.format('dd.MM.yyyy'){{ '}}' }}</current-date>
   </context>
 
+{% if sharepoint_url is defined and sharepoint_url %}
+  <tenant-context>
+    {% set full_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+    <sharepoint-tenant-url>{{ full_sp_url }}</sharepoint-tenant-url>
+    <instruction>
+      This user's SharePoint tenant is at {{ full_sp_url }}.
+      Use this URL directly in path: filters without needing to call sharepoint_list_sites first.
+      Example: path:"{{ full_sp_url }}" AND your_keywords
+      Only call sharepoint_list_sites if you need to discover sub-sites or the user asks about sites.
+    </instruction>
+  </tenant-context>
+{% endif %}
+
   <language-detection>
     <instruction>
       Detect the language from the taskDescription or userPrompt you receive.
@@ -312,6 +325,7 @@
         <parameters>
           <parameter name="siteId" type="string" required="true">Site ID from search results</parameter>
           <parameter name="itemId" type="string" required="true">Document item ID from search results</parameter>
+          <parameter name="driveId" type="string" required="false">Drive ID from search results (driveId field). STRONGLY RECOMMENDED — enables access to files in any drive (SiteAssets, secondary libraries). Without it, only the site's default document library is searched.</parameter>
           <parameter name="maxLength" type="integer" required="false">Max characters to extract (default: 5000)</parameter>
         </parameters>
       </tool>
@@ -370,17 +384,29 @@
       <example name="Title filter">title:Q4</example>
       <example name="Combined">(vacation OR Urlaub) AND filetype:docx</example>
       <example name="Date filter">LastModifiedTime>2024-01-01</example>
-      <example name="Site filter (FULL URL required)">path:"https://valanticgroup.sharepoint.com" (MUST use full https:// URL — short forms like path:valanticgroup do NOT work)</example>
-      <example name="Site + keyword">path:"https://valanticgroup.sharepoint.com" AND (news OR Neuigkeiten OR update)</example>
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set example_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+      <example name="Site filter (FULL URL required)">path:"{{ example_sp_url }}" (MUST use full https:// URL — short forms do NOT work)</example>
+      <example name="Site + keyword">path:"{{ example_sp_url }}" AND (news OR Neuigkeiten OR update)</example>
+{% else %}
+      <example name="Site filter (FULL URL required)">path:"https://contoso.sharepoint.com" (MUST use full https:// URL — short forms like path:contoso do NOT work)</example>
+      <example name="Site + keyword">path:"https://contoso.sharepoint.com" AND (news OR Neuigkeiten OR update)</example>
+{% endif %}
       <example name="Exact phrase (USE SPARINGLY)"> "project status report" — WARNING: exact phrases fail on typos, word reordering, and indexing variations. Prefer AND keyword search instead.</example>
     </syntax>
     <syntax-rules>
       <rule name="path-requires-full-url">
         The path: managed property in Microsoft Graph Search API requires a FULL URL.
-        ✅ CORRECT: path:"https://valanticgroup.sharepoint.com"
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set rule_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+        ✅ CORRECT: path:"{{ rule_sp_url }}"
+        ✅ CORRECT: path:"{{ rule_sp_url }}/sites/HR"
+{% else %}
+        ✅ CORRECT: path:"https://contoso.sharepoint.com"
         ✅ CORRECT: path:"https://contoso.sharepoint.com/sites/HR"
-        ❌ WRONG: path:valanticgroup (this will match NOTHING)
+{% endif %}
         ❌ WRONG: path:contoso (this will match NOTHING)
+        ❌ WRONG: path:sharepoint (this will match NOTHING)
       </rule>
       <rule name="prefer-AND-over-exact-phrase">
         When searching for a multi-word topic, ALWAYS prefer AND keyword search over exact phrases:
@@ -395,19 +421,32 @@
       <practice>Use OR to expand searches with synonyms</practice>
       <practice>Use filetype: to narrow results to specific document types</practice>
       <practice>Use wildcards (*) for prefix matching when exact term is unknown or may contain typos</practice>
+{% if sharepoint_url is defined and sharepoint_url %}
+      <practice>Use the known tenant URL ({{ (sharepoint_url starts with 'http') ? sharepoint_url : 'https://' ~ sharepoint_url }}) directly in path: filters — no need to call sharepoint_list_sites first</practice>
+      <practice>Only call sharepoint_list_sites when you need to discover sub-sites or the user asks about available sites</practice>
+{% else %}
       <practice>When user mentions a specific SharePoint site, call sharepoint_list_sites FIRST to discover the correct URL, then use path: filter with the ACTUAL URL from the response</practice>
       <practice>NEVER guess site URLs — always use sharepoint_list_sites to discover them</practice>
+{% endif %}
+      <practice>When reading documents from search results, ALWAYS pass the driveId field to sharepoint_read_document for reliable file access across all drives</practice>
       <practice>Always pass the userQuery parameter with the user's original request for server-side relevance scoring</practice>
     </best-practices>
   </kql-reference>
 
   <site-filtering-guidance>
     <principle>
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set principle_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+      This user's tenant URL is already known: {{ principle_sp_url }}.
+      You can use this URL directly in path: filters without calling sharepoint_list_sites first.
+      Only call sharepoint_list_sites if you need to discover specific sub-sites or the user asks about sites.
+{% else %}
       When the user mentions a specific SharePoint site, you MUST first call sharepoint_list_sites
       to discover the correct site URL and hostname. Do NOT guess URLs.
 
       CRITICAL: Different content may live on different hostnames (e.g., valanticmore.sharepoint.com
       vs valanticgroup.sharepoint.com). Only sharepoint_list_sites reveals the actual URLs.
+{% endif %}
     </principle>
     <workflow>
       <step order="1">User mentions a site → call sharepoint_list_sites (with optional searchQuery)</step>
@@ -416,22 +455,38 @@
       <step order="4">If path: filter returns 0 results, the server automatically retries without it</step>
     </workflow>
     <example>
-      User: "Find news on the valanticgroup sharepoint site"
-      Step 1: Call sharepoint_list_sites with searchQuery "valanticgroup"
-      Step 2: Response shows site with webUrl "https://valanticgroup.sharepoint.com"
-      Step 3: KQL: path:"https://valanticgroup.sharepoint.com" AND (news OR Neuigkeiten OR update OR Nachrichten)
-      (userQuery: "news on valanticgroup sharepoint")
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set guide_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+      User: "Find news on SharePoint"
+      Since you already know the tenant URL ({{ guide_sp_url }}), skip sharepoint_list_sites.
+      KQL: path:"{{ guide_sp_url }}" AND (news OR Neuigkeiten OR update OR Nachrichten)
+      (userQuery: "news on SharePoint")
+
+      User: "Search for HR policies" (no site mentioned)
+      KQL: path:"{{ guide_sp_url }}" AND (HR OR "Human Resources" OR Personalwesen) AND (policy OR Richtlinie OR Regelung)
+      (userQuery: "HR policies")
+
+      User: "Find the Mobility Survey 2026"
+      KQL: path:"{{ guide_sp_url }}" AND Mobility AND Surv* AND 2026
+      (userQuery: "Mobility Survey 2026")
+{% else %}
+      User: "Find news on the contoso sharepoint site"
+      Step 1: Call sharepoint_list_sites with searchQuery "contoso"
+      Step 2: Response shows site with webUrl "https://contoso.sharepoint.com"
+      Step 3: KQL: path:"https://contoso.sharepoint.com" AND (news OR Neuigkeiten OR update OR Nachrichten)
+      (userQuery: "news on contoso sharepoint")
 
       User: "Search for HR policies" (no site mentioned)
       KQL: (HR OR "Human Resources" OR Personalwesen) AND (policy OR Richtlinie OR Regelung)
       (No path: filter — search all sites, no need to call list_sites)
       (userQuery: "HR policies")
 
-      User: "Find the Mobility Survey 2026 on valanticgroup"
-      Step 1: Call sharepoint_list_sites with searchQuery "valanticgroup"
+      User: "Find the Mobility Survey 2026 on contoso"
+      Step 1: Call sharepoint_list_sites with searchQuery "contoso"
       Step 2: Use actual webUrl from response for path: filter
-      Step 3: KQL: path:"https://valanticgroup.sharepoint.com" AND valantic AND Mobility AND Surv* AND 2026
-      (userQuery: "Mobility Survey 2026 on valanticgroup")
+      Step 3: KQL: path:"https://contoso.sharepoint.com" AND Mobility AND Surv* AND 2026
+      (userQuery: "Mobility Survey 2026 on contoso")
+{% endif %}
     </example>
   </site-filtering-guidance>
 
@@ -452,9 +507,14 @@
 
     <step order="1" name="Initial search (keyword AND)">
       Build the first query using keyword AND search (NOT exact phrases).
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set recovery_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+      Use the known tenant URL ({{ recovery_sp_url }}) in path: filter when appropriate.
+{% else %}
       Include path: filter if user mentioned a specific site (use URL from sharepoint_list_sites).
+{% endif %}
       Pass userQuery parameter for server-side relevance scoring.
-      Example: path:"https://valanticgroup.sharepoint.com" AND valantic AND Mobility AND Survey AND 2026
+      Example: path:"{{ (sharepoint_url is defined and sharepoint_url) ? ((sharepoint_url starts with 'http') ? sharepoint_url : 'https://' ~ sharepoint_url) : 'https://contoso.sharepoint.com' }}" AND Mobility AND Survey AND 2026
     </step>
 
     <step order="2" name="Broaden: fewer keywords, add wildcards">
@@ -559,6 +619,11 @@
       </correct-flow>
     </guideline>
 
+    <guideline id="use-driveId">
+      <title>Always Pass driveId When Reading Documents</title>
+      <rule>When calling sharepoint_read_document with results from sharepoint_search, ALWAYS include the driveId field from the search result. This ensures reliable access to files in any drive (SiteAssets, secondary libraries, etc.). Without driveId, only the site's default document library is searched, causing "resource not found" errors for files in other drives.</rule>
+    </guideline>
+
     <guideline id="no-configuration">
       <title>No Configuration Handling</title>
       <response>
@@ -610,15 +675,22 @@
       <correct>Follow the zero-results-recovery strategy: retry without path: filter, with fewer keywords, with wildcards, before reporting no results</correct>
     </mistake>
     <mistake id="wrong-path-syntax">
-      <wrong>Using path:valanticgroup or path:contoso to filter by SharePoint site</wrong>
+      <wrong>Using path:contoso or path:mycompany to filter by SharePoint site</wrong>
       <why-wrong>The path: managed property requires a full URL. Short names match nothing.</why-wrong>
-      <correct>Use path:"https://valanticgroup.sharepoint.com" (full URL with https://)</correct>
+{% if sharepoint_url is defined and sharepoint_url %}
+{% set mistake_sp_url = sharepoint_url starts with 'http' ? sharepoint_url : 'https://' ~ sharepoint_url %}
+      <correct>Use path:"{{ mistake_sp_url }}" (full URL with https://)</correct>
+{% else %}
+      <correct>Use path:"https://contoso.sharepoint.com" (full URL with https://)</correct>
+{% endif %}
     </mistake>
+{% if sharepoint_url is not defined or not sharepoint_url %}
     <mistake id="guessing-site-url">
-      <wrong>Guessing a site URL like path:"https://valanticgroup.sharepoint.com" without verifying it exists</wrong>
-      <why-wrong>Content often lives on different hostnames (e.g., valanticmore.sharepoint.com vs valanticgroup.sharepoint.com). Guessing leads to 0 results.</why-wrong>
+      <wrong>Guessing a site URL like path:"https://contoso.sharepoint.com" without verifying it exists</wrong>
+      <why-wrong>Content often lives on different hostnames. Guessing leads to 0 results.</why-wrong>
       <correct>Call sharepoint_list_sites first to discover the actual site URLs, then use the correct URL from the response</correct>
     </mistake>
+{% endif %}
     <mistake id="missing-user-query">
       <wrong>Calling sharepoint_search without passing the userQuery parameter</wrong>
       <why-wrong>Without userQuery, results are returned in arbitrary order. Server-side relevance scoring significantly improves result quality.</why-wrong>

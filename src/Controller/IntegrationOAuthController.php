@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/integrations/oauth')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -19,7 +20,8 @@ class IntegrationOAuthController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private EncryptionService $encryptionService
+        private EncryptionService $encryptionService,
+        private HttpClientInterface $httpClient
     ) {
     }
 
@@ -36,18 +38,38 @@ class IntegrationOAuthController extends AbstractController
         // Store the config ID in session for callback
         $request->getSession()->set('microsoft_oauth_config_id', $configId);
 
+        // Override Azure AD tenant if user specified a SharePoint URL
+        $tenant = null;
+        $encryptedCreds = $config->getEncryptedCredentials();
+        if ($encryptedCreds) {
+            $saved = json_decode($this->encryptionService->decrypt($encryptedCreds), true);
+            $sharepointUrl = $saved['sharepoint_url'] ?? null;
+            if (!empty($sharepointUrl)) {
+                $tenant = $this->resolveTenantFromSharePointUrl($sharepointUrl);
+                if (!$tenant) {
+                    $this->addFlash('error', 'Could not resolve Azure AD tenant from SharePoint URL "' . $sharepointUrl . '". Please check the URL and try again.');
+                    return $this->redirectToRoute('app_skills');
+                }
+            }
+        }
+
+        $client = $clientRegistry->getClient('azure');
+        if ($tenant) {
+            /** @var \TheNetworg\OAuth2\Client\Provider\Azure $azureProvider */
+            $azureProvider = $client->getOAuth2Provider();
+            $azureProvider->tenant = $tenant;
+        }
+
         // Redirect to Microsoft OAuth
-        return $clientRegistry
-            ->getClient('azure')
-            ->redirect([
-                'openid',
-                'profile',
-                'email',
-                'offline_access',
-                'https://graph.microsoft.com/Sites.Read.All',
-                'https://graph.microsoft.com/Files.Read.All',
-                'https://graph.microsoft.com/User.Read'
-            ], []);
+        return $client->redirect([
+            'openid',
+            'profile',
+            'email',
+            'offline_access',
+            'https://graph.microsoft.com/Sites.Read.All',
+            'https://graph.microsoft.com/Files.Read.All',
+            'https://graph.microsoft.com/User.Read'
+        ], []);
     }
 
     #[Route('/callback/microsoft', name: 'app_tool_oauth_microsoft_callback')]
@@ -105,15 +127,24 @@ class IntegrationOAuthController extends AbstractController
             // Get the access token
             $accessToken = $client->getAccessToken();
 
-            // Store the credentials
-            $credentials = [
+            // Preserve existing credentials (e.g. sharepoint_url for tenant selection)
+            $existingCredentials = [];
+            if ($config->getEncryptedCredentials()) {
+                $existingCredentials = json_decode(
+                    $this->encryptionService->decrypt($config->getEncryptedCredentials()),
+                    true
+                ) ?: [];
+            }
+
+            // Merge OAuth tokens with existing credentials
+            $credentials = array_merge($existingCredentials, [
                 'access_token' => $accessToken->getToken(),
                 'refresh_token' => $accessToken->getRefreshToken(),
                 'expires_at' => $accessToken->getExpires(),
                 'tenant_id' => $accessToken->getValues()['tenant_id'] ?? 'common',
                 'client_id' => $_ENV['AZURE_CLIENT_ID'] ?? '',
                 'client_secret' => $_ENV['AZURE_CLIENT_SECRET'] ?? ''
-            ];
+            ]);
 
             // Encrypt and save credentials
             $config->setEncryptedCredentials(
@@ -728,5 +759,46 @@ class IntegrationOAuthController extends AbstractController
             $this->addFlash('error', 'Failed to connect to Wrike: ' . $e->getMessage());
             return $this->redirectToRoute('app_skills');
         }
+    }
+
+    /**
+     * Resolve the actual Azure AD tenant GUID from a SharePoint URL
+     * using Microsoft's public OpenID discovery endpoint.
+     *
+     * The SharePoint subdomain (e.g. "valanticmore") does NOT always match
+     * the Azure AD tenant name, so we cannot use it directly. Instead we query
+     * login.microsoftonline.com/{host}/.well-known/openid-configuration
+     * which returns URLs containing the real tenant GUID.
+     */
+    private function resolveTenantFromSharePointUrl(string $sharepointUrl): ?string
+    {
+        // Normalise: strip protocol and trailing path/slashes
+        $host = preg_replace('#^https?://#i', '', trim($sharepointUrl));
+        $host = rtrim($host, '/');
+        $host = explode('/', $host)[0]; // strip any path
+
+        // Extract subdomain from sharepoint URL (e.g. "valanticmore" from "valanticmore.sharepoint.com")
+        if (!preg_match('/^([a-z0-9-]+)\.sharepoint\.com$/i', $host, $matches)) {
+            return null;
+        }
+
+        // The OpenID discovery endpoint requires .onmicrosoft.com, not .sharepoint.com
+        $onMicrosoftDomain = $matches[1] . '.onmicrosoft.com';
+        $discoveryUrl = "https://login.microsoftonline.com/{$onMicrosoftDomain}/.well-known/openid-configuration";
+
+        try {
+            $response = $this->httpClient->request('GET', $discoveryUrl, ['timeout' => 10]);
+            $data = $response->toArray();
+
+            // Extract tenant GUID from token_endpoint:
+            // https://login.microsoftonline.com/{guid}/oauth2/token
+            if (isset($data['token_endpoint']) && preg_match('#/([a-f0-9-]{36})/#', $data['token_endpoint'], $m)) {
+                return $m[1];
+            }
+        } catch (\Exception $e) {
+            error_log('Failed to resolve Azure AD tenant from SharePoint URL "' . $sharepointUrl . '": ' . $e->getMessage());
+        }
+
+        return null;
     }
 }
