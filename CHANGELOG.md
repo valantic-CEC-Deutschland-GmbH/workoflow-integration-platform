@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-05
+
+### Added
+- **Wrike agent now available in main AI assistant routing** — The main AI assistant can now recognize Wrike-related requests and automatically route them to the Wrike Agent. Ask about tasks, folders, projects, or time tracking in Wrike and the assistant will delegate to the specialized Wrike agent.
+
 ## 2026-02-02
 
 ### Fixed
