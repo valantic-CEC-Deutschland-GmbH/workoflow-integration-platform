@@ -53,6 +53,14 @@
                                 <i class="fab fa-gitlab"></i>
                             {% elseif availableType.type == 'trello' %}
                                 <i class="fab fa-trello"></i>
+                            {% elseif availableType.type == 'hubspot' %}
+                                <i class="fab fa-hubspot"></i>
+                            {% elseif availableType.type == 'wrike' %}
+                                <img src="/images/logos/wrike-icon-white.svg" class="dropdown-icon" alt="Wrike" width="16" height="16">
+                            {% elseif availableType.type == 'projektron' %}
+                                <img src="/images/logos/projektron-icon-white.svg" class="dropdown-icon" alt="Projektron" width="16" height="16">
+                            {% elseif availableType.type starts with 'sap' %}
+                                <img src="/images/logos/sap-icon.svg" class="dropdown-icon" alt="SAP" width="16" height="16">
                             {% else %}
                                 <i class="fas fa-plug"></i>
                             {% endif %}
