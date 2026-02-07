@@ -554,12 +554,27 @@ body {
             transition: var(--transition);
           }
 
+          img.dropdown-icon {
+            width: 1.25em;
+            height: 1.25em;
+            max-width: 1.25em;
+            max-height: 1.25em;
+            flex-shrink: 0;
+            object-fit: contain;
+            opacity: 0.6;
+            transition: var(--transition);
+          }
+
           &:hover {
             background: var(--bg-card-hover);
             color: var(--text-primary);
 
             i {
               color: var(--color-primary);
+            }
+
+            img.dropdown-icon {
+              opacity: 1;
             }
           }
 

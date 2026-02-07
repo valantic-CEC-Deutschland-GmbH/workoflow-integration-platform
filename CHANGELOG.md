@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-06
+
+### Fixed
+- **Skill dropdown icons now match the style of built-in icons** — Wrike, Projektron, and SAP icons in the "Add New Skill" dropdown are now monochrome and properly sized, consistent with the other dropdown entries
+- **Projektron and SAP now use official brand logos in the skills table** — Replaced placeholder logos with the proper Projektron and SAP brand assets for a more polished appearance
+
 ## 2026-02-05
 
 ### Added

@@ -51,6 +51,11 @@ class IntegrationController extends AbstractController
             'gitlab' => '/images/logos/gitlab-icon.svg',
             'trello' => '/images/logos/trello-logo.png',
             'sharepoint' => '/images/logos/sharepoint-logo.svg',
+            'hubspot' => '/images/logos/hubspot-icon.svg',
+            'wrike' => '/images/logos/wrike-icon.svg',
+            'projektron' => '/images/logos/Projektron_Logo.png',
+            'sap_c4c' => '/images/logos/SAP-Logo.svg',
+            'sap_sac' => '/images/logos/SAP-Logo.svg',
         ];
 
         // Return mapped logo or default to Workoflow logo
