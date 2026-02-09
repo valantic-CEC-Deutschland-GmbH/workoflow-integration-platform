@@ -152,6 +152,7 @@ status:
   connected: Prisijungta
   connected_hubspot: Prisijungta prie HubSpot
   connected_wrike: Prisijungta prie Wrike
+  connected_candis: Prisijungta prie Candis
   disconnected: Atjungta
   not_connected: Neprisijungta
   experimental: Eksperimentinis
@@ -192,13 +193,16 @@ integration:
   connect_microsoft: Prisijungti su Microsoft
   connect_hubspot: Prisijungti su HubSpot
   connect_wrike: Prisijungti su Wrike
+  connect_candis: Prisijungti su Candis
   oauth_required: Reikalinga Microsoft autorizacija. Spustelėkite „Prisijungti su Microsoft" žemiau, kad tęstumėte.
   oauth_required_hubspot: Reikalinga HubSpot autorizacija. Spustelėkite „Prisijungti su HubSpot" žemiau, kad tęstumėte.
   oauth_required_wrike: Reikalinga Wrike autorizacija. Spustelėkite „Prisijungti su Wrike" žemiau, kad tęstumėte.
+  oauth_required_candis: Reikalinga Candis autorizacija. Spustelėkite „Prisijungti su Candis" žemiau, kad tęstumėte. Candis sutikimo ekrane pasirinksite savo įmonę.
   oauth_reconnect_confirm: Tai pakeis esamą ryšį. Tęsti?
   reconnect_microsoft: Prisijungti iš naujo su Microsoft
   reconnect_hubspot: Prisijungti iš naujo su HubSpot
   reconnect_wrike: Prisijungti iš naujo su Wrike
+  reconnect_candis: Prisijungti iš naujo su Candis
   toggle_error: Nepavyko atnaujinti nustatymo
   workflow_id: Workoflow ID
   functions: Funkcijos

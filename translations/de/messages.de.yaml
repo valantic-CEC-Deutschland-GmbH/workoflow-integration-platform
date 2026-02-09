@@ -152,6 +152,7 @@ status:
   connected: Verbunden
   connected_hubspot: Mit HubSpot verbunden
   connected_wrike: Mit Wrike verbunden
+  connected_candis: Mit Candis verbunden
   disconnected: Getrennt
   not_connected: Nicht verbunden
   experimental: Experimentell
@@ -186,13 +187,16 @@ integration:
   connect_microsoft: Mit Microsoft verbinden
   connect_hubspot: Mit HubSpot verbinden
   connect_wrike: Mit Wrike verbinden
+  connect_candis: Mit Candis verbinden
   oauth_required: Microsoft-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Microsoft verbinden", um fortzufahren.
   oauth_required_hubspot: HubSpot-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit HubSpot verbinden", um fortzufahren.
   oauth_required_wrike: Wrike-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Wrike verbinden", um fortzufahren.
+  oauth_required_candis: Candis-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Candis verbinden", um fortzufahren. Sie wählen Ihr Unternehmen während des Candis-Zustimmungsbildschirms aus.
   oauth_reconnect_confirm: Dies ersetzt Ihre bestehende Verbindung. Fortfahren?
   reconnect_microsoft: Erneut mit Microsoft verbinden
   reconnect_hubspot: Erneut mit HubSpot verbinden
   reconnect_wrike: Erneut mit Wrike verbinden
+  reconnect_candis: Erneut mit Candis verbinden
   toggle_error: Einstellung konnte nicht aktualisiert werden
   type: Typ
   status: Status

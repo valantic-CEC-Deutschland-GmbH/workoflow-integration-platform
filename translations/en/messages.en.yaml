@@ -152,6 +152,7 @@ status:
   connected: Connected
   connected_hubspot: Connected to HubSpot
   connected_wrike: Connected to Wrike
+  connected_candis: Connected to Candis
   disconnected: Disconnected
   not_connected: Not Connected
   experimental: Experimental
@@ -192,13 +193,16 @@ integration:
   connect_microsoft: Connect with Microsoft
   connect_hubspot: Connect with HubSpot
   connect_wrike: Connect with Wrike
+  connect_candis: Connect with Candis
   oauth_required: Microsoft authorization is required. Click "Connect with Microsoft" below to continue.
   oauth_required_hubspot: HubSpot authorization is required. Click "Connect with HubSpot" below to continue.
   oauth_required_wrike: Wrike authorization is required. Click "Connect with Wrike" below to continue.
+  oauth_required_candis: Candis authorization is required. Click "Connect with Candis" below to continue. You will select your company during the Candis consent screen.
   oauth_reconnect_confirm: This will replace your existing connection. Continue?
   reconnect_microsoft: Reconnect with Microsoft
   reconnect_hubspot: Reconnect with HubSpot
   reconnect_wrike: Reconnect with Wrike
+  reconnect_candis: Reconnect with Candis
   toggle_error: Failed to update setting
   workflow_id: Workoflow ID
   functions: Functions

@@ -152,6 +152,7 @@ status:
   connected: Conectat
   connected_hubspot: Conectat la HubSpot
   connected_wrike: Conectat la Wrike
+  connected_candis: Conectat la Candis
   disconnected: Deconectat
   not_connected: Neconectat
   experimental: Experimental
@@ -192,13 +193,16 @@ integration:
   connect_microsoft: Conectați-vă cu Microsoft
   connect_hubspot: Conectați-vă cu HubSpot
   connect_wrike: Conectați-vă cu Wrike
+  connect_candis: Conectați-vă cu Candis
   oauth_required: Este necesară autorizarea Microsoft. Faceți clic pe „Conectați-vă cu Microsoft" mai jos pentru a continua.
   oauth_required_hubspot: Este necesară autorizarea HubSpot. Faceți clic pe „Conectați-vă cu HubSpot" mai jos pentru a continua.
   oauth_required_wrike: Este necesară autorizarea Wrike. Faceți clic pe „Conectați-vă cu Wrike" mai jos pentru a continua.
+  oauth_required_candis: Este necesară autorizarea Candis. Faceți clic pe „Conectați-vă cu Candis" mai jos pentru a continua. Veți selecta compania dvs. în timpul ecranului de consimțământ Candis.
   oauth_reconnect_confirm: Aceasta va înlocui conexiunea existentă. Continuați?
   reconnect_microsoft: Reconectați-vă cu Microsoft
   reconnect_hubspot: Reconectați-vă cu HubSpot
   reconnect_wrike: Reconectați-vă cu Wrike
+  reconnect_candis: Reconectați-vă cu Candis
   toggle_error: Setarea nu a putut fi actualizată
   workflow_id: ID Workoflow
   functions: Funcții
