@@ -3498,9 +3498,15 @@ body {
       border-radius: var(--border-radius);
       transition: var(--transition);
 
-      i {
+      i, img.dropdown-icon {
         margin-right: var(--space-sm);
         width: 16px;
+      }
+
+      img.dropdown-icon {
+        height: 16px;
+        vertical-align: middle;
+        object-fit: contain;
       }
 
       &:hover {
