@@ -464,7 +464,7 @@ class WrikeIntegration implements PersonalizedSkillInterface
 
     public function isExperimental(): bool
     {
-        return true;
+        return false;
     }
 
     public function getSetupInstructions(): ?string
