@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - **Wrike integration is no longer experimental** — Wrike is now a fully supported skill
+- **Streamlined AI assistant routing** — The main AI assistant prompt was optimized for faster responses and lower token usage. Adding new integrations no longer requires updating the assistant's routing configuration. No user-facing behavior changes.
 
 ## 2026-02-06
 
