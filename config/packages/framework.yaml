@@ -18,7 +18,7 @@ framework:
         log: true
 
     default_locale: '%locale%'
-    enabled_locales: ['de', 'en']
+    enabled_locales: ['de', 'en', 'ro', 'lt']
 
 when@test:
     framework:

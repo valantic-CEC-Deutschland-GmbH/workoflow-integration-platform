@@ -15,10 +15,12 @@
             {% if app.user %}
                 {# Language Switcher #}
                 {% set currentLocale = app.request.locale %}
+                {% set localeFlagMap = { 'de': 'de', 'en': 'gb', 'ro': 'ro', 'lt': 'lt' } %}
+                {% set localeNameMap = { 'de': 'DE', 'en': 'EN', 'ro': 'RO', 'lt': 'LT' } %}
                 <div class="language-switcher">
                     <button class="language-switcher-button" onclick="toggleLangDropdown(event)">
-                        <span class="lang-flag fi fi-{{ currentLocale == 'de' ? 'de' : 'gb' }}"></span>
-                        <span class="lang-name">{{ currentLocale == 'de' ? 'DE' : 'EN' }}</span>
+                        <span class="lang-flag fi fi-{{ localeFlagMap[currentLocale] | default('gb') }}"></span>
+                        <span class="lang-name">{{ localeNameMap[currentLocale] | default('EN') }}</span>
                         <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
                             <path d="M6 9L1 4h10L6 9z"/>
                         </svg>
@@ -37,6 +39,22 @@
                             <span class="lang-flag fi fi-de"></span>
                             <span>Deutsch</span>
                             {% if currentLocale == 'de' %}
+                                <span class="current-indicator">✓</span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ path('app_locale_switch', {'locale': 'ro'}) }}"
+                           class="lang-item {% if currentLocale == 'ro' %}active{% endif %}">
+                            <span class="lang-flag fi fi-ro"></span>
+                            <span>Română</span>
+                            {% if currentLocale == 'ro' %}
+                                <span class="current-indicator">✓</span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ path('app_locale_switch', {'locale': 'lt'}) }}"
+                           class="lang-item {% if currentLocale == 'lt' %}active{% endif %}">
+                            <span class="lang-flag fi fi-lt"></span>
+                            <span>Lietuvių</span>
+                            {% if currentLocale == 'lt' %}
                                 <span class="current-indicator">✓</span>
                             {% endif %}
                         </a>

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-09
 
+### Added
+- **Candis.io invoice management integration** — New integration for managing invoices, reimbursements, and accounting master data in Candis with OAuth2 connection. AI agents can search and view invoices, track payment status, manage employee expenses (travel, mileage, per diem), import cost centers, GL accounts, and contacts, and export data for ERP integration through 9 specialized tools.
+- **Romanian and Lithuanian language support** — The platform is now available in Romanian (RO) and Lithuanian (LT) in addition to German and English, with full translations for all UI elements and a language switcher with country flags
+
 ### Changed
 - **Wrike integration is no longer experimental** — Wrike is now a fully supported skill
 

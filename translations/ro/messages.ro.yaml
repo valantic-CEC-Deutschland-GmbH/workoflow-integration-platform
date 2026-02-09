@@ -1,0 +1,662 @@
+common:
+  save_changes: Salvează modificările
+  cancel: Anulează
+  close: Închide
+  optional: opțional
+
+nav:
+  general: General
+  skills: Abilități
+  files: Fișiere
+  organisation: Canal
+  profile: Profil
+  logout: Deconectare
+  channel: Canal
+  members: Membri
+  audit_log: Jurnal de audit
+  release_notes: Note de lansare
+  login: Autentificare
+  workspace: Spațiu de lucru
+  settings: Setări
+  prompt_vault: Prompt Vault
+
+home:
+  title: Bine ați venit la Workoflow
+  hero:
+    title: Workoflow Integration Platform
+    subtitle: Conectați-vă instrumentele cu agenți AI
+    description: Integrați fără efort Jira, Confluence și alte servicii cu agenți AI utilizând Model Context Protocol (MCP).
+    cta: Începeți
+  features:
+    title: Integrări puternice
+    subtitle: Conectați instrumentele preferate și lăsați agenții AI să lucreze cu ele
+    jira:
+      title: Integrare Jira
+      description: Căutați probleme, gestionați sprint-uri și urmăriți progresul proiectelor prin agenți AI.
+    confluence:
+      title: Integrare Confluence
+      description: Accesați documentația, căutați pagini și gestionați bazele de cunoștințe cu asistență AI.
+    mcp:
+      title: Protocol MCP
+      description: Protocol standard industrial pentru comunicarea agenților AI și integrarea instrumentelor.
+  how_it_works:
+    title: Cum funcționează
+    step1:
+      title: Autentificați-vă
+      description: Conectați-vă cu contul Google
+    step2:
+      title: Conectați instrumente
+      description: Adăugați acreditările Jira și Confluence
+    step3:
+      title: Configurați accesul
+      description: Setați ce instrumente pot folosi agenții AI
+    step4:
+      title: Începeți să utilizați
+      description: Agenții AI pot lucra acum cu instrumentele dvs.
+  cta:
+    title: Sunteți gata să începeți?
+    subtitle: Alăturați-vă Workoflow și împuterniciți agenții AI astăzi
+    button: Începeți acum
+  footer:
+    copyright: © %year% Workoflow. Toate drepturile rezervate.
+
+auth:
+  login:
+    title: Autentificare
+    subtitle: Platformă de integrare pentru agenți AI
+    google: Autentificați-vă cu Google
+    privacy: Prin autentificare, sunteți de acord cu politica noastră de confidențialitate.
+
+general:
+  title: General
+  welcome: Bine ați venit, %name%!
+  organisation: Canalul dvs.
+  integration_api_url: URL API de integrare
+  workflow_user_id: ID specific canalului
+  copy_curl_command: Copiați comanda curl pentru instrumente
+  copied: Copiat!
+  integrations_count: Integrări
+  active_integrations: Integrări active
+  your_role: Rolul dvs.
+  manage_integrations: Gestionați integrările
+  recent_integrations: Integrări recente
+  never: Niciodată
+
+organisation:
+  create:
+    title: Creați canal
+    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
+    placeholder: de ex. Compania Mea SRL
+    help: Puteți schimba numele ulterior în setări.
+    submit: Creați canal
+  created:
+    success: Canal creat cu succes!
+  name: Nume canal
+  settings: Setări canal
+  members: Membri
+  updated:
+    success: Canal actualizat cu succes!
+  member:
+    role_updated: Rol actualizat cu succes!
+    cannot_change_own_role: Nu vă puteți schimba propriul rol.
+  make_admin: Faceți administrator
+  make_member: Faceți membru
+  invite_member: Invitați membru
+  invite:
+    invalid_email: Adresă de email invalidă.
+    user_has_organisation: Acest utilizator aparține deja unui canal.
+    user_added: Utilizator adăugat cu succes!
+    user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.
+
+channel:
+  title: Canal
+  management: Gestionarea canalelor
+  management.description: Creați și gestionați canalele dvs.
+  create:
+    button: Creați canal nou
+    title: Creați canal
+    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
+  uuid: UUID canal
+  uuid_help: Acest UUID este utilizat pentru endpoint-urile API
+  integration_api_help: Utilizați acest URL API pentru a conecta agenții AI (de ex. n8n) la integrările dvs.
+  save: Salvează
+  invite_member: Invitați membru
+  invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
+  workflow_user_id: ID utilizator Workoflow
+  organisation_name: Nume canal
+  channel_settings: Setări canal
+  agent_settings: Setări agent
+  agent_type: Tip agent
+  workflow_visualization: Vizualizare flux de lucru
+  send_invite: Trimiteți invitația
+  make_admin: Faceți administrator
+  make_member: Faceți membru
+  organisation_type: Tip canal
+  type:
+    common: Comun
+    ecommerce: eCommerce
+    msteams: MS Teams
+
+msteams:
+  configuration: Configurare MS Teams
+  configuration.description: Configurați setările de integrare a botului Microsoft Teams
+  app_type: Tipul aplicației Microsoft
+  app_id: ID aplicație Microsoft
+  app_password: Parolă aplicație Microsoft
+  app_password.hint: Această parolă va fi stocată criptată pentru securitate
+  tenant_id: ID chiriaș Microsoft
+
+status:
+  active: Activ
+  inactive: Inactiv
+  connected: Conectat
+  connected_hubspot: Conectat la HubSpot
+  connected_wrike: Conectat la Wrike
+  disconnected: Deconectat
+  not_connected: Neconectat
+  experimental: Experimental
+
+badge:
+  system: SISTEM
+
+PLATFORM: PLATFORMĂ
+
+integration:
+  name: Nume
+  type: Tip
+  status: Stare
+  last_accessed: Ultimul acces
+  actions: Acțiuni
+  title: Gestionați abilitățile
+  skills_page_title: Gestionați abilitățile
+  skills_explanation_p1: Abilitățile permit agenților AI să efectueze acțiuni în numele dvs. conectându-se la diverse platforme și servicii. Fiecare abilitate oferă capabilități specifice pe care AI le poate folosi atunci când lucrează cu datele dvs.
+  skills_explanation_p2: Există două tipuri de abilități - Abilitățile personalizate necesită acreditările dvs. pentru a accesa servicii externe precum Jira sau Confluence în numele dvs., în timp ce Abilitățile platformei sunt capabilități integrate care nu necesită autentificare externă, cum ar fi generarea PDF sau procesarea datelor.
+  add_new: Adăugați abilitate personalizată
+  no_integrations: Nicio abilitate configurată încă
+  no_integrations_desc: 'Începeți prin adăugarea primei abilități pentru a conecta servicii externe'
+  platform_skills: Abilități platformă
+  platform_skills_description: Funcții integrate ale platformei care nu necesită acreditări de servicii externe. Fiecare utilizator le poate configura independent.
+  platform_skills_info: Instrumente integrate care oferă capabilități esențiale pentru agenții dvs. AI. Gestionați ce instrumente sunt disponibile pentru organizația dvs.
+  platform_skills_edit: Gestionați abilitățile platformei
+  platform_skills_edit_description: Activați sau dezactivați instrumentele platformei disponibile pentru toți utilizatorii din organizația dvs.
+  external_integrations: Abilități personalizate
+  external_integrations_description: Conectați-vă la servicii externe precum Jira, Confluence și SharePoint cu acreditările dvs.
+  available_tools: Instrumente disponibile
+  tools_hint: Activați sau dezactivați instrumentele specifice pe care această integrare le oferă
+  system_prompt: Prompt sistem agent AI
+  system_prompt_hint: Prompt-ul de sistem definește modul în care agentul AI interacționează cu această abilitate. Include instrumentele disponibile, ghidurile de utilizare și cele mai bune practici pentru AI.
+  view_system_prompt: Faceți clic pentru a vizualiza/ascunde XML-ul promptului de sistem
+  setup: Configurare
+  setup_description: Configurați integrarea %name%
+  save_configuration: Salvați configurarea
+  connect_microsoft: Conectați-vă cu Microsoft
+  connect_hubspot: Conectați-vă cu HubSpot
+  connect_wrike: Conectați-vă cu Wrike
+  oauth_required: Este necesară autorizarea Microsoft. Faceți clic pe „Conectați-vă cu Microsoft" mai jos pentru a continua.
+  oauth_required_hubspot: Este necesară autorizarea HubSpot. Faceți clic pe „Conectați-vă cu HubSpot" mai jos pentru a continua.
+  oauth_required_wrike: Este necesară autorizarea Wrike. Faceți clic pe „Conectați-vă cu Wrike" mai jos pentru a continua.
+  oauth_reconnect_confirm: Aceasta va înlocui conexiunea existentă. Continuați?
+  reconnect_microsoft: Reconectați-vă cu Microsoft
+  reconnect_hubspot: Reconectați-vă cu HubSpot
+  reconnect_wrike: Reconectați-vă cu Wrike
+  toggle_error: Setarea nu a putut fi actualizată
+  workflow_id: ID Workoflow
+  functions: Funcții
+  active_of: active din
+  test_connection: Testați conexiunea
+  delete_confirm: Sunteți sigur că doriți să ștergeți această integrare?
+  testing: Se testează...
+  test_success: Conexiune reușită!
+  test_success_title: Conexiune reușită
+  test_failed: Conexiune eșuată
+  test_failed_title: Conexiune eșuată
+  test_error: A apărut o eroare
+  test_error_title: Eroare de testare
+  basic_info: Informații de bază
+  select_type: Selectați tipul de integrare
+  name_placeholder: de ex. Spațiul meu de lucru Jira
+  workflow_id_placeholder: de ex. user123
+  workflow_id_help: Găsiți ID-ul dvs. folosind promptul Workoflow „Care este ID-ul meu?"
+  credentials: Acreditări
+  available_functions: Funcții disponibile
+  save: Salvați integrarea
+  system_description: Instrumente platformă disponibile pentru toți utilizatorii
+  manage_tools: Gestionați instrumentele
+  platform_skills_always_active: Abilitățile platformei sunt întotdeauna disponibile
+  platform: Platformă
+  enabled: Activat
+  tool_name: Instrument
+  category: Categorie
+  description: Descriere
+  credentials_update_note: Lăsați câmpurile goale pentru a păstra acreditările existente
+  instance_name: Nume instanță
+  instance_name_hint: 'Un nume prietenos pentru a identifica această instanță de integrare (de ex. „Jira Producție", „SharePoint Dev")'
+  instance_name_placeholder: de ex. Producție
+  workflow_user_id: ID utilizator Workflow
+  workflow_user_id_hint: 'Opțional: Filtrați instrumentele pentru utilizatori specifici de workflow'
+  workflow_user_id_placeholder: de ex. user-123
+  existing_instances: Aveți deja %count% integrare(i) %name%
+  add_instance: Adăugați instanță
+  add_another: Adăugați alt %name%
+  add_another_desc: Conectați o altă instanță a acestei integrări
+  experimental_notice: Această abilitate este încă în dezvoltare. Funcționalitățile se pot schimba și unele funcții ar putea să nu funcționeze conform așteptărilor.
+  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea Projektron. Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
+  add_jira: Adăugați instanță Jira
+  add_confluence: Adăugați instanță Confluence
+  add_sharepoint: Adăugați instanță SharePoint
+  edit: Editare
+  created:
+    success: Integrare creată cu succes!
+  updated:
+    success: Integrare actualizată cu succes!
+  deleted:
+    success: Integrare ștearsă cu succes!
+  jira:
+    url: URL Jira
+    username: Nume utilizator (Email)
+    api_token: Token API
+    api_token_help: 'Creați un token API la <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Setări cont Atlassian</a>'
+  confluence:
+    url: URL Confluence
+    username: Nume utilizator (Email)
+    api_token: Token API
+    api_token_help: 'Creați un token API la <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Setări cont Atlassian</a>'
+  sharepoint:
+    oauth_info: Autentificare OAuth2 SharePoint
+    oauth_description: Integrarea SharePoint utilizează autentificarea OAuth2. După salvarea acestei integrări, veți putea conecta contul SharePoint.
+    oauth_help: Nu sunt necesare acreditări manuale. Autentificarea va fi gestionată prin autentificarea Microsoft.
+    connected: Contul SharePoint este conectat și autentificat.
+    not_connected: Contul SharePoint nu este încă conectat.
+    connect: Conectați contul SharePoint
+    reconnect: Reconectați contul SharePoint
+    token_expires: Token-ul expiră
+  connect_sharepoint: Conectați-vă la SharePoint
+  gitlab:
+    name: GitLab
+    description: Conectați-vă la GitLab pentru gestionarea proiectelor, urmărirea problemelor, merge request-uri și integrarea pipeline-urilor CI/CD
+    url: URL GitLab
+    url_placeholder: 'de ex. https://gitlab.nxs360.com'
+    url_help: 'Introduceți URL-ul instanței GitLab (suportă self-hosted și GitLab.com). Utilizați doar protocolul https://.'
+    api_token: Token de acces personal
+    api_token_placeholder: 'Introduceți token-ul de acces personal GitLab'
+    api_token_help: 'Creați un Token de acces personal în GitLab: Setări utilizator > Token-uri de acces. Scopuri necesare: api, read_api, read_repository'
+    tools:
+      get_project:
+        name: Obțineți detaliile proiectului
+        description: Obțineți informații detaliate despre un proiect GitLab specific. Returnează metadatele proiectului inclusiv descrierea, statisticile, branch-ul implicit, nivelul de vizibilitate și configurarea. Utilizați ID-ul proiectului sau formatul namespace/nume-proiect.
+      list_projects:
+        name: Listați proiectele
+        description: Obțineți toate proiectele GitLab accesibile utilizatorului autentificat. Returnează o listă de proiecte cu nume, ID-uri, descrieri, URL-uri și setări de vizibilitate. Poate filtra după starea de membru.
+      get_file_content:
+        name: Obțineți conținutul fișierului
+        description: Citiți conținutul unui fișier specific dintr-un repository GitLab. Returnează conținutul fișierului, codificarea, dimensiunea și metadatele. Specificați calea fișierului și opțional o referință branch/tag/commit. Util pentru citirea fișierelor de configurare, cod sau documentație.
+      list_repository_tree:
+        name: Listați arborele repository-ului
+        description: Navigați structura de directoare a unui repository GitLab. Returnează lista de fișiere și foldere cu nume, căi, tipuri și dimensiuni. Poate lista căi de directoare specifice, branch-uri/tag-uri și suportă parcurgerea recursivă a folderelor imbricate.
+      list_tags:
+        name: Listați tag-urile
+        description: Obțineți toate tag-urile Git dintr-un repository de proiect. Returnează numele tag-urilor, commit-urile țintă, datele de creare și informații despre lansări. Util pentru urmărirea lansărilor și a istoricului versiunilor.
+      list_branches:
+        name: Listați branch-urile
+        description: Obțineți toate branch-urile Git dintr-un repository de proiect. Returnează numele branch-urilor, informații despre ultimul commit, starea de protecție și dacă este branch-ul implicit. Esențial pentru înțelegerea fluxurilor active de dezvoltare.
+      get_commit:
+        name: Obțineți detaliile commit-ului
+        description: Obțineți informații detaliate despre un commit Git specific. Returnează mesajul commit-ului, autorul, timestamp-ul, fișierele modificate și statisticile diff. Utilizați SHA-ul commit-ului pentru a obține informații complete.
+      list_commits:
+        name: Listați commit-urile
+        description: Obțineți istoricul commit-urilor pentru un proiect sau un branch specific. Returnează lista de commit-uri cu SHA-uri, mesaje, autori, timestamp-uri și commit-uri părinte. Poate filtra după branch/tag și limita numărul de rezultate.
+      search_merge_requests:
+        name: Căutați merge request-uri
+        description: Căutați și listați merge request-urile dintr-un proiect. Poate filtra după stare (deschis, închis, fuzionat, toate), domeniu (create_de_mine, atribuite_mie, toate) și alte criterii. Returnează titluri MR, ID-uri, stări, autori și branch-uri țintă.
+      get_merge_request:
+        name: Obțineți detaliile merge request-ului
+        description: Obțineți informații detaliate despre un merge request specific. Returnează titlu, descriere, branch-uri sursă/țintă, stare, autor, atribuiți, etichete, aprobări și starea de merge. Utilizați IID-ul merge request-ului (ID intern).
+      get_merge_request_changes:
+        name: Obțineți modificările merge request-ului
+        description: Obțineți diff-ul și modificările de fișiere pentru un merge request specific. Returnează toate fișierele modificate cu conținut înainte/după, linii adăugate/șterse și statistici de modificare. Esențial pentru revizuirea codului și înțelegerea modificărilor introduse de MR.
+      get_merge_request_discussions:
+        name: Obțineți discuțiile merge request-ului
+        description: Obțineți toate firele de discuție și comentariile despre un merge request. Returnează textul comentariilor, autorii, timestamp-urile și contextul firului. Include comentarii inline de cod și discuții generale. Util pentru înțelegerea feedback-ului de revizuire a codului.
+      get_merge_request_commits:
+        name: Obțineți commit-urile merge request-ului
+        description: Obțineți toate commit-urile incluse într-un merge request specific. Returnează lista de commit-uri cu SHA-uri, mesaje și autori. Arată istoricul complet al commit-urilor care vor fi fuzionate.
+      create_merge_request:
+        name: Creați merge request
+        description: Creați un nou merge request într-un proiect. Necesită branch sursă, branch țintă și titlu. Poate seta opțional descriere, atribuiți și etichete. Returnează detaliile MR creat inclusiv IID și URL web.
+      update_merge_request:
+        name: Actualizați merge request-ul
+        description: Actualizați un merge request existent. Poate modifica titlul, descrierea, branch-ul țintă, atribuiții, etichetele, milestone-ul sau starea (închidere/redeschidere). Utilizați IID-ul merge request-ului pentru a specifica ce MR să actualizați.
+      add_merge_request_note:
+        name: Adăugați comentariu la merge request
+        description: Adăugați un comentariu sau o notă la un merge request. Comentariile suportă formatarea Markdown și pot menționa utilizatori cu @numedeutilizator. Util pentru feedback-ul de revizuire a codului, întrebări sau discuții generale despre modificări.
+      search_issues:
+        name: Căutați probleme
+        description: Căutați și listați problemele dintr-un proiect. Poate filtra după stare (deschis, închis, toate), domeniu (create_de_mine, atribuite_mie, toate), etichete și alte criterii. Returnează titluri, ID-uri, stări, autori și atribuiți.
+      get_issue:
+        name: Obțineți detaliile problemei
+        description: Obțineți informații detaliate despre o problemă specifică. Returnează titlu, descriere, stare, autor, atribuiți, etichete, milestone, data scadentă și informații de urmărire a timpului. Utilizați IID-ul problemei (ID intern).
+      create_issue:
+        name: Creați problemă
+        description: Creați o nouă problemă într-un proiect. Necesită titlu. Poate seta opțional descriere, atribuiți, etichete, milestone și data scadentă. Returnează detaliile problemei create inclusiv IID și URL web.
+      update_issue:
+        name: Actualizați problema
+        description: Actualizați o problemă existentă. Poate modifica titlul, descrierea, atribuiții, etichetele, milestone-ul, starea (închidere/redeschidere) sau data scadentă. Utilizați IID-ul problemei pentru a specifica ce problemă să actualizați.
+      search_packages:
+        name: Căutați pachete
+        description: Căutați și listați pachetele dintr-un registru de pachete GitLab. Poate filtra după numele pachetului. Returnează nume de pachete, versiuni, tipuri (npm, maven, nuget, etc.) și date de creare. Util pentru gestionarea artefactelor și dependențelor.
+      get_package:
+        name: Obțineți detaliile pachetului
+        description: Obțineți informații detaliate despre un pachet specific din registrul de pachete. Returnează metadatele pachetului, versiunea, tipul, dimensiunea și linkurile de descărcare. Utilizați ID-ul pachetului pentru a obține informații complete.
+      list_pipelines:
+        name: Listați pipeline-urile CI/CD
+        description: Obțineți toate pipeline-urile CI/CD pentru un proiect. Poate filtra după referința branch/tag și stare (rulare, în așteptare, succes, eșuat, anulat, omis). Returnează ID-uri pipeline, stări, referințe și timestamp-uri de creare. Esențial pentru monitorizarea build-urilor și implementărilor.
+      get_pipeline:
+        name: Obțineți detaliile pipeline-ului
+        description: Obțineți informații detaliate despre un pipeline CI/CD specific. Returnează starea pipeline-ului, etapele, durata, SHA-ul commit-ului, utilizatorul care l-a declanșat și informații detaliate despre joburi. Utilizați ID-ul pipeline-ului pentru detalii complete de execuție.
+  add_gitlab: Adăugați instanță GitLab
+  active: Activ
+  credentials_not_editable: Acreditările nu pot fi editate din motive de securitate.
+  credential_exists: Valoarea curentă este stocată în siguranță. Lăsați gol pentru a o păstra.
+  keep_existing: Lăsați gol pentru a păstra valoarea existentă
+  connection_failed: Conexiune eșuată. Vă rugăm să verificați acreditările și URL-ul.
+  connection_failed_message: Nu s-a putut stabili conexiunea
+  request_skill: Solicitați abilitate nouă
+  request_skill_tooltip: Solicitați o nouă integrare
+  request_skill_title: Solicitați o nouă integrare
+  request_skill_description: Spuneți-ne ce serviciu doriți să integrați cu Workoflow.
+  skill_name: Numele serviciului
+  skill_name_placeholder: de ex. GitHub, Slack, Notion
+  skill_description: Descriere / Caz de utilizare
+  skill_description_placeholder: Cum doriți să utilizați această integrare?
+  api_documentation_url: URL documentație API
+  api_documentation_url_placeholder: https://...
+  api_documentation_url_hint: Opțional - Link către documentația API a serviciului
+  priority: Prioritate
+  priority_low: Scăzută - Ar fi bine să avem
+  priority_medium: Medie - Ar fi de ajutor
+  priority_high: Ridicată - Critică pentru fluxul meu de lucru
+  submit_request: Trimiteți cererea
+  skill_request_submitted: Cererea dvs. de abilitate a fost trimisă cu succes!
+  error:
+    no_organisation: Nu s-a găsit nicio organizație
+    skill_name_required: Numele serviciului este obligatoriu
+    request_failed: Cererea nu a putut fi trimisă. Vă rugăm să încercați din nou.
+  api_helper: Acces API
+  api_access: Acces API
+  api:
+    list_tools: Listați instrumentele disponibile
+    execute_tool: Executați un instrument
+    filter_by_type: Filtrați după tipul instrumentului
+    hint_auth: "Sfat: Înlocuiți $API_USER și $API_PASSWORD cu acreditările dvs. Basic Auth. ID-ul instrumentului pentru execuție este returnat în răspunsul listei."
+    no_organisation: Trebuie să faceți parte dintr-o organizație pentru a accesa API-ul.
+  mcp_access: Configurare server MCP
+  mcp:
+    description: Conectați asistentul AI (Claude Desktop, Cursor, etc.) la Workoflow utilizând protocolul MCP. Token-ul dvs. personal de acces vă identifică automat pe dvs. și organizația dvs.
+    claude_desktop: Configurare Claude Desktop
+    claude_desktop_hint: "Adăugați aceasta la fișierul de setări Claude Desktop:"
+    available_tools: Instrumente MCP disponibile
+    tool_list_desc: Listați toate instrumentele disponibile din organizația dvs.
+    tool_execute_desc: Executați orice instrument după nume cu parametri
+    tool_refresh_desc: Reîmprospătați lista de instrumente din cache după adăugarea integrărilor
+    hint_token: Token-ul dvs. X-Prompt-Token vă identifică automat utilizatorul și organizația. Păstrați-l în siguranță și nu îl partajați.
+    no_token: Trebuie să generați un token personal de acces pentru a utiliza serverul MCP.
+    generate_token: Generați token-ul în Profil
+
+action:
+  edit: Editare
+  delete: Ștergere
+  cancel: Anulare
+  close: Închidere
+  done: Gata
+  actions: Acțiuni
+  copy: Copiere
+  copied: Copiat!
+  back: Înapoi
+  download: Descărcare
+  manage_tools: Gestionați instrumentele
+  back_to_skills: Înapoi la abilități
+  configure: Configurare
+  manage_platform_skills: Gestionați abilitățile platformei
+  filter: Filtrare
+
+file:
+  title: Fișiere
+  upload: Încărcare
+  upload_files: Încărcați fișiere
+  no_files: Niciun fișier încărcat încă.
+  name: Nume fișier
+  size: Dimensiune
+  uploaded_by: Încărcat de
+  uploaded_at: Data încărcării
+  drag_drop: Trageți fișierele aici sau faceți clic pentru a selecta
+  select_files: Selectați fișiere
+  allowed_types: Tipuri de fișiere permise
+  max_size: Dimensiune maximă fișier
+  delete_confirm: Sunteți sigur că doriți să ștergeți acest fișier?
+  upload_error: Încărcarea fișierelor a eșuat
+  upload_disabled_no_connection: Încărcare dezactivată - Fără conexiune la stocarea fișierelor
+  connection_error_hint: Vă rugăm să vă asigurați că MinIO rulează și este accesibil la endpoint-ul configurat.
+  deleted:
+    success: Fișier șters cu succes!
+    error: Eroare la ștergerea fișierului.
+  download:
+    error: Eroare la descărcarea fișierului.
+
+user:
+  name: Nume
+  email: Email
+  role: Rol
+  joined_at: Data înscrierii
+  organisation: Canal
+  workflow_user_id: ID-ul meu de Workflow
+
+profile:
+  title: Profilul meu
+  personal_info: Informații personale
+  danger_zone: Zonă periculoasă
+  delete_account: Ștergeți contul
+  delete_account_warning: Ștergerea contului nu poate fi anulată.
+  delete_account_confirm: Sunteți sigur că doriți să vă ștergeți contul?
+  delete_account_consequences: 'Această acțiune va:'
+  delete_consequence_1: Șterge toate integrările dvs.
+  delete_consequence_2: Elimina accesul dvs. la canal
+  delete_consequence_3: Șterge permanent toate datele dvs.
+  confirm_delete: Da, ștergeți contul
+  api_token: Token API
+  api_token_description: Utilizați acest token pentru a accesa API-ul de prompturi programatic.
+  generate_token: Generați token
+  regenerate_token: Regenerați token
+  token_generated: Token-ul dvs. API a fost generat. Copiați-l acum - nu va fi afișat din nou!
+  token_warning: Păstrați acest token secret. Oricine are acest token poate accesa prompturile dvs.
+  no_token: Niciun token API generat încă.
+  token_status: Stare token
+  token_active: Activ
+  token_created_at: Token creat la
+  api_usage: Utilizare API
+  api_usage_description: Utilizați această comandă curl pentru a obține prompturile dvs. din API.
+  api_params: Parametri opționali
+  api_param_scope: Filtrați după domeniu (personal sau organizație)
+  api_param_category: Filtrați după categorie (de ex. developer, devops)
+  api_param_uuid: Obțineți un prompt specific după UUID
+  generate_token_first: Generați mai întâi un token pentru a obține o comandă curl gata de utilizat.
+  no_organisation: Nicio organizație selectată.
+
+footer:
+  rights: Toate drepturile rezervate.
+  legal_notice: Aviz legal
+  data_privacy: Declarație de protecție a datelor
+  open_source: Open Source
+  github:
+    hosting: Hosting
+    tests: Teste
+    bot: Bot
+    mcp: MCP
+    platform: Platformă de integrare
+    pptx: PPTX
+    rag: RAG
+
+validation:
+  name_required: Numele este obligatoriu
+  name_duplicate: O integrare cu acest nume există deja
+  field_required: Acest câmp este obligatoriu
+  email_invalid: Vă rugăm să introduceți o adresă de email validă
+  url_invalid: Vă rugăm să introduceți un URL valid
+
+audit_log:
+  title: Jurnal de audit
+  subtitle: Vizualizați toate activitățile și acțiunile din contul dvs.
+  search:
+    placeholder: Căutați după numele acțiunii...
+  date_from: De la data
+  date_to: Până la data
+  execution_id: ID execuție
+  execution_id_placeholder: Filtrați după ID-ul execuției...
+  view_flat: Vizualizare plată
+  view_grouped: Vizualizare grupată
+  no_execution_id: Fără ID execuție
+  entries: înregistrări
+  clear_filters: Ștergeți filtrele
+  empty: Nu s-au găsit înregistrări în jurnalul de audit
+  showing_results: Se afișează de la %from% la %to% din %total% înregistrări
+  columns:
+    timestamp: Timestamp
+    action: Acțiune
+    user: Utilizator
+    ip: Adresă IP
+    user_agent: User Agent
+    data: Date
+    execution_id: ID execuție
+  expand_details: Extindeți detaliile
+  collapse_details: Restrângeți detaliile
+  request_payload: Payload cerere
+  response_data: Date răspuns
+  truncated_notice: Datele răspunsului trunchiate la %size%KB (dimensiune originală)
+  show_details: Afișați detaliile
+  json_modal:
+    title: Date jurnal de audit
+    search_placeholder: Căutați în JSON...
+    copy: Copiați JSON
+    hint: Utilizați ESC pentru a închide sau faceți clic în afara modalului
+
+pagination:
+  previous: Anterior
+  next: Următor
+  page_of: Pagina %current% din %total%
+
+release_notes:
+  title: Note de lansare
+  subtitle: Ultimele actualizări ale tuturor componentelor Workoflow
+  last_updated: Ultima actualizare
+  error: Nu s-au putut încărca notele de lansare
+  view_on_github: Vizualizați pe GitHub
+  projects:
+    bot:
+      name: Workoflow Bot
+      description: Bot MS Teams care conectează fluxurile de automatizare n8n la Microsoft Teams, permițând comunicarea bazată pe AI menținând confidențialitatea datelor prin auto-hosting.
+    mcp:
+      name: Workoflow MCP
+      description: Punte server MCP pentru platforma Workoflow. Conectează asistenții AI precum Claude Desktop și Cursor la instrumentele Workoflow utilizând Model Context Protocol (MCP).
+    platform:
+      name: Workoflow Platformă
+      description: Hub de integrare enterprise care conectează agenții AI cu instrumente de business precum Jira, Confluence și SharePoint. Include stocare criptată a acreditărilor și jurnalizare completă de audit.
+    tests:
+      name: Workoflow Teste
+      description: Framework de validare semantică a răspunsurilor pentru agenții AI utilizând Azure OpenAI. Validează semnificația în loc de potrivirea exactă a textului, suportând răspunsuri în germană și engleză.
+    loadtests:
+      name: Workoflow Teste de încărcare
+      description: Infrastructură de testare a încărcării bazată pe k6 pentru botul MS Teams cu teste smoke, teste complete de încărcare și integrare Grafana Cloud pentru monitorizarea performanței.
+    infrastructure:
+      name: Workoflow Infrastructură
+      description: Infrastructură auto-hostată conformă GDPR cu servicii bazate în UE. Implementează n8n, Qdrant, MinIO, Redis și PostgreSQL cu certificări ISO 27001/27018.
+
+prompt:
+  vault_title: Prompt Vault
+  explanation_p1: Prompt Vault este biblioteca dvs. centrală pentru gestionarea, partajarea și organizarea prompturilor AI. Stocați cele mai bune prompturi aici pentru a le reutiliza în conversații și a le partaja cu echipa dvs.
+  explanation_p2: Prompturile personale sunt private pentru dvs., în timp ce prompturile de echipă sunt partajate cu toți din organizația dvs. Utilizați categoriile pentru a vă organiza prompturile și a le face mai ușor de găsit.
+  create_new: Creați prompt
+  tab:
+    personal: Prompturile mele
+    organisation: Prompturi echipă
+  filter:
+    all_categories: Toate categoriile
+    category: Categorie
+    sort: Sortați după
+  sort:
+    newest: Cele mai noi primele
+    oldest: Cele mai vechi primele
+    popular: Cele mai populare
+    alpha: A-Z
+    category: După categorie
+  title: Titlu
+  title_placeholder: Introduceți un titlu descriptiv...
+  content: Conținut prompt
+  content_placeholder: Introduceți textul promptului...
+  description: Descriere
+  description_placeholder: Rezumat scurt al ceea ce face acest prompt...
+  description_help: O scurtă descriere ajută pe alții să înțeleagă scopul acestui prompt.
+  category: Categorie
+  select_category: Selectați o categorie
+  scope: Vizibilitate
+  scope_help: Prompturile personale sunt vizibile doar pentru dvs. Prompturile de echipă sunt partajate cu organizația dvs.
+  scope_personal: Personal (vizibil doar pentru mine)
+  scope_organisation: Echipă (vizibil pentru organizație)
+  save: Salvați prompt
+  edit: Editați prompt
+  edit_not_allowed: Nu aveți permisiunea de a edita acest prompt.
+  delete: Ștergeți prompt
+  delete_confirm: Sunteți sigur că doriți să ștergeți acest prompt?
+  delete_not_allowed: Nu aveți permisiunea de a șterge acest prompt.
+  upvote: Vot pozitiv
+  upvotes: voturi pozitive
+  comment: Comentariu
+  comments: Comentarii
+  add_comment: Adăugați comentariu
+  comment_content: Comentariul dvs.
+  comment_placeholder: Scrieți un comentariu...
+  comment_added: Comentariu adăugat cu succes!
+  comment_not_allowed: Nu se poate comenta la prompturile personale.
+  no_prompts: Nu s-au găsit prompturi
+  no_prompts_desc: Creați primul dvs. prompt pentru a începe.
+  no_comments: Niciun comentariu încă. Fiți primul care comentează!
+  uuid: UUID Prompt
+  copy_content: Copiați prompt
+  updated_label: Actualizat
+  created:
+    success: Prompt creat cu succes!
+  updated:
+    success: Prompt actualizat cu succes!
+  deleted:
+    success: Prompt șters cu succes!
+  restored:
+    success: Prompt restaurat cu succes!
+  category_project_manager: Manager de proiect
+  category_developer: Dezvoltator
+  category_qa_engineer: Inginer QA
+  category_devops: DevOps
+  category_designer: Designer
+  category_business_analyst: Analist de business
+  category_scrum_master: Scrum Master
+  category_product_owner: Product Owner
+  category_tech_lead: Tech Lead
+  category_solution_architect: Arhitect soluții
+  category_data_engineer: Inginer date
+  category_security_engineer: Inginer securitate
+  category_support_engineer: Inginer suport
+  admin:
+    deleted_prompts: Prompturi șterse
+    restore: Restaurare
+    deleted_by: Șters de
+    deleted_at: Șters la
+    no_deleted_prompts: Niciun prompt șters
+    no_deleted_prompts_desc: Nu există prompturi șterse de restaurat.
+  api_helper: Acces API
+  api_access: Acces API
+  api:
+    get_personal: Obțineți prompturile mele personale
+    get_team: Obțineți prompturile echipei
+    get_all: Obțineți toate prompturile (Personal + Echipă)
+    get_by_uuid: Obțineți un prompt specific după UUID
+    filter_category: Filtrați după categorie
+    hint_combine: "Sfat: Combinați parametrii, de ex. ?scope=organisation&category=developer"
+    no_token: Trebuie să generați mai întâi un token API pentru a accesa prompturile prin API.
+    generate_token: Generați token-ul în Profil

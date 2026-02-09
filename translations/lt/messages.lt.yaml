@@ -1,0 +1,662 @@
+common:
+  save_changes: Išsaugoti pakeitimus
+  cancel: Atšaukti
+  close: Uždaryti
+  optional: neprivaloma
+
+nav:
+  general: Bendra informacija
+  skills: Įgūdžiai
+  files: Failai
+  organisation: Kanalas
+  profile: Profilis
+  logout: Atsijungti
+  channel: Kanalas
+  members: Nariai
+  audit_log: Audito žurnalas
+  release_notes: Leidimo pastabos
+  login: Prisijungti
+  workspace: Darbo sritis
+  settings: Nustatymai
+  prompt_vault: Prompt Vault
+
+home:
+  title: Sveiki atvykę į Workoflow
+  hero:
+    title: Workoflow Integration Platform
+    subtitle: Sujunkite savo įrankius su AI agentais
+    description: Sklandžiai integruokite Jira, Confluence ir kitas paslaugas su AI agentais naudodami Model Context Protocol (MCP).
+    cta: Pradėkite
+  features:
+    title: Galingos integracijos
+    subtitle: Prijunkite mėgstamus įrankius ir leiskite AI agentams su jais dirbti
+    jira:
+      title: Jira integracija
+      description: Ieškokite problemų, valdykite sprintus ir sekite projekto pažangą per AI agentus.
+    confluence:
+      title: Confluence integracija
+      description: Pasiekite dokumentaciją, ieškokite puslapių ir valdykite žinių bazes su AI pagalba.
+    mcp:
+      title: MCP protokolas
+      description: Pramonės standarto protokolas AI agentų komunikacijai ir įrankių integracijai.
+  how_it_works:
+    title: Kaip tai veikia
+    step1:
+      title: Prisijunkite
+      description: Prisijunkite su Google paskyra
+    step2:
+      title: Prijunkite įrankius
+      description: Pridėkite Jira ir Confluence prisijungimo duomenis
+    step3:
+      title: Konfigūruokite prieigą
+      description: Nustatykite, kokius įrankius AI agentai gali naudoti
+    step4:
+      title: Pradėkite naudoti
+      description: AI agentai dabar gali dirbti su jūsų įrankiais
+  cta:
+    title: Pasiruošę pradėti?
+    subtitle: Prisijunkite prie Workoflow ir įgalinkite savo AI agentus šiandien
+    button: Pradėkite dabar
+  footer:
+    copyright: © %year% Workoflow. Visos teisės saugomos.
+
+auth:
+  login:
+    title: Prisijungimas
+    subtitle: Integracijos platforma AI agentams
+    google: Prisijunkite su Google
+    privacy: Prisijungdami sutinkate su mūsų privatumo politika.
+
+general:
+  title: Bendra informacija
+  welcome: Sveiki, %name%!
+  organisation: Jūsų kanalas
+  integration_api_url: Integracijos API URL
+  workflow_user_id: Kanalui specifinis ID
+  copy_curl_command: Kopijuoti curl komandą įrankiams
+  copied: Nukopijuota!
+  integrations_count: Integracijos
+  active_integrations: Aktyvios integracijos
+  your_role: Jūsų rolė
+  manage_integrations: Valdyti integracijas
+  recent_integrations: Naujausios integracijos
+  never: Niekada
+
+organisation:
+  create:
+    title: Sukurti kanalą
+    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
+    placeholder: pvz. Mano įmonė UAB
+    help: Pavadinimą galite pakeisti vėliau nustatymuose.
+    submit: Sukurti kanalą
+  created:
+    success: Kanalas sėkmingai sukurtas!
+  name: Kanalo pavadinimas
+  settings: Kanalo nustatymai
+  members: Nariai
+  updated:
+    success: Kanalas sėkmingai atnaujintas!
+  member:
+    role_updated: Rolė sėkmingai atnaujinta!
+    cannot_change_own_role: Negalite keisti savo pačių rolės.
+  make_admin: Padaryti administratoriumi
+  make_member: Padaryti nariu
+  invite_member: Pakviesti narį
+  invite:
+    invalid_email: Neteisingas el. pašto adresas.
+    user_has_organisation: Šis vartotojas jau priklauso kanalui.
+    user_added: Vartotojas sėkmingai pridėtas!
+    user_not_found: Vartotojas pirmiausia turi užsiregistruoti Workoflow.
+
+channel:
+  title: Kanalas
+  management: Kanalų valdymas
+  management.description: Kurkite ir valdykite savo kanalus
+  create:
+    button: Sukurti naują kanalą
+    title: Sukurti kanalą
+    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
+  uuid: Kanalo UUID
+  uuid_help: Šis UUID naudojamas API galiniams taškams
+  integration_api_help: Naudokite šį API URL AI agentams (pvz. n8n) prijungti prie jūsų integracijų
+  save: Išsaugoti
+  invite_member: Pakviesti narį
+  invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
+  workflow_user_id: Workoflow vartotojo ID
+  organisation_name: Kanalo pavadinimas
+  channel_settings: Kanalo nustatymai
+  agent_settings: Agento nustatymai
+  agent_type: Agento tipas
+  workflow_visualization: Darbo eigos vizualizacija
+  send_invite: Siųsti kvietimą
+  make_admin: Padaryti administratoriumi
+  make_member: Padaryti nariu
+  organisation_type: Kanalo tipas
+  type:
+    common: Bendras
+    ecommerce: eCommerce
+    msteams: MS Teams
+
+msteams:
+  configuration: MS Teams konfigūracija
+  configuration.description: Konfigūruokite Microsoft Teams boto integracijos nustatymus
+  app_type: Microsoft programos tipas
+  app_id: Microsoft programos ID
+  app_password: Microsoft programos slaptažodis
+  app_password.hint: Šis slaptažodis bus saugomas užšifruotai
+  tenant_id: Microsoft nuomininko ID
+
+status:
+  active: Aktyvus
+  inactive: Neaktyvus
+  connected: Prisijungta
+  connected_hubspot: Prisijungta prie HubSpot
+  connected_wrike: Prisijungta prie Wrike
+  disconnected: Atjungta
+  not_connected: Neprisijungta
+  experimental: Eksperimentinis
+
+badge:
+  system: SISTEMA
+
+PLATFORM: PLATFORMA
+
+integration:
+  name: Pavadinimas
+  type: Tipas
+  status: Būsena
+  last_accessed: Paskutinė prieiga
+  actions: Veiksmai
+  title: Valdyti įgūdžius
+  skills_page_title: Valdyti įgūdžius
+  skills_explanation_p1: Įgūdžiai leidžia AI agentams atlikti veiksmus jūsų vardu, prisijungiant prie įvairių platformų ir paslaugų. Kiekvienas įgūdis suteikia specifines galimybes, kurias AI gali naudoti dirbdamas su jūsų duomenimis.
+  skills_explanation_p2: Yra du įgūdžių tipai - Personalizuoti įgūdžiai reikalauja jūsų prisijungimo duomenų, kad galėtų pasiekti išorines paslaugas kaip Jira ar Confluence jūsų vardu, o Platformos įgūdžiai yra integruotos galimybės, kurioms nereikia išorinės autentifikacijos, pvz. PDF generavimas ar duomenų apdorojimas.
+  add_new: Pridėti personalizuotą įgūdį
+  no_integrations: Dar nėra sukonfigūruotų įgūdžių
+  no_integrations_desc: 'Pradėkite pridėdami pirmąjį įgūdį, kad prisijungtumėte prie išorinių paslaugų'
+  platform_skills: Platformos įgūdžiai
+  platform_skills_description: Integruotos platformos funkcijos, kurioms nereikia išorinių paslaugų prisijungimo duomenų. Kiekvienas vartotojas gali jas konfigūruoti nepriklausomai.
+  platform_skills_info: Integruoti įrankiai, teikiantys esmines galimybes jūsų AI agentams. Valdykite, kokie įrankiai prieinami jūsų organizacijai.
+  platform_skills_edit: Valdyti platformos įgūdžius
+  platform_skills_edit_description: Įjunkite arba išjunkite platformos įrankius, prieinamus visiems jūsų organizacijos vartotojams
+  external_integrations: Personalizuoti įgūdžiai
+  external_integrations_description: Prisijunkite prie išorinių paslaugų kaip Jira, Confluence ir SharePoint su savo prisijungimo duomenimis
+  available_tools: Prieinami įrankiai
+  tools_hint: Įjunkite arba išjunkite konkrečius šios integracijos teikiamus įrankius
+  system_prompt: AI agento sistemos promptas
+  system_prompt_hint: Sistemos promptas apibrėžia, kaip AI agentas sąveikauja su šiuo įgūdžiu. Jis apima prieinamus įrankius, naudojimo gaires ir geriausias AI praktikas.
+  view_system_prompt: Spustelėkite, kad peržiūrėtumėte/paslėptumėte sistemos prompto XML
+  setup: Konfigūracija
+  setup_description: Konfigūruokite savo %name% integraciją
+  save_configuration: Išsaugoti konfigūraciją
+  connect_microsoft: Prisijungti su Microsoft
+  connect_hubspot: Prisijungti su HubSpot
+  connect_wrike: Prisijungti su Wrike
+  oauth_required: Reikalinga Microsoft autorizacija. Spustelėkite „Prisijungti su Microsoft" žemiau, kad tęstumėte.
+  oauth_required_hubspot: Reikalinga HubSpot autorizacija. Spustelėkite „Prisijungti su HubSpot" žemiau, kad tęstumėte.
+  oauth_required_wrike: Reikalinga Wrike autorizacija. Spustelėkite „Prisijungti su Wrike" žemiau, kad tęstumėte.
+  oauth_reconnect_confirm: Tai pakeis esamą ryšį. Tęsti?
+  reconnect_microsoft: Prisijungti iš naujo su Microsoft
+  reconnect_hubspot: Prisijungti iš naujo su HubSpot
+  reconnect_wrike: Prisijungti iš naujo su Wrike
+  toggle_error: Nepavyko atnaujinti nustatymo
+  workflow_id: Workoflow ID
+  functions: Funkcijos
+  active_of: aktyvių iš
+  test_connection: Testuoti ryšį
+  delete_confirm: Ar tikrai norite ištrinti šią integraciją?
+  testing: Testuojama...
+  test_success: Ryšys sėkmingas!
+  test_success_title: Ryšys sėkmingas
+  test_failed: Ryšys nepavyko
+  test_failed_title: Ryšys nepavyko
+  test_error: Įvyko klaida
+  test_error_title: Testo klaida
+  basic_info: Pagrindinė informacija
+  select_type: Pasirinkite integracijos tipą
+  name_placeholder: pvz. Mano Jira darbo sritis
+  workflow_id_placeholder: pvz. user123
+  workflow_id_help: Raskite savo ID naudodami Workoflow promptą „Koks mano ID?"
+  credentials: Prisijungimo duomenys
+  available_functions: Prieinamos funkcijos
+  save: Išsaugoti integraciją
+  system_description: Platformos įrankiai prieinami visiems vartotojams
+  manage_tools: Valdyti įrankius
+  platform_skills_always_active: Platformos įgūdžiai visada prieinami
+  platform: Platforma
+  enabled: Įjungta
+  tool_name: Įrankis
+  category: Kategorija
+  description: Aprašymas
+  credentials_update_note: Palikite laukus tuščius, kad išsaugotumėte esamus prisijungimo duomenis
+  instance_name: Egzemplioriaus pavadinimas
+  instance_name_hint: 'Draugiškas pavadinimas šiam integracijos egzemplioriui identifikuoti (pvz. „Gamybos Jira", „Dev SharePoint")'
+  instance_name_placeholder: pvz. Gamyba
+  workflow_user_id: Darbo eigos vartotojo ID
+  workflow_user_id_hint: 'Neprivaloma: Filtruoti įrankius konkretiems darbo eigos vartotojams'
+  workflow_user_id_placeholder: pvz. user-123
+  existing_instances: Jau turite %count% %name% integraciją(-as)
+  add_instance: Pridėti egzempliorių
+  add_another: Pridėti kitą %name%
+  add_another_desc: Prijungti kitą šios integracijos egzempliorių
+  experimental_notice: Šis įgūdis vis dar kuriamas. Funkcijos gali keistis ir kai kurios galimybės gali neveikti taip, kaip tikėtasi.
+  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate Projektron sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
+  add_jira: Pridėti Jira egzempliorių
+  add_confluence: Pridėti Confluence egzempliorių
+  add_sharepoint: Pridėti SharePoint egzempliorių
+  edit: Redaguoti
+  created:
+    success: Integracija sėkmingai sukurta!
+  updated:
+    success: Integracija sėkmingai atnaujinta!
+  deleted:
+    success: Integracija sėkmingai ištrinta!
+  jira:
+    url: Jira URL
+    username: Vartotojo vardas (el. paštas)
+    api_token: API raktas
+    api_token_help: 'Sukurkite API raktą <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Atlassian paskyros nustatymuose</a>'
+  confluence:
+    url: Confluence URL
+    username: Vartotojo vardas (el. paštas)
+    api_token: API raktas
+    api_token_help: 'Sukurkite API raktą <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Atlassian paskyros nustatymuose</a>'
+  sharepoint:
+    oauth_info: SharePoint OAuth2 autentifikacija
+    oauth_description: SharePoint integracija naudoja OAuth2 autentifikaciją. Išsaugojus šią integraciją, galėsite prijungti savo SharePoint paskyrą.
+    oauth_help: Rankiniai prisijungimo duomenys nereikalingi. Autentifikacija bus tvarkoma per Microsoft prisijungimą.
+    connected: SharePoint paskyra prijungta ir autentifikuota.
+    not_connected: SharePoint paskyra dar neprijungta.
+    connect: Prijungti SharePoint paskyrą
+    reconnect: Iš naujo prijungti SharePoint paskyrą
+    token_expires: Raktas baigia galioti
+  connect_sharepoint: Prisijungti prie SharePoint
+  gitlab:
+    name: GitLab
+    description: Prisijunkite prie GitLab projektų valdymui, problemų sekimui, sujungimo užklausoms ir CI/CD vamzdyno integracijai
+    url: GitLab URL
+    url_placeholder: 'pvz. https://gitlab.nxs360.com'
+    url_help: 'Įveskite GitLab egzemplioriaus URL (palaikomas savarankiškai talpinamas ir GitLab.com). Naudokite tik https:// protokolą.'
+    api_token: Asmeninis prieigos raktas
+    api_token_placeholder: 'Įveskite savo GitLab asmeninį prieigos raktą'
+    api_token_help: 'Sukurkite asmeninį prieigos raktą GitLab: Vartotojo nustatymai > Prieigos raktai. Reikiamos teisės: api, read_api, read_repository'
+    tools:
+      get_project:
+        name: Gauti projekto detales
+        description: Gauti išsamią informaciją apie konkretų GitLab projektą. Grąžina projekto metaduomenis, įskaitant aprašymą, statistiką, numatytąją šaką, matomumo lygį ir konfigūraciją. Naudokite projekto ID arba vardų sritis/projekto-pavadinimas formatą.
+      list_projects:
+        name: Projektų sąrašas
+        description: Gauti visus autentifikuotam vartotojui prieinamus GitLab projektus. Grąžina projektų sąrašą su pavadinimais, ID, aprašymais, URL ir matomumo nustatymais. Galima filtruoti pagal narystės būseną.
+      get_file_content:
+        name: Gauti failo turinį
+        description: Skaityti konkretaus failo turinį iš GitLab saugyklos. Grąžina failo turinį, kodavimą, dydį ir metaduomenis. Nurodykite failo kelią ir pasirinktinai šakos/žymės/commit nuorodą. Naudinga skaityti konfigūracijos failus, kodą ar dokumentaciją.
+      list_repository_tree:
+        name: Saugyklos medžio sąrašas
+        description: Naršyti GitLab saugyklos katalogų struktūrą. Grąžina failų ir aplankų sąrašą su pavadinimais, keliais, tipais ir dydžiais. Galima rodyti konkrečius katalogų kelius, šakas/žymes ir palaiko rekursinį įdėtų aplankų naršymą.
+      list_tags:
+        name: Žymių sąrašas
+        description: Gauti visas Git žymes projekto saugykloje. Grąžina žymių pavadinimus, tikslnius commit'us, kūrimo datas ir leidimo informaciją. Naudinga leidimų ir versijų istorijos sekimui.
+      list_branches:
+        name: Šakų sąrašas
+        description: Gauti visas Git šakas projekto saugykloje. Grąžina šakų pavadinimus, paskutinio commit'o informaciją, apsaugos būseną ir ar tai numatytoji šaka. Svarbu aktyvių kūrimo srautų supratimui.
+      get_commit:
+        name: Gauti commit'o detales
+        description: Gauti išsamią informaciją apie konkretų Git commit'ą. Grąžina commit'o žinutę, autorių, laiko žymą, pakeistus failus ir skirtumų statistiką. Naudokite commit'o SHA pilnai informacijai gauti.
+      list_commits:
+        name: Commit'ų sąrašas
+        description: Gauti projekto ar konkrečios šakos commit'ų istoriją. Grąžina commit'ų sąrašą su SHA, žinutėmis, autoriais, laiko žymomis ir pirminiais commit'ais. Galima filtruoti pagal šaką/žymę ir riboti rezultatų skaičių.
+      search_merge_requests:
+        name: Ieškoti sujungimo užklausų
+        description: Ieškoti ir rodyti sujungimo užklausas projekte. Galima filtruoti pagal būseną (atidarytas, uždarytas, sujungtas, visos), sritį (sukurtos_mano, priskirtos_man, visos) ir kitus kriterijus. Grąžina MR pavadinimus, ID, būsenas, autorius ir tikslines šakas.
+      get_merge_request:
+        name: Gauti sujungimo užklausos detales
+        description: Gauti išsamią informaciją apie konkrečią sujungimo užklausą. Grąžina pavadinimą, aprašymą, šaltinio/tikslo šakas, būseną, autorių, priskirtus asmenis, žymes, patvirtinimus ir sujungimo būseną. Naudokite sujungimo užklausos IID (vidinį ID).
+      get_merge_request_changes:
+        name: Gauti sujungimo užklausos pakeitimus
+        description: Gauti skirtumus ir failų pakeitimus konkrečiai sujungimo užklausai. Grąžina visus pakeistus failus su turiniu prieš/po, pridėtomis/pašalintomis eilutėmis ir pakeitimų statistika. Svarbu kodo peržiūrai ir įvestų pakeitimų supratimui.
+      get_merge_request_discussions:
+        name: Gauti sujungimo užklausos diskusijas
+        description: Gauti visus diskusijų gijas ir komentarus sujungimo užklausoje. Grąžina komentarų tekstą, autorius, laiko žymas ir gijos kontekstą. Apima inline kodo komentarus ir bendrą diskusiją. Naudinga kodo peržiūros atsiliepimų supratimui.
+      get_merge_request_commits:
+        name: Gauti sujungimo užklausos commit'us
+        description: Gauti visus commit'us, įtrauktus į konkrečią sujungimo užklausą. Grąžina commit'ų sąrašą su SHA, žinutėmis ir autoriais. Rodo pilną commit'ų istoriją, kuri bus sujungta.
+      create_merge_request:
+        name: Sukurti sujungimo užklausą
+        description: Sukurti naują sujungimo užklausą projekte. Reikalauja šaltinio šakos, tikslo šakos ir pavadinimo. Pasirinktinai galima nustatyti aprašymą, priskirtus asmenis ir žymes. Grąžina sukurtos MR detales, įskaitant IID ir žiniatinklio URL.
+      update_merge_request:
+        name: Atnaujinti sujungimo užklausą
+        description: Atnaujinti esamą sujungimo užklausą. Galima keisti pavadinimą, aprašymą, tikslo šaką, priskirtus asmenis, žymes, etapą ar būseną (uždaryti/atidaryti iš naujo). Naudokite sujungimo užklausos IID nurodyti, kurią MR atnaujinti.
+      add_merge_request_note:
+        name: Pridėti sujungimo užklausos komentarą
+        description: Pridėti komentarą ar pastabą prie sujungimo užklausos. Komentarai palaiko Markdown formatavimą ir gali paminėti vartotojus su @vartotojo_vardas. Naudinga kodo peržiūros atsiliepimams, klausimams ar bendrai diskusijai apie pakeitimus.
+      search_issues:
+        name: Ieškoti problemų
+        description: Ieškoti ir rodyti problemas projekte. Galima filtruoti pagal būseną (atidarytas, uždarytas, visos), sritį (sukurtos_mano, priskirtos_man, visos), žymes ir kitus kriterijus. Grąžina problemų pavadinimus, ID, būsenas, autorius ir priskirtus asmenis.
+      get_issue:
+        name: Gauti problemos detales
+        description: Gauti išsamią informaciją apie konkrečią problemą. Grąžina pavadinimą, aprašymą, būseną, autorių, priskirtus asmenis, žymes, etapą, terminą ir laiko sekimo informaciją. Naudokite problemos IID (vidinį ID).
+      create_issue:
+        name: Sukurti problemą
+        description: Sukurti naują problemą projekte. Reikalauja pavadinimo. Pasirinktinai galima nustatyti aprašymą, priskirtus asmenis, žymes, etapą ir terminą. Grąžina sukurtos problemos detales, įskaitant IID ir žiniatinklio URL.
+      update_issue:
+        name: Atnaujinti problemą
+        description: Atnaujinti esamą problemą. Galima keisti pavadinimą, aprašymą, priskirtus asmenis, žymes, etapą, būseną (uždaryti/atidaryti iš naujo) ar terminą. Naudokite problemos IID nurodyti, kurią problemą atnaujinti.
+      search_packages:
+        name: Ieškoti paketų
+        description: Ieškoti ir rodyti paketus GitLab paketų registre. Galima filtruoti pagal paketo pavadinimą. Grąžina paketų pavadinimus, versijas, tipus (npm, maven, nuget ir kt.) ir kūrimo datas. Naudinga artefaktų ir priklausomybių valdymui.
+      get_package:
+        name: Gauti paketo detales
+        description: Gauti išsamią informaciją apie konkretų paketą paketų registre. Grąžina paketo metaduomenis, versiją, tipą, dydį ir atsisiuntimo nuorodas. Naudokite paketo ID pilnai informacijai gauti.
+      list_pipelines:
+        name: CI/CD vamzdynų sąrašas
+        description: Gauti visus CI/CD vamzdynus projektui. Galima filtruoti pagal šakos/žymės nuorodą ir būseną (vykdomas, laukiantis, sėkmingas, nepavykęs, atšauktas, praleistas). Grąžina vamzdynų ID, būsenas, nuorodas ir kūrimo laiko žymas. Svarbu statybų ir diegimų stebėjimui.
+      get_pipeline:
+        name: Gauti vamzdyno detales
+        description: Gauti išsamią informaciją apie konkretų CI/CD vamzdyną. Grąžina vamzdyno būseną, etapus, trukmę, commit'o SHA, vartotoją, kuris jį paleido, ir išsamią darbų informaciją. Naudokite vamzdyno ID pilnoms vykdymo detalėms gauti.
+  add_gitlab: Pridėti GitLab egzempliorių
+  active: Aktyvus
+  credentials_not_editable: Prisijungimo duomenys negali būti redaguojami dėl saugumo priežasčių.
+  credential_exists: Dabartinė reikšmė saugoma saugiai. Palikite tuščią, kad išsaugotumėte.
+  keep_existing: Palikite tuščią, kad išsaugotumėte esamą reikšmę
+  connection_failed: Ryšys nepavyko. Patikrinkite savo prisijungimo duomenis ir URL.
+  connection_failed_message: Nepavyko užmegzti ryšio
+  request_skill: Prašyti naujo įgūdžio
+  request_skill_tooltip: Prašyti naujos integracijos
+  request_skill_title: Prašyti naujos integracijos
+  request_skill_description: Pasakykite mums, kokią paslaugą norėtumėte integruoti su Workoflow.
+  skill_name: Paslaugos pavadinimas
+  skill_name_placeholder: pvz. GitHub, Slack, Notion
+  skill_description: Aprašymas / Naudojimo atvejis
+  skill_description_placeholder: Kaip norėtumėte naudoti šią integraciją?
+  api_documentation_url: API dokumentacijos URL
+  api_documentation_url_placeholder: https://...
+  api_documentation_url_hint: Neprivaloma - Nuoroda į paslaugos API dokumentaciją
+  priority: Prioritetas
+  priority_low: Žemas - Būtų gerai turėti
+  priority_medium: Vidutinis - Būtų naudinga
+  priority_high: Aukštas - Kritinis mano darbo eigai
+  submit_request: Pateikti užklausą
+  skill_request_submitted: Jūsų įgūdžio užklausa sėkmingai pateikta!
+  error:
+    no_organisation: Organizacija nerasta
+    skill_name_required: Paslaugos pavadinimas privalomas
+    request_failed: Nepavyko pateikti užklausos. Bandykite dar kartą.
+  api_helper: API prieiga
+  api_access: API prieiga
+  api:
+    list_tools: Prieinamų įrankių sąrašas
+    execute_tool: Vykdyti įrankį
+    filter_by_type: Filtruoti pagal įrankio tipą
+    hint_auth: "Patarimas: Pakeiskite $API_USER ir $API_PASSWORD savo Basic Auth prisijungimo duomenimis. Įrankio ID vykdymui grąžinamas sąrašo atsakyme."
+    no_organisation: Turite priklausyti organizacijai, kad galėtumėte pasiekti API.
+  mcp_access: MCP serverio konfigūracija
+  mcp:
+    description: Prijunkite savo AI asistentą (Claude Desktop, Cursor ir kt.) prie Workoflow naudodami MCP protokolą. Jūsų asmeninis prieigos raktas automatiškai identifikuoja jus ir jūsų organizaciją.
+    claude_desktop: Claude Desktop konfigūracija
+    claude_desktop_hint: "Pridėkite tai į savo Claude Desktop nustatymų failą:"
+    available_tools: Prieinami MCP įrankiai
+    tool_list_desc: Visų jūsų organizacijos prieinamų įrankių sąrašas
+    tool_execute_desc: Vykdyti bet kurį įrankį pagal pavadinimą su parametrais
+    tool_refresh_desc: Atnaujinti saugomą įrankių sąrašą pridėjus integracijas
+    hint_token: Jūsų X-Prompt-Token automatiškai identifikuoja jūsų vartotoją ir organizaciją. Saugokite jį ir nesidalykite.
+    no_token: Turite sugeneruoti asmeninį prieigos raktą, kad galėtumėte naudoti MCP serverį.
+    generate_token: Generuoti raktą profilyje
+
+action:
+  edit: Redaguoti
+  delete: Ištrinti
+  cancel: Atšaukti
+  close: Uždaryti
+  done: Atlikta
+  actions: Veiksmai
+  copy: Kopijuoti
+  copied: Nukopijuota!
+  back: Atgal
+  download: Atsisiųsti
+  manage_tools: Valdyti įrankius
+  back_to_skills: Atgal prie įgūdžių
+  configure: Konfigūruoti
+  manage_platform_skills: Valdyti platformos įgūdžius
+  filter: Filtruoti
+
+file:
+  title: Failai
+  upload: Įkelti
+  upload_files: Įkelti failus
+  no_files: Dar nėra įkeltų failų.
+  name: Failo pavadinimas
+  size: Dydis
+  uploaded_by: Įkėlė
+  uploaded_at: Įkėlimo data
+  drag_drop: Vilkite failus čia arba spustelėkite, kad pasirinktumėte
+  select_files: Pasirinkite failus
+  allowed_types: Leistini failų tipai
+  max_size: Maksimalus failo dydis
+  delete_confirm: Ar tikrai norite ištrinti šį failą?
+  upload_error: Nepavyko įkelti failų
+  upload_disabled_no_connection: Įkėlimas išjungtas - Nėra ryšio su failų saugykla
+  connection_error_hint: Įsitikinkite, kad MinIO veikia ir pasiekiamas sukonfigūruotame galiniame taške.
+  deleted:
+    success: Failas sėkmingai ištrintas!
+    error: Klaida trinant failą.
+  download:
+    error: Klaida atsisiunčiant failą.
+
+user:
+  name: Vardas
+  email: El. paštas
+  role: Rolė
+  joined_at: Prisijungė
+  organisation: Kanalas
+  workflow_user_id: Mano darbo eigos vartotojo ID
+
+profile:
+  title: Mano profilis
+  personal_info: Asmeninė informacija
+  danger_zone: Pavojaus zona
+  delete_account: Ištrinti paskyrą
+  delete_account_warning: Paskyros ištrynimas negali būti atšauktas.
+  delete_account_confirm: Ar tikrai norite ištrinti savo paskyrą?
+  delete_account_consequences: 'Šis veiksmas:'
+  delete_consequence_1: Ištrins visas jūsų integracijas
+  delete_consequence_2: Pašalins jūsų prieigą prie kanalo
+  delete_consequence_3: Visam laikui ištrins visus jūsų duomenis
+  confirm_delete: Taip, ištrinti paskyrą
+  api_token: API raktas
+  api_token_description: Naudokite šį raktą programinei API prieigai prie promptų.
+  generate_token: Generuoti raktą
+  regenerate_token: Pergeneruoti raktą
+  token_generated: Jūsų API raktas sugeneruotas. Nukopijuokite jį dabar - jis daugiau nebus rodomas!
+  token_warning: Laikykite šį raktą slaptą. Bet kas su šiuo raktu gali pasiekti jūsų promptus.
+  no_token: Dar nesugeneruotas API raktas.
+  token_status: Rakto būsena
+  token_active: Aktyvus
+  token_created_at: Raktas sukurtas
+  api_usage: API naudojimas
+  api_usage_description: Naudokite šią curl komandą savo promptams gauti iš API.
+  api_params: Neprivalomi parametrai
+  api_param_scope: Filtruoti pagal sritį (asmeninis arba organizacija)
+  api_param_category: Filtruoti pagal kategoriją (pvz. developer, devops)
+  api_param_uuid: Gauti konkretų promptą pagal UUID
+  generate_token_first: Pirmiausia sugeneruokite raktą, kad gautumėte paruoštą curl komandą.
+  no_organisation: Nepasirinkta organizacija.
+
+footer:
+  rights: Visos teisės saugomos.
+  legal_notice: Teisinis pranešimas
+  data_privacy: Duomenų apsaugos deklaracija
+  open_source: Atviras kodas
+  github:
+    hosting: Priegloba
+    tests: Testai
+    bot: Botas
+    mcp: MCP
+    platform: Integracijos platforma
+    pptx: PPTX
+    rag: RAG
+
+validation:
+  name_required: Pavadinimas privalomas
+  name_duplicate: Integracija tokiu pavadinimu jau egzistuoja
+  field_required: Šis laukas privalomas
+  email_invalid: Įveskite galiojantį el. pašto adresą
+  url_invalid: Įveskite galiojantį URL
+
+audit_log:
+  title: Audito žurnalas
+  subtitle: Peržiūrėkite visas paskyros veiklas ir veiksmus
+  search:
+    placeholder: Ieškoti pagal veiksmo pavadinimą...
+  date_from: Nuo datos
+  date_to: Iki datos
+  execution_id: Vykdymo ID
+  execution_id_placeholder: Filtruoti pagal vykdymo ID...
+  view_flat: Plokščia peržiūra
+  view_grouped: Grupuota peržiūra
+  no_execution_id: Nėra vykdymo ID
+  entries: įrašai
+  clear_filters: Išvalyti filtrus
+  empty: Audito žurnalo įrašų nerasta
+  showing_results: Rodoma nuo %from% iki %to% iš %total% įrašų
+  columns:
+    timestamp: Laiko žyma
+    action: Veiksmas
+    user: Vartotojas
+    ip: IP adresas
+    user_agent: User Agent
+    data: Duomenys
+    execution_id: Vykdymo ID
+  expand_details: Išskleisti detales
+  collapse_details: Sutraukti detales
+  request_payload: Užklausos turinys
+  response_data: Atsakymo duomenys
+  truncated_notice: Atsakymo duomenys sutrumpinti ties %size%KB (pradinis dydis)
+  show_details: Rodyti detales
+  json_modal:
+    title: Audito žurnalo duomenys
+    search_placeholder: Ieškoti JSON...
+    copy: Kopijuoti JSON
+    hint: Spauskite ESC, kad uždarytumėte, arba spustelėkite už modalinio lango ribų
+
+pagination:
+  previous: Ankstesnis
+  next: Kitas
+  page_of: Puslapis %current% iš %total%
+
+release_notes:
+  title: Leidimo pastabos
+  subtitle: Naujausi visų Workoflow komponentų atnaujinimai
+  last_updated: Paskutinis atnaujinimas
+  error: Nepavyko įkelti leidimo pastabų
+  view_on_github: Peržiūrėti GitHub
+  projects:
+    bot:
+      name: Workoflow Bot
+      description: MS Teams botas, jungiantis n8n automatizavimo darbo eigas su Microsoft Teams, leidžiantis AI pagrįstą komunikaciją išlaikant duomenų privatumą per savarankišką prieglobą.
+    mcp:
+      name: Workoflow MCP
+      description: MCP serverio tiltas Workoflow platformai. Jungia AI asistentus kaip Claude Desktop ir Cursor prie Workoflow įrankių naudojant Model Context Protocol (MCP).
+    platform:
+      name: Workoflow platforma
+      description: Įmonės integracijos centras, jungiantis AI agentus su verslo įrankiais kaip Jira, Confluence ir SharePoint. Su šifruota prisijungimo duomenų saugykla ir išsamiu audito žurnalu.
+    tests:
+      name: Workoflow testai
+      description: Semantinis atsakymų validavimo karkasas AI agentams naudojant Azure OpenAI. Tikrina prasmę, o ne tikslų teksto atitikimą, palaikydamas vokiečių ir anglų kalbų atsakymus.
+    loadtests:
+      name: Workoflow apkrovos testai
+      description: k6 pagrįsta apkrovos testavimo infrastruktūra MS Teams botui su smoke testais, pilnais apkrovos testais ir Grafana Cloud integracija našumo stebėjimui.
+    infrastructure:
+      name: Workoflow infrastruktūra
+      description: BDAR atitinkanti savarankiškai talpinama infrastruktūra su ES paslaugomis. Diegia n8n, Qdrant, MinIO, Redis ir PostgreSQL su ISO 27001/27018 sertifikacijomis.
+
+prompt:
+  vault_title: Prompt Vault
+  explanation_p1: Prompt Vault yra jūsų centrinė biblioteka AI promptų valdymui, dalijimui ir organizavimui. Saugokite geriausius promptus čia, kad galėtumėte juos pakartotinai naudoti pokalbiuose ir dalytis su komanda.
+  explanation_p2: Asmeniniai promptai matomi tik jums, o komandos promptai dalijami su visais jūsų organizacijoje. Naudokite kategorijas promptams organizuoti ir lengviau rasti.
+  create_new: Sukurti promptą
+  tab:
+    personal: Mano promptai
+    organisation: Komandos promptai
+  filter:
+    all_categories: Visos kategorijos
+    category: Kategorija
+    sort: Rūšiuoti pagal
+  sort:
+    newest: Naujausi pirmiausia
+    oldest: Seniausi pirmiausia
+    popular: Populiariausi
+    alpha: A-Z
+    category: Pagal kategoriją
+  title: Pavadinimas
+  title_placeholder: Įveskite aprašomąjį pavadinimą...
+  content: Prompto turinys
+  content_placeholder: Įveskite prompto tekstą...
+  description: Aprašymas
+  description_placeholder: Trumpa santrauka, ką šis promptas daro...
+  description_help: Trumpas aprašymas padeda kitiems suprasti šio prompto paskirtį.
+  category: Kategorija
+  select_category: Pasirinkite kategoriją
+  scope: Matomumas
+  scope_help: Asmeniniai promptai matomi tik jums. Komandos promptai dalijami su jūsų organizacija.
+  scope_personal: Asmeninis (matomas tik man)
+  scope_organisation: Komanda (matomas organizacijai)
+  save: Išsaugoti promptą
+  edit: Redaguoti promptą
+  edit_not_allowed: Neturite leidimo redaguoti šį promptą.
+  delete: Ištrinti promptą
+  delete_confirm: Ar tikrai norite ištrinti šį promptą?
+  delete_not_allowed: Neturite leidimo ištrinti šį promptą.
+  upvote: Balsuoti už
+  upvotes: balsai
+  comment: Komentaras
+  comments: Komentarai
+  add_comment: Pridėti komentarą
+  comment_content: Jūsų komentaras
+  comment_placeholder: Parašykite komentarą...
+  comment_added: Komentaras sėkmingai pridėtas!
+  comment_not_allowed: Negalima komentuoti asmeninių promptų.
+  no_prompts: Promptų nerasta
+  no_prompts_desc: Sukurkite pirmąjį promptą, kad pradėtumėte.
+  no_comments: Dar nėra komentarų. Būkite pirmas komentuojantis!
+  uuid: Prompto UUID
+  copy_content: Kopijuoti promptą
+  updated_label: Atnaujinta
+  created:
+    success: Promptas sėkmingai sukurtas!
+  updated:
+    success: Promptas sėkmingai atnaujintas!
+  deleted:
+    success: Promptas sėkmingai ištrintas!
+  restored:
+    success: Promptas sėkmingai atkurtas!
+  category_project_manager: Projektų vadovas
+  category_developer: Programuotojas
+  category_qa_engineer: QA inžinierius
+  category_devops: DevOps
+  category_designer: Dizaineris
+  category_business_analyst: Verslo analitikas
+  category_scrum_master: Scrum Master
+  category_product_owner: Product Owner
+  category_tech_lead: Tech Lead
+  category_solution_architect: Sprendimų architektas
+  category_data_engineer: Duomenų inžinierius
+  category_security_engineer: Saugumo inžinierius
+  category_support_engineer: Palaikymo inžinierius
+  admin:
+    deleted_prompts: Ištrinti promptai
+    restore: Atkurti
+    deleted_by: Ištrynė
+    deleted_at: Ištrinta
+    no_deleted_prompts: Nėra ištrintų promptų
+    no_deleted_prompts_desc: Nėra ištrintų promptų, kuriuos galima atkurti.
+  api_helper: API prieiga
+  api_access: API prieiga
+  api:
+    get_personal: Gauti mano asmeninius promptus
+    get_team: Gauti komandos promptus
+    get_all: Gauti visus promptus (Asmeniniai + Komandos)
+    get_by_uuid: Gauti konkretų promptą pagal UUID
+    filter_category: Filtruoti pagal kategoriją
+    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer"
+    no_token: Pirmiausia turite sugeneruoti API raktą, kad galėtumėte pasiekti promptus per API.
+    generate_token: Generuoti raktą profilyje

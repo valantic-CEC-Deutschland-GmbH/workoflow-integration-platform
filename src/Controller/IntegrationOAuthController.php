@@ -761,6 +761,148 @@ class IntegrationOAuthController extends AbstractController
         }
     }
 
+    // ========================================
+    // Candis OAuth2 Flow
+    // ========================================
+
+    #[Route('/candis/start/{configId}', name: 'app_tool_oauth_candis_start')]
+    public function candisStart(int $configId, Request $request, ClientRegistry $clientRegistry): RedirectResponse
+    {
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        // Store the config ID in session for callback
+        $request->getSession()->set('candis_oauth_config_id', $configId);
+
+        // Redirect to Candis OAuth with required scopes
+        return $clientRegistry
+            ->getClient('candis')
+            ->redirect(['exports', 'core_data', 'offline_access'], []);
+    }
+
+    #[Route('/callback/candis', name: 'app_tool_oauth_candis_callback')]
+    public function candisCallback(Request $request, ClientRegistry $clientRegistry): Response
+    {
+        $error = $request->query->get('error');
+        $configId = $request->getSession()->get('candis_oauth_config_id');
+
+        // Handle OAuth errors or user cancellation
+        if ($error) {
+            if ($configId) {
+                $tempConfig = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+                $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+
+                // If this was initial setup and user cancelled, remove the temporary config
+                if ($tempConfig && $oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                    $request->getSession()->remove('oauth_flow_integration');
+                    $request->getSession()->remove('candis_oauth_config_id');
+                    $this->entityManager->remove($tempConfig);
+                    $this->entityManager->flush();
+
+                    if ($error === 'access_denied') {
+                        $this->addFlash('warning', 'Candis setup cancelled. Candis authorization is required to use this integration.');
+                    } else {
+                        $this->addFlash('error', 'Authorization failed: ' . $request->query->get('error_description', $error));
+                    }
+                } else {
+                    $this->addFlash('error', 'Authorization failed: ' . $request->query->get('error_description', $error));
+                }
+            }
+
+            $request->getSession()->remove('candis_oauth_config_id');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        // Continue with normal flow
+        $configId = $request->getSession()->get('candis_oauth_config_id');
+
+        if (!$configId) {
+            $this->addFlash('error', 'OAuth session expired. Please try again.');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        try {
+            // Get the OAuth2 client
+            $client = $clientRegistry->getClient('candis');
+
+            // Get the access token
+            $accessToken = $client->getAccessToken();
+
+            // Auto-discover organization by calling /v1/organizations/info
+            $orgInfo = $this->httpClient->request(
+                'GET',
+                'https://api.candis.io/v1/organizations/info',
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $accessToken->getToken(),
+                        'Content-Type' => 'application/json',
+                    ],
+                    'timeout' => 10,
+                ]
+            )->toArray();
+
+            $organizationId = $orgInfo['id'] ?? null;
+            $organizationName = $orgInfo['name'] ?? 'Unknown';
+
+            if (!$organizationId) {
+                throw new \RuntimeException('Could not determine Candis organization ID from API response.');
+            }
+
+            // Store the credentials including organization info
+            $credentials = [
+                'access_token' => $accessToken->getToken(),
+                'refresh_token' => $accessToken->getRefreshToken(),
+                'expires_at' => $accessToken->getExpires(),
+                'organization_id' => $organizationId,
+                'organization_name' => $organizationName,
+            ];
+
+            // Encrypt and save credentials
+            $config->setEncryptedCredentials(
+                $this->encryptionService->encrypt(json_encode($credentials))
+            );
+            $config->setActive(true);
+
+            $this->entityManager->flush();
+
+            // Clean up session
+            $request->getSession()->remove('candis_oauth_config_id');
+
+            // Check if this was part of initial setup flow
+            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $request->getSession()->remove('oauth_flow_integration');
+                $this->addFlash('success', 'Candis integration created and connected successfully! Organization: ' . $organizationName);
+            } else {
+                $this->addFlash('success', 'Candis integration connected successfully! Organization: ' . $organizationName);
+            }
+
+            return $this->redirectToRoute('app_skills');
+        } catch (\Exception $e) {
+            // If this was initial setup and failed, remove the temporary config
+            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $request->getSession()->remove('oauth_flow_integration');
+                $this->entityManager->remove($config);
+                $this->entityManager->flush();
+            }
+
+            $this->addFlash('error', 'Failed to connect to Candis: ' . $e->getMessage());
+            return $this->redirectToRoute('app_skills');
+        }
+    }
+
     /**
      * Resolve the actual Azure AD tenant GUID from a SharePoint URL
      * using Microsoft's public OpenID discovery endpoint.

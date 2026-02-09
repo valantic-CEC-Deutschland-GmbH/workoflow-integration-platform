@@ -29,7 +29,7 @@ class HomeController extends AbstractController
     public function switchLocale(string $locale, Request $request): Response
     {
         // Validate locale against supported locales
-        $supportedLocales = ['de', 'en'];
+        $supportedLocales = ['de', 'en', 'ro', 'lt'];
         if (!in_array($locale, $supportedLocales)) {
             throw $this->createNotFoundException('Invalid locale');
         }

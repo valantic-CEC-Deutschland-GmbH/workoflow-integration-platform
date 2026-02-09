@@ -53,6 +53,7 @@ class IntegrationController extends AbstractController
             'sharepoint' => '/images/logos/sharepoint-logo.svg',
             'hubspot' => '/images/logos/hubspot-icon.svg',
             'wrike' => '/images/logos/wrike-icon.svg',
+            'candis' => '/images/logos/candis-icon.svg',
             'projektron' => '/images/logos/Projektron_Logo.png',
             'sap_c4c' => '/images/logos/SAP-Logo.svg',
             'sap_sac' => '/images/logos/SAP-Logo.svg',

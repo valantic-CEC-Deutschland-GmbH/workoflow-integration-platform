@@ -52,7 +52,7 @@ The Workoflow Integration Platform is a production-ready Symfony 7.2 application
 - REST API for AI Agent access
 - File Management with MinIO S3
 - Audit Logging
-- Multi-language support (DE/EN)
+- Multi-language support (DE/EN/RO/LT)
 
 ## Architecture
 

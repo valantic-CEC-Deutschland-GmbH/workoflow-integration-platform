@@ -81,3 +81,7 @@ services:
 
     App\Integration\UserIntegrations\WrikeIntegration:
         tags: ['app.integration']
+
+    App\Integration\UserIntegrations\CandisIntegration:
+        autowire: true
+        tags: ['app.integration']
