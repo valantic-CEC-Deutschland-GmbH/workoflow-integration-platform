@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - **Wrike agent now available in main AI assistant routing** — The main AI assistant can now recognize Wrike-related requests and automatically route them to the Wrike Agent. Ask about tasks, folders, projects, or time tracking in Wrike and the assistant will delegate to the specialized Wrike agent.
 
+### Fixed
+- **AI assistant now correctly copies file download URLs** — Fixed an issue where generated file URLs (for PDFs and PowerPoints) could have corrupted characters in the download link, causing "file not found" errors. The AI assistant now preserves URLs exactly as received.
+- **Fixed icon spacing in "Add Personalized Skill" dropdown** — Icons for SAP Analytics Cloud, SAP Cloud for Customer, Wrike, and Projektron no longer overlap with the skill name text.
+
 ## 2026-02-02
 
 ### Fixed

@@ -1106,6 +1106,21 @@
         4. You describe what WAS done in "output" (past tense)
         5. Don't mention download links in output text - they go in attachment field
       </rule>
+
+      <critical-url-copying>
+        URLs contain UUIDs that are similar-looking but different. When copying URLs:
+        - COPY the URL EXACTLY as received from the sub-agent
+        - Do NOT reconstruct or retype the URL
+        - Do NOT mix up UUID segments (tenant UUID vs file UUID)
+        - The attachment URL must be BYTE-IDENTICAL to what the agent returned
+
+        Example of WRONG copying:
+        Sub-agent returns: https://domain.com/ae6f26a3-6f27-4ed6-a3a8-800c3226fb79/file/11495569-fd21-4149-8a48-a8e584bd4283
+        You write:         https://domain.com/ae6f26a3-6f27-4ed6-a3a8-a8e584bd4283/file/11495569-fd21-4149-8a48-a8e584bd4283
+        ↑ WRONG: Tenant UUID suffix was corrupted by mixing in file UUID characters
+
+        ALWAYS copy URLs exactly without modification!
+      </critical-url-copying>
     </attachment-handling>
   </output-format>
 
@@ -1184,6 +1199,7 @@
     ☐ 12. Is my response in the SAME language as the user's input? (Language Consistency)
     ☐ 13. Am I returning ACTUAL data from the agent, NOT generic/hallucinated information?
     ☐ 14. If this is a meta-question ("what tools do you have?"), am I handling it directly WITHOUT listing all integrations as connected?
+    ☐ 15. Did I copy attachment URLs EXACTLY from sub-agent responses (no UUID mixing)?
   </step-by-step-checklist>
 
   <!--

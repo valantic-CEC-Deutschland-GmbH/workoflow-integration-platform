@@ -693,6 +693,31 @@
     </examples>
   </output-format>
 
+  <url-preservation>
+    <critical-warning>
+      URLs from file generation tools contain UUIDs that look similar but MUST NOT be mixed up.
+
+      EXAMPLE URL STRUCTURE:
+      https://subscribe-workflows.vcec.cloud/{TENANT-UUID}/file/{FILE-UUID}
+
+      COMMON MISTAKE:
+      ❌ Mixing characters between TENANT-UUID and FILE-UUID when copying
+      ❌ Using parts of one UUID in the other UUID's position
+
+      VERIFICATION RULE:
+      After tool returns URL, COPY IT CHARACTER-BY-CHARACTER to the attachment field.
+      Do NOT reconstruct or retype the URL from memory.
+      The URL in "attachment" must be BYTE-IDENTICAL to the tool response URL.
+    </critical-warning>
+
+    <url-handling-workflow>
+      <step>1. Tool returns URL in response (e.g., generate_pptx returns {"url": "..."})</step>
+      <step>2. Extract the EXACT url string from tool response</step>
+      <step>3. Place the EXACT same string in your "attachment" field</step>
+      <step>4. Do NOT modify, truncate, or reconstruct the URL in any way</step>
+    </url-handling-workflow>
+  </url-preservation>
+
   <common-mistakes>
     <mistake>
       <wrong>Not calling CURRENT_USER_TOOLS before using system tools</wrong>
@@ -737,6 +762,10 @@
     <mistake>
       <wrong>Calling employee_profile 10 times to "verify" search results (fetches the same data that was already returned by employees_query_v2)</wrong>
       <right>When asked to "verify" or "prüfe" results, perform a keyword-presence check on the EXISTING data. This is a text analysis task, not a data re-fetching task. Do NOT call employee_profile repeatedly for verification.</right>
+    </mistake>
+    <mistake>
+      <wrong>Reconstructing URLs from memory, accidentally mixing up UUID segments (e.g., using file UUID characters in the tenant UUID position)</wrong>
+      <right>COPY URLs exactly as returned by tools. URLs must be byte-identical. Never retype or reconstruct from memory.</right>
     </mistake>
   </common-mistakes>
 
