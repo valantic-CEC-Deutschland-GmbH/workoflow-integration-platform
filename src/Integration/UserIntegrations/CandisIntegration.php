@@ -332,7 +332,7 @@ class CandisIntegration implements PersonalizedSkillInterface
 
     public function isExperimental(): bool
     {
-        return false;
+        return true;
     }
 
     public function getSetupInstructions(): ?string

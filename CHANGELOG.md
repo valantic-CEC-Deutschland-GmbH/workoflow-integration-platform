@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Romanian and Lithuanian language support** — The platform is now available in Romanian (RO) and Lithuanian (LT) in addition to German and English, with full translations for all UI elements and a language switcher with country flags
 
 ### Changed
+- **Candis integration marked as experimental** — Candis is now flagged as experimental while it undergoes further testing
 - **Wrike integration is no longer experimental** — Wrike is now a fully supported skill
 - **Streamlined AI assistant routing** — The main AI assistant prompt was optimized for faster responses and lower token usage. Adding new integrations no longer requires updating the assistant's routing configuration. No user-facing behavior changes.
 
