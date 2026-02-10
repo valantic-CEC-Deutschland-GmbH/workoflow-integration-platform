@@ -176,6 +176,7 @@ integration:
   skills_explanation_p1: Įgūdžiai leidžia AI agentams atlikti veiksmus jūsų vardu, prisijungiant prie įvairių platformų ir paslaugų. Kiekvienas įgūdis suteikia specifines galimybes, kurias AI gali naudoti dirbdamas su jūsų duomenimis.
   skills_explanation_p2: Yra du įgūdžių tipai - Personalizuoti įgūdžiai reikalauja jūsų prisijungimo duomenų, kad galėtų pasiekti išorines paslaugas kaip Jira ar Confluence jūsų vardu, o Platformos įgūdžiai yra integruotos galimybės, kurioms nereikia išorinės autentifikacijos, pvz. PDF generavimas ar duomenų apdorojimas.
   add_new: Pridėti personalizuotą įgūdį
+  search_skills: Ieškoti įgūdžių...
   no_integrations: Dar nėra sukonfigūruotų įgūdžių
   no_integrations_desc: 'Pradėkite pridėdami pirmąjį įgūdį, kad prisijungtumėte prie išorinių paslaugų'
   platform_skills: Platformos įgūdžiai

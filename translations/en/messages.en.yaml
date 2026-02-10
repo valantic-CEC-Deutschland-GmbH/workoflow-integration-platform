@@ -176,6 +176,7 @@ integration:
   skills_explanation_p1: Skills enable AI agents to perform actions on your behalf by connecting to various platforms and services. Each skill provides specific capabilities that the AI can use when working with your data.
   skills_explanation_p2: There are two types of skills - Personalized Skills require your credentials to access external services like Jira or Confluence on your behalf, while Platform Skills are built-in capabilities that don't need external authentication, such as generating PDFs or processing data.
   add_new: Add Personalized Skill
+  search_skills: Search skills...
   no_integrations: No skills configured yet
   no_integrations_desc: 'Start by adding your first skill to connect external services'
   platform_skills: Platform Skills

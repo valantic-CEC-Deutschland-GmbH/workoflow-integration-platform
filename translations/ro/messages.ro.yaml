@@ -176,6 +176,7 @@ integration:
   skills_explanation_p1: Abilitățile permit agenților AI să efectueze acțiuni în numele dvs. conectându-se la diverse platforme și servicii. Fiecare abilitate oferă capabilități specifice pe care AI le poate folosi atunci când lucrează cu datele dvs.
   skills_explanation_p2: Există două tipuri de abilități - Abilitățile personalizate necesită acreditările dvs. pentru a accesa servicii externe precum Jira sau Confluence în numele dvs., în timp ce Abilitățile platformei sunt capabilități integrate care nu necesită autentificare externă, cum ar fi generarea PDF sau procesarea datelor.
   add_new: Adăugați abilitate personalizată
+  search_skills: Căutați abilități...
   no_integrations: Nicio abilitate configurată încă
   no_integrations_desc: 'Începeți prin adăugarea primei abilități pentru a conecta servicii externe'
   platform_skills: Abilități platformă

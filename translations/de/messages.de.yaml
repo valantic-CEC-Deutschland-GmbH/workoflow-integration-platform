@@ -208,6 +208,7 @@ integration:
   status: Status
   last_accessed: Letzter Zugriff
   add_new: Personalisierten Skill hinzufügen
+  search_skills: Skills durchsuchen...
   no_integrations: Noch keine Skills konfiguriert
   no_integrations_desc: 'Beginnen Sie mit dem Hinzufügen Ihres ersten Skills, um externe Dienste zu verbinden'
   workflow_id: Workoflow ID

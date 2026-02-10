@@ -3516,14 +3516,17 @@ body {
   }
 
   .dropdown-search {
-    position: relative;
     padding: 0 var(--space-sm) var(--space-sm);
     border-bottom: 1px solid var(--border-color);
     margin-bottom: var(--space-xs);
 
+    .dropdown-search-inner {
+      position: relative;
+    }
+
     i {
       position: absolute;
-      left: calc(var(--space-sm) + 10px);
+      left: 10px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);

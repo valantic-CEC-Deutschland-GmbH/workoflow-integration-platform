@@ -42,12 +42,14 @@
                     style="display: none;"
                 >
                     <div class="dropdown-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text"
-                               placeholder="{{ 'integration.search_skills'|trans|default('Search skills...') }}"
-                               data-integration-dropdown-target="searchInput"
-                               data-action="input->integration-dropdown#filter"
-                               autocomplete="off">
+                        <div class="dropdown-search-inner">
+                            <i class="fas fa-search"></i>
+                            <input type="text"
+                                   placeholder="{{ 'integration.search_skills'|trans|default('Search skills...') }}"
+                                   data-integration-dropdown-target="searchInput"
+                                   data-action="input->integration-dropdown#filter"
+                                   autocomplete="off">
+                        </div>
                     </div>
                     {% for availableType in availableTypes %}
                         <a href="{{ path('app_tool_setup', {type: availableType.type}) }}"
