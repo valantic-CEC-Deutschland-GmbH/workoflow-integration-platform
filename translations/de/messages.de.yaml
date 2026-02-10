@@ -153,6 +153,9 @@ status:
   connected_hubspot: Mit HubSpot verbunden
   connected_wrike: Mit Wrike verbunden
   connected_candis: Mit Candis verbunden
+  connected_outlook_mail: Mit Outlook Mail verbunden
+  connected_outlook_calendar: Mit Outlook Kalender verbunden
+  connected_msteams: Mit MS Teams verbunden
   disconnected: Getrennt
   not_connected: Nicht verbunden
   experimental: Experimentell
@@ -197,6 +200,9 @@ integration:
   reconnect_hubspot: Erneut mit HubSpot verbinden
   reconnect_wrike: Erneut mit Wrike verbinden
   reconnect_candis: Erneut mit Candis verbinden
+  reconnect_outlook_mail: Erneut mit Microsoft verbinden
+  reconnect_outlook_calendar: Erneut mit Microsoft verbinden
+  reconnect_msteams: Erneut mit Microsoft verbinden
   toggle_error: Einstellung konnte nicht aktualisiert werden
   type: Typ
   status: Status

@@ -101,6 +101,12 @@
                                             <span>{{ 'status.connected_wrike'|trans|default('Connected to Wrike') }}</span>
                                         {% elseif integration.getType() == 'candis' %}
                                             <span>{{ 'status.connected_candis'|trans|default('Connected to Candis') }}</span>
+                                        {% elseif integration.getType() == 'outlook_mail' %}
+                                            <span>{{ 'status.connected_outlook_mail'|trans|default('Connected to Outlook Mail') }}</span>
+                                        {% elseif integration.getType() == 'outlook_calendar' %}
+                                            <span>{{ 'status.connected_outlook_calendar'|trans|default('Connected to Outlook Calendar') }}</span>
+                                        {% elseif integration.getType() == 'msteams' %}
+                                            <span>{{ 'status.connected_msteams'|trans|default('Connected to MS Teams') }}</span>
                                         {% elseif integration.getType() == 'sap_c4c' %}
                                             <span>{{ 'status.connected_azure'|trans|default('Connected via Azure AD') }}</span>
                                         {% elseif integration.getType() == 'sap_sac' %}
@@ -126,6 +132,24 @@
                                            class="btn btn-secondary"
                                            onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
                                             <i class="fas fa-file-invoice"></i> {{ 'integration.reconnect_candis'|trans|default('Reconnect with Candis') }}
+                                        </a>
+                                    {% elseif integration.getType() == 'outlook_mail' %}
+                                        <a href="{{ path('app_tool_oauth_outlook_mail_start', {configId: config.id}) }}"
+                                           class="btn btn-secondary"
+                                           onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
+                                            <i class="fab fa-microsoft"></i> {{ 'integration.reconnect_outlook_mail'|trans|default('Reconnect with Microsoft') }}
+                                        </a>
+                                    {% elseif integration.getType() == 'outlook_calendar' %}
+                                        <a href="{{ path('app_tool_oauth_outlook_calendar_start', {configId: config.id}) }}"
+                                           class="btn btn-secondary"
+                                           onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
+                                            <i class="fab fa-microsoft"></i> {{ 'integration.reconnect_outlook_calendar'|trans|default('Reconnect with Microsoft') }}
+                                        </a>
+                                    {% elseif integration.getType() == 'msteams' %}
+                                        <a href="{{ path('app_tool_oauth_teams_start', {configId: config.id}) }}"
+                                           class="btn btn-secondary"
+                                           onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
+                                            <i class="fab fa-microsoft"></i> {{ 'integration.reconnect_msteams'|trans|default('Reconnect with Microsoft') }}
                                         </a>
                                     {% elseif integration.getType() == 'sap_c4c' %}
                                         <a href="{{ path('app_tool_oauth_sap_c4c_start', {configId: config.id}) }}"
@@ -166,6 +190,21 @@
                                            class="btn btn-primary">
                                             <i class="fas fa-file-invoice"></i> {{ field.getLabel() }}
                                         </a>
+                                    {% elseif integration.getType() == 'outlook_mail' %}
+                                        <a href="{{ path('app_tool_oauth_outlook_mail_start', {configId: config.id}) }}"
+                                           class="btn btn-primary">
+                                            <i class="fab fa-microsoft"></i> {{ field.getLabel() }}
+                                        </a>
+                                    {% elseif integration.getType() == 'outlook_calendar' %}
+                                        <a href="{{ path('app_tool_oauth_outlook_calendar_start', {configId: config.id}) }}"
+                                           class="btn btn-primary">
+                                            <i class="fab fa-microsoft"></i> {{ field.getLabel() }}
+                                        </a>
+                                    {% elseif integration.getType() == 'msteams' %}
+                                        <a href="{{ path('app_tool_oauth_teams_start', {configId: config.id}) }}"
+                                           class="btn btn-primary">
+                                            <i class="fab fa-microsoft"></i> {{ field.getLabel() }}
+                                        </a>
                                     {% elseif integration.getType() == 'sap_c4c' %}
                                         <a href="{{ path('app_tool_oauth_sap_c4c_start', {configId: config.id}) }}"
                                            class="btn btn-primary">
@@ -199,6 +238,8 @@
                                     <p><strong>{{ 'integration.oauth_required_wrike'|trans|default('Wrike authorization is required. Click "Connect with Wrike" below to continue.') }}</strong></p>
                                 {% elseif integration.getType() == 'candis' %}
                                     <p><strong>{{ 'integration.oauth_required_candis'|trans|default('Candis authorization is required. Click "Connect with Candis" below to continue. You will select your company during the Candis consent screen.') }}</strong></p>
+                                {% elseif integration.getType() in ['outlook_mail', 'outlook_calendar', 'msteams'] %}
+                                    <p><strong>{{ 'integration.oauth_required'|trans|default('Microsoft authorization is required. Click "Connect with Microsoft" below to continue.') }}</strong></p>
                                 {% elseif integration.getType() in ['sap_c4c', 'sap_sac'] %}
                                     <p><strong>{{ 'integration.oauth_required_azure'|trans|default('Save this configuration first, then click "Connect with Azure AD" to authorize.') }}</strong></p>
                                 {% else %}
@@ -312,6 +353,10 @@
                         {% elseif integration.getType() == 'candis' %}
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-file-invoice"></i> {{ 'integration.connect_candis'|trans|default('Connect with Candis') }}
+                            </button>
+                        {% elseif integration.getType() in ['outlook_mail', 'outlook_calendar', 'msteams'] %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fab fa-microsoft"></i> {{ 'integration.connect_microsoft'|trans|default('Connect with Microsoft') }}
                             </button>
                         {% else %}
                             <button type="submit" class="btn btn-primary">

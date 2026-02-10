@@ -10,7 +10,7 @@ class SkillsTableComponent
     /** @var array<int, array<string, mixed>> */
     public array $integrations = [];
 
-    /** @var array<int, array<string, string>> */
+    /** @var array<int, array<string, mixed>> */
     public array $availableTypes = [];
 
     /**

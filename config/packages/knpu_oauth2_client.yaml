@@ -53,3 +53,33 @@ knpu_oauth2_client:
             client_secret: '%env(CANDIS_CLIENT_SECRET)%'
             redirect_route: app_tool_oauth_candis_callback
             redirect_params: {}
+        azure_outlook_mail:
+            type: azure
+            client_id: '%env(AZURE_CLIENT_ID)%'
+            client_secret: '%env(AZURE_CLIENT_SECRET)%'
+            redirect_route: app_tool_oauth_outlook_mail_callback
+            redirect_params: {}
+            tenant: '%env(AZURE_TENANT_ID)%'
+            api_version: 'v2.0'
+            url_api: 'https://graph.microsoft.com/'
+            default_end_point_version: '1.0'
+        azure_outlook_calendar:
+            type: azure
+            client_id: '%env(AZURE_CLIENT_ID)%'
+            client_secret: '%env(AZURE_CLIENT_SECRET)%'
+            redirect_route: app_tool_oauth_outlook_calendar_callback
+            redirect_params: {}
+            tenant: '%env(AZURE_TENANT_ID)%'
+            api_version: 'v2.0'
+            url_api: 'https://graph.microsoft.com/'
+            default_end_point_version: '1.0'
+        azure_teams:
+            type: azure
+            client_id: '%env(AZURE_CLIENT_ID)%'
+            client_secret: '%env(AZURE_CLIENT_SECRET)%'
+            redirect_route: app_tool_oauth_teams_callback
+            redirect_params: {}
+            tenant: '%env(AZURE_TENANT_ID)%'
+            api_version: 'v2.0'
+            url_api: 'https://graph.microsoft.com/'
+            default_end_point_version: '1.0'

@@ -57,6 +57,9 @@ class IntegrationController extends AbstractController
             'projektron' => '/images/logos/Projektron_Logo.png',
             'sap_c4c' => '/images/logos/SAP-Logo.svg',
             'sap_sac' => '/images/logos/SAP-Logo.svg',
+            'outlook_mail' => '/images/logos/outlook-mail-icon.svg',
+            'outlook_calendar' => '/images/logos/outlook-calendar-icon.svg',
+            'msteams' => '/images/logos/msteams-icon.svg',
         ];
 
         // Return mapped logo or default to Workoflow logo
@@ -204,7 +207,8 @@ class IntegrationController extends AbstractController
         foreach ($this->integrationRegistry->getUserIntegrations() as $integration) {
             $availableTypes[] = [
                 'type' => $integration->getType(),
-                'name' => $integration->getName()
+                'name' => $integration->getName(),
+                'isExperimental' => $integration->isExperimental(),
             ];
         }
 

@@ -153,6 +153,9 @@ status:
   connected_hubspot: Prisijungta prie HubSpot
   connected_wrike: Prisijungta prie Wrike
   connected_candis: Prisijungta prie Candis
+  connected_outlook_mail: Prisijungta prie Outlook Mail
+  connected_outlook_calendar: Prisijungta prie Outlook Calendar
+  connected_msteams: Prisijungta prie MS Teams
   disconnected: Atjungta
   not_connected: Neprisijungta
   experimental: Eksperimentinis
@@ -203,6 +206,9 @@ integration:
   reconnect_hubspot: Prisijungti iš naujo su HubSpot
   reconnect_wrike: Prisijungti iš naujo su Wrike
   reconnect_candis: Prisijungti iš naujo su Candis
+  reconnect_outlook_mail: Prisijungti iš naujo su Microsoft
+  reconnect_outlook_calendar: Prisijungti iš naujo su Microsoft
+  reconnect_msteams: Prisijungti iš naujo su Microsoft
   toggle_error: Nepavyko atnaujinti nustatymo
   workflow_id: Workoflow ID
   functions: Funkcijos

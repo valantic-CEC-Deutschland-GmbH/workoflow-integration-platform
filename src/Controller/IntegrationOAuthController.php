@@ -903,6 +903,234 @@ class IntegrationOAuthController extends AbstractController
         }
     }
 
+    // ========================================
+    // Outlook Mail OAuth2 Flow
+    // ========================================
+
+    #[Route('/outlook-mail/start/{configId}', name: 'app_tool_oauth_outlook_mail_start')]
+    public function outlookMailStart(int $configId, Request $request, ClientRegistry $clientRegistry): RedirectResponse
+    {
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $request->getSession()->set('outlook_mail_oauth_config_id', $configId);
+
+        return $clientRegistry
+            ->getClient('azure_outlook_mail')
+            ->redirect([
+                'openid',
+                'profile',
+                'email',
+                'offline_access',
+                'https://graph.microsoft.com/User.Read',
+                'https://graph.microsoft.com/Mail.Read',
+            ], []);
+    }
+
+    #[Route('/callback/outlook-mail', name: 'app_tool_oauth_outlook_mail_callback')]
+    public function outlookMailCallback(Request $request, ClientRegistry $clientRegistry): Response
+    {
+        return $this->handleAzureOAuthCallback(
+            $request,
+            $clientRegistry,
+            'azure_outlook_mail',
+            'outlook_mail_oauth_config_id',
+            'Outlook Mail'
+        );
+    }
+
+    // ========================================
+    // Outlook Calendar OAuth2 Flow
+    // ========================================
+
+    #[Route('/outlook-calendar/start/{configId}', name: 'app_tool_oauth_outlook_calendar_start')]
+    public function outlookCalendarStart(int $configId, Request $request, ClientRegistry $clientRegistry): RedirectResponse
+    {
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $request->getSession()->set('outlook_calendar_oauth_config_id', $configId);
+
+        return $clientRegistry
+            ->getClient('azure_outlook_calendar')
+            ->redirect([
+                'openid',
+                'profile',
+                'email',
+                'offline_access',
+                'https://graph.microsoft.com/User.Read',
+                'https://graph.microsoft.com/Calendars.Read',
+            ], []);
+    }
+
+    #[Route('/callback/outlook-calendar', name: 'app_tool_oauth_outlook_calendar_callback')]
+    public function outlookCalendarCallback(Request $request, ClientRegistry $clientRegistry): Response
+    {
+        return $this->handleAzureOAuthCallback(
+            $request,
+            $clientRegistry,
+            'azure_outlook_calendar',
+            'outlook_calendar_oauth_config_id',
+            'Outlook Calendar'
+        );
+    }
+
+    // ========================================
+    // MS Teams OAuth2 Flow
+    // ========================================
+
+    #[Route('/teams/start/{configId}', name: 'app_tool_oauth_teams_start')]
+    public function teamsStart(int $configId, Request $request, ClientRegistry $clientRegistry): RedirectResponse
+    {
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $request->getSession()->set('teams_oauth_config_id', $configId);
+
+        return $clientRegistry
+            ->getClient('azure_teams')
+            ->redirect([
+                'openid',
+                'profile',
+                'email',
+                'offline_access',
+                'https://graph.microsoft.com/User.Read',
+                'https://graph.microsoft.com/Team.ReadBasic.All',
+                'https://graph.microsoft.com/Channel.ReadBasic.All',
+                'https://graph.microsoft.com/ChannelMessage.Read.All',
+                'https://graph.microsoft.com/ChannelMessage.Send',
+                'https://graph.microsoft.com/Channel.Create',
+                'https://graph.microsoft.com/Chat.Read',
+                'https://graph.microsoft.com/ChatMessage.Send',
+            ], []);
+    }
+
+    #[Route('/callback/teams', name: 'app_tool_oauth_teams_callback')]
+    public function teamsCallback(Request $request, ClientRegistry $clientRegistry): Response
+    {
+        return $this->handleAzureOAuthCallback(
+            $request,
+            $clientRegistry,
+            'azure_teams',
+            'teams_oauth_config_id',
+            'MS Teams'
+        );
+    }
+
+    /**
+     * Shared Azure OAuth callback handler for Outlook Mail, Outlook Calendar, and MS Teams.
+     */
+    private function handleAzureOAuthCallback(
+        Request $request,
+        ClientRegistry $clientRegistry,
+        string $oauthClientName,
+        string $sessionKey,
+        string $integrationLabel
+    ): Response {
+        $error = $request->query->get('error');
+        $configId = $request->getSession()->get($sessionKey);
+
+        if ($error) {
+            if ($configId) {
+                $tempConfig = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+                $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+
+                if ($tempConfig && $oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                    $request->getSession()->remove('oauth_flow_integration');
+                    $request->getSession()->remove($sessionKey);
+                    $this->entityManager->remove($tempConfig);
+                    $this->entityManager->flush();
+
+                    if ($error === 'access_denied') {
+                        $this->addFlash('warning', $integrationLabel . ' setup cancelled. Microsoft authorization is required to use this integration.');
+                    } else {
+                        $this->addFlash('error', 'Authorization failed: ' . $request->query->get('error_description', $error));
+                    }
+                } else {
+                    $this->addFlash('error', 'Authorization failed: ' . $request->query->get('error_description', $error));
+                }
+            }
+
+            $request->getSession()->remove($sessionKey);
+            return $this->redirectToRoute('app_skills');
+        }
+
+        if (!$configId) {
+            $this->addFlash('error', 'OAuth session expired. Please try again.');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        try {
+            $client = $clientRegistry->getClient($oauthClientName);
+            $accessToken = $client->getAccessToken();
+
+            $existingCredentials = [];
+            if ($config->getEncryptedCredentials()) {
+                $existingCredentials = json_decode(
+                    $this->encryptionService->decrypt($config->getEncryptedCredentials()),
+                    true
+                ) ?: [];
+            }
+
+            $credentials = array_merge($existingCredentials, [
+                'access_token' => $accessToken->getToken(),
+                'refresh_token' => $accessToken->getRefreshToken(),
+                'expires_at' => $accessToken->getExpires(),
+                'tenant_id' => $accessToken->getValues()['tenant_id'] ?? 'common',
+                'client_id' => $_ENV['AZURE_CLIENT_ID'] ?? '',
+                'client_secret' => $_ENV['AZURE_CLIENT_SECRET'] ?? '',
+            ]);
+
+            $config->setEncryptedCredentials(
+                $this->encryptionService->encrypt(json_encode($credentials))
+            );
+            $config->setActive(true);
+
+            $this->entityManager->flush();
+
+            $request->getSession()->remove($sessionKey);
+
+            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $request->getSession()->remove('oauth_flow_integration');
+                $this->addFlash('success', $integrationLabel . ' integration created and connected successfully!');
+            } else {
+                $this->addFlash('success', $integrationLabel . ' integration connected successfully!');
+            }
+
+            return $this->redirectToRoute('app_skills');
+        } catch (\Exception $e) {
+            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $request->getSession()->remove('oauth_flow_integration');
+                $this->entityManager->remove($config);
+                $this->entityManager->flush();
+            }
+
+            $this->addFlash('error', 'Failed to connect to ' . $integrationLabel . ': ' . $e->getMessage());
+            return $this->redirectToRoute('app_skills');
+        }
+    }
+
     /**
      * Resolve the actual Azure AD tenant GUID from a SharePoint URL
      * using Microsoft's public OpenID discovery endpoint.

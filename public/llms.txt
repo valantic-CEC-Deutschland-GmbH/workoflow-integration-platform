@@ -1,6 +1,6 @@
 # Workoflow Integration Platform
 
-> AI-first integration hub providing unified REST API access to 80+ tools across Jira, Confluence, SharePoint, GitLab, Trello, SAP C4C, Projektron, Candis, and platform services. Built for AI agents, automation workflows, and conversational interfaces.
+> AI-first integration hub providing unified REST API access to 95+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis, and platform services. Built for AI agents, automation workflows, and conversational interfaces.
 
 **Last Updated**: 2025-11-24
 **Version**: 1.2.0
@@ -12,7 +12,7 @@
 
 The platform follows a **Skills-based architecture** where integrations are treated as AI agent "skills":
 
-- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, GitLab, Trello, SAP C4C, Projektron, Candis)
+- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis)
 - **Platform Skills**: Built-in system tools requiring no external auth (PDF generation, file sharing, web search, employee lookup)
 
 ### Dynamic Tool Discovery
@@ -24,7 +24,7 @@ GET /api/integrations/{org-uuid}/?workflow_user_id={user-id}&tool_type={type}
 Authorization: Basic {base64(workoflow:workoflow)}
 ```
 
-Tool types: `jira`, `confluence`, `sharepoint`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `candis`, `system`
+Tool types: `jira`, `confluence`, `sharepoint`, `outlook_mail`, `outlook_calendar`, `msteams`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `candis`, `system`
 
 ### Tool Execution
 
@@ -80,7 +80,7 @@ Content-Type: application/json
 
 ### Integration Tool Summary
 
-The platform provides 80+ tools across 8 user integrations:
+The platform provides 95+ tools across 11 user integrations:
 
 **Jira (12 tools)**
 - Issue search and management (JQL queries)
@@ -97,6 +97,23 @@ The platform provides 80+ tools across 8 user integrations:
 - Document search with KQL
 - File reading (PDF, Word, Excel, PowerPoint)
 - File listings and downloads
+
+**Outlook Mail (4 tools)** *(experimental)*
+- Email search with KQL (sender, subject, keywords)
+- Full email reading with body and attachments list
+- Mail folder listing and browsing
+
+**Outlook Calendar (5 tools)** *(experimental)*
+- Calendar view with recurring event expansion
+- Event search by subject and date range
+- Free/busy availability checks for scheduling
+- Multi-calendar support
+
+**MS Teams (8 tools)** *(experimental)*
+- Team and channel listing and navigation
+- Channel message reading and posting
+- Channel creation
+- 1:1 and group chat reading and messaging
 
 **GitLab (34 tools)**
 - Repository management (create, list, branches)
@@ -195,7 +212,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 **Tool Filtering**:
 ```
-?tool_type=jira,confluence,sharepoint,gitlab,trello,sap_c4c,projektron,candis,system
+?tool_type=jira,confluence,sharepoint,outlook_mail,outlook_calendar,msteams,gitlab,trello,sap_c4c,projektron,candis,system
 ```
 
 **Error Responses**:

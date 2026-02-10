@@ -85,3 +85,12 @@ services:
     App\Integration\UserIntegrations\CandisIntegration:
         autowire: true
         tags: ['app.integration']
+
+    App\Integration\UserIntegrations\OutlookMailIntegration:
+        tags: ['app.integration']
+
+    App\Integration\UserIntegrations\OutlookCalendarIntegration:
+        tags: ['app.integration']
+
+    App\Integration\UserIntegrations\MsTeamsIntegration:
+        tags: ['app.integration']

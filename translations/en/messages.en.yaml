@@ -153,6 +153,9 @@ status:
   connected_hubspot: Connected to HubSpot
   connected_wrike: Connected to Wrike
   connected_candis: Connected to Candis
+  connected_outlook_mail: Connected to Outlook Mail
+  connected_outlook_calendar: Connected to Outlook Calendar
+  connected_msteams: Connected to MS Teams
   disconnected: Disconnected
   not_connected: Not Connected
   experimental: Experimental
@@ -203,6 +206,9 @@ integration:
   reconnect_hubspot: Reconnect with HubSpot
   reconnect_wrike: Reconnect with Wrike
   reconnect_candis: Reconnect with Candis
+  reconnect_outlook_mail: Reconnect with Microsoft
+  reconnect_outlook_calendar: Reconnect with Microsoft
+  reconnect_msteams: Reconnect with Microsoft
   toggle_error: Failed to update setting
   workflow_id: Workoflow ID
   functions: Functions

@@ -6,11 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-10
 
+### Added
+- **New Outlook Mail integration (experimental)** — AI agents can now search and read your Outlook emails on your behalf. Supports keyword search, folder browsing, and reading full email content including attachments list. Read-only access.
+- **New Outlook Calendar integration (experimental)** — AI agents can now query your Outlook calendar, search events, and check availability for scheduling. Supports date range queries, recurring event expansion, and free/busy checks for colleagues. Read-only access.
+- **New MS Teams integration (experimental)** — AI agents can now read and send messages in your MS Teams channels and chats. Supports listing teams/channels, reading channel messages, posting to channels, browsing 1:1/group chats, and creating new channels. Requires IT admin consent for some permissions.
+
+### Changed
+- **Experimental integrations now show a flask icon in the "Add Personalized Skill" dropdown** — Makes it easier to identify which integrations are still experimental before adding them
+
 ### Improved
 - **Jira AI agent responds faster with lower token usage** — Removed duplicate anti-hallucination rules (previously repeated 11 times across 5 sections), consolidated examples from 7 to 3, and streamlined enforcement sections (~20% prompt reduction) with no behavioral changes
 - **Jira AI agent handles vague queries better** — When you ask a broad or ambiguous question like "show me stuff about the project", the AI agent now asks for clarification with specific suggestions (project key, sprint name, ticket key) instead of running a blind search
 - **SharePoint AI agent handles vague queries better** — When you ask a broad or ambiguous question like "what do you find about Mannheim", the AI agent now asks for clarification with possible interpretations instead of blindly searching and returning irrelevant results
 - **SharePoint AI agent responds faster with lower token usage** — Removed redundant tool documentation and duplicate instructions from the AI agent's system prompt (~14% reduction), following the same optimization already applied to the Jira agent
+
+### Fixed
+- **SharePoint AI agent no longer presents irrelevant search results** — When all search results are off-topic (e.g., "Mannheim" only appearing in company address blocks, not in document content), the agent now retries with different search terms and clearly reports "no relevant documents found" instead of listing unrelated documents with a disclaimer
 
 ## 2026-02-09
 
