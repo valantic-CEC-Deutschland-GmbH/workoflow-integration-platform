@@ -72,7 +72,7 @@
                             {% else %}
                                 <i class="fas fa-plug"></i>
                             {% endif %}
-                            <span>{{ availableType.name }}{% if availableType.isExperimental|default(false) %} <span style="color: var(--color-primary);">(<i class="fas fa-flask"></i>)</span>{% endif %}</span>
+                            <span>{{ availableType.name }}{% if availableType.isExperimental|default(false) %} <i class="fas fa-flask" style="color: var(--color-primary);" title="{{ 'status.experimental'|trans|default('Experimental') }}"></i>{% endif %}</span>
                         </a>
                     {% endfor %}
                 </div>
@@ -112,7 +112,7 @@
                             {# Type Badge #}
                             <td>
                                 <span class="badge badge-type"{% if integration.isExperimental %} title="{{ 'status.experimental'|trans|default('Experimental') }}"{% endif %}>
-                                    {{ integration.type|upper }}{% if integration.isExperimental %} <span style="color: var(--color-primary);">(<i class="fas fa-flask"></i>)</span>{% endif %}
+                                    {% if integration.isExperimental %}<i class="fas fa-flask"></i> {% endif %}{{ integration.type|upper }}
                                 </span>
                             </td>
 
