@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-10
 
 ### Improved
+- **Jira AI agent responds faster with lower token usage** — Removed duplicate anti-hallucination rules (previously repeated 11 times across 5 sections), consolidated examples from 7 to 3, and streamlined enforcement sections (~20% prompt reduction) with no behavioral changes
+- **Jira AI agent handles vague queries better** — When you ask a broad or ambiguous question like "show me stuff about the project", the AI agent now asks for clarification with specific suggestions (project key, sprint name, ticket key) instead of running a blind search
 - **SharePoint AI agent handles vague queries better** — When you ask a broad or ambiguous question like "what do you find about Mannheim", the AI agent now asks for clarification with possible interpretations instead of blindly searching and returning irrelevant results
 - **SharePoint AI agent responds faster with lower token usage** — Removed redundant tool documentation and duplicate instructions from the AI agent's system prompt (~14% reduction), following the same optimization already applied to the Jira agent
 
