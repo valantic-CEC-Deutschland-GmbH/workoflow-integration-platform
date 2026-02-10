@@ -126,7 +126,17 @@ class SkillsApiController extends AbstractController
 
                 // Add system prompt if this is a personalized skill
                 if ($integration instanceof PersonalizedSkillInterface) {
-                    $skillData['system_prompt'] = $integration->getSystemPrompt($config);
+                    try {
+                        $skillData['system_prompt'] = $integration->getSystemPrompt($config);
+                    } catch (\Exception $e) {
+                        $this->logger->error('Failed to get system prompt for {type} instance {id}: {error}', [
+                            'type' => $integrationType,
+                            'id' => $config->getId(),
+                            'error' => $e->getMessage(),
+                        ]);
+                        $skillData['system_prompt'] = null;
+                        $skillData['system_prompt_error'] = 'Failed to generate system prompt. The integration may need to be reconnected.';
+                    }
                 }
 
                 $skills[] = $skillData;

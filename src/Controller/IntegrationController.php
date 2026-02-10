@@ -408,6 +408,10 @@ class IntegrationController extends AbstractController
                 $oauthRoute = match ($type) {
                     'hubspot' => 'app_tool_oauth_hubspot_start',
                     'wrike' => 'app_tool_oauth_wrike_start',
+                    'candis' => 'app_tool_oauth_candis_start',
+                    'outlook_mail' => 'app_tool_oauth_outlook_mail_start',
+                    'outlook_calendar' => 'app_tool_oauth_outlook_calendar_start',
+                    'msteams' => 'app_tool_oauth_teams_start',
                     default => 'app_tool_oauth_microsoft_start',
                 };
 
@@ -789,6 +793,69 @@ class IntegrationController extends AbstractController
                         'tested_endpoints' => $result['tested_endpoints']
                     ]);
                 }
+            }
+
+            // For Outlook Mail, use detailed testing
+            if ($type === 'outlook_mail') {
+                $reflection = new \ReflectionClass($integration);
+                $property = $reflection->getProperty('outlookMailService');
+                $outlookMailService = $property->getValue($integration);
+
+                $result = $outlookMailService->testConnectionDetailed($credentials);
+
+                if ($result['success'] && !$config->isConnected()) {
+                    $this->connectionStatusService->markReconnected($config);
+                }
+
+                return $this->json([
+                    'success' => $result['success'],
+                    'message' => $result['message'],
+                    'details' => $result['details'],
+                    'suggestion' => $result['suggestion'] ?? '',
+                    'tested_endpoints' => $result['tested_endpoints'],
+                ]);
+            }
+
+            // For Outlook Calendar, use detailed testing
+            if ($type === 'outlook_calendar') {
+                $reflection = new \ReflectionClass($integration);
+                $property = $reflection->getProperty('outlookCalendarService');
+                $outlookCalendarService = $property->getValue($integration);
+
+                $result = $outlookCalendarService->testConnectionDetailed($credentials);
+
+                if ($result['success'] && !$config->isConnected()) {
+                    $this->connectionStatusService->markReconnected($config);
+                }
+
+                return $this->json([
+                    'success' => $result['success'],
+                    'message' => $result['message'],
+                    'details' => $result['details'],
+                    'suggestion' => $result['suggestion'] ?? '',
+                    'tested_endpoints' => $result['tested_endpoints'],
+                ]);
+            }
+
+            // For MS Teams, use detailed testing
+            if ($type === 'msteams') {
+                $reflection = new \ReflectionClass($integration);
+                $property = $reflection->getProperty('msTeamsService');
+                $msTeamsService = $property->getValue($integration);
+
+                $result = $msTeamsService->testConnectionDetailed($credentials);
+
+                if ($result['success'] && !$config->isConnected()) {
+                    $this->connectionStatusService->markReconnected($config);
+                }
+
+                return $this->json([
+                    'success' => $result['success'],
+                    'message' => $result['message'],
+                    'details' => $result['details'],
+                    'suggestion' => $result['suggestion'] ?? '',
+                    'tested_endpoints' => $result['tested_endpoints'],
+                ]);
             }
 
             // For other integrations, use standard validation

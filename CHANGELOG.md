@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-10
 
+### Fixed
+- **Outlook Mail, Outlook Calendar, and MS Teams integrations now connect with correct permissions** — Previously, clicking "Connect with Microsoft" for these new integrations used the SharePoint OAuth flow, which requested the wrong permissions. Now each integration requests only the permissions it needs (e.g., Mail.Read for Outlook Mail, Calendars.Read for Calendar, Teams scopes for MS Teams). If you previously connected one of these integrations, please disconnect and reconnect it.
+- **"Test Connection" for Microsoft integrations now verifies actual permissions** — Previously, Test Connection only checked if a token existed. Now it also verifies that the required API scopes are granted (e.g., testing mail folder access for Outlook Mail, calendar access for Calendar, team membership for MS Teams) and provides specific error messages if permissions are missing.
+- **API no longer crashes if one integration fails to load** — If a single integration has an issue (e.g., expired token, missing permissions), the API now returns the remaining integrations normally instead of returning an error for the entire request.
+
 ### Added
 - **Workoflow Metrics repository added to footer and release notes** — The open-source Grafana monitoring dashboards repo is now linked in the site footer and its changelog appears on the Release Notes page
 - **New Outlook Mail integration (experimental)** — AI agents can now search and read your Outlook emails on your behalf. Supports keyword search, folder browsing, and reading full email content including attachments list. Read-only access.

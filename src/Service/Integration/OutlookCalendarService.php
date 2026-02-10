@@ -26,6 +26,85 @@ class OutlookCalendarService
         }
     }
 
+    /**
+     * @return array{success: bool, message: string, details: string, suggestion: string, tested_endpoints: array<int, array<string, mixed>>}
+     */
+    public function testConnectionDetailed(array $credentials): array
+    {
+        $testedEndpoints = [];
+
+        try {
+            // Test 1: Basic authentication via /me
+            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me', [
+                'auth_bearer' => $credentials['access_token'],
+                'timeout' => 10,
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me',
+                'status' => $statusCode === 200 ? 'success' : 'failed',
+                'http_code' => $statusCode,
+            ];
+
+            if ($statusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Authentication failed',
+                    'details' => 'Could not authenticate with Microsoft Graph API (HTTP ' . $statusCode . ').',
+                    'suggestion' => 'Try reconnecting your Outlook Calendar integration via OAuth.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            // Test 2: Verify Calendars.Read scope by accessing calendars
+            $calResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me/calendars', [
+                'auth_bearer' => $credentials['access_token'],
+                'query' => ['$top' => 1],
+                'timeout' => 10,
+            ]);
+
+            $calStatusCode = $calResponse->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me/calendars',
+                'status' => $calStatusCode === 200 ? 'success' : 'failed',
+                'http_code' => $calStatusCode,
+            ];
+
+            if ($calStatusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Missing Calendars.Read permission',
+                    'details' => 'Authentication works but the Calendars.Read scope is not granted (HTTP ' . $calStatusCode . ').',
+                    'suggestion' => 'Reconnect this integration to request the correct calendar permissions from Microsoft.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Connection successful',
+                'details' => 'Successfully connected to Microsoft Graph API. Calendar access verified.',
+                'suggestion' => '',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        } catch (\Exception $e) {
+            $testedEndpoints[] = [
+                'endpoint' => 'unknown',
+                'status' => 'error',
+                'http_code' => 0,
+            ];
+
+            return [
+                'success' => false,
+                'message' => 'Connection failed',
+                'details' => 'Could not reach Microsoft Graph API: ' . $e->getMessage(),
+                'suggestion' => 'Check your network connection or try reconnecting the integration.',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        }
+    }
+
     public function listEvents(array $credentials, string $startDateTime, string $endDateTime, ?string $calendarId = null): array
     {
         try {

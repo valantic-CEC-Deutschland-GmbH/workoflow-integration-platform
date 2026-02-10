@@ -26,6 +26,85 @@ class OutlookMailService
         }
     }
 
+    /**
+     * @return array{success: bool, message: string, details: string, suggestion: string, tested_endpoints: array<int, array<string, mixed>>}
+     */
+    public function testConnectionDetailed(array $credentials): array
+    {
+        $testedEndpoints = [];
+
+        try {
+            // Test 1: Basic authentication via /me
+            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me', [
+                'auth_bearer' => $credentials['access_token'],
+                'timeout' => 10,
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me',
+                'status' => $statusCode === 200 ? 'success' : 'failed',
+                'http_code' => $statusCode,
+            ];
+
+            if ($statusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Authentication failed',
+                    'details' => 'Could not authenticate with Microsoft Graph API (HTTP ' . $statusCode . ').',
+                    'suggestion' => 'Try reconnecting your Outlook Mail integration via OAuth.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            // Test 2: Verify Mail.Read scope by accessing mailFolders
+            $mailResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me/mailFolders', [
+                'auth_bearer' => $credentials['access_token'],
+                'query' => ['$top' => 1],
+                'timeout' => 10,
+            ]);
+
+            $mailStatusCode = $mailResponse->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me/mailFolders',
+                'status' => $mailStatusCode === 200 ? 'success' : 'failed',
+                'http_code' => $mailStatusCode,
+            ];
+
+            if ($mailStatusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Missing Mail.Read permission',
+                    'details' => 'Authentication works but the Mail.Read scope is not granted (HTTP ' . $mailStatusCode . ').',
+                    'suggestion' => 'Reconnect this integration to request the correct mail permissions from Microsoft.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Connection successful',
+                'details' => 'Successfully connected to Microsoft Graph API. Mail access verified.',
+                'suggestion' => '',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        } catch (\Exception $e) {
+            $testedEndpoints[] = [
+                'endpoint' => 'unknown',
+                'status' => 'error',
+                'http_code' => 0,
+            ];
+
+            return [
+                'success' => false,
+                'message' => 'Connection failed',
+                'details' => 'Could not reach Microsoft Graph API: ' . $e->getMessage(),
+                'suggestion' => 'Check your network connection or try reconnecting the integration.',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        }
+    }
+
     public function searchMessages(array $credentials, string $query, ?string $folder = null, int $limit = 25): array
     {
         try {

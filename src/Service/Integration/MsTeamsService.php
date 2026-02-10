@@ -26,6 +26,85 @@ class MsTeamsService
         }
     }
 
+    /**
+     * @return array{success: bool, message: string, details: string, suggestion: string, tested_endpoints: array<int, array<string, mixed>>}
+     */
+    public function testConnectionDetailed(array $credentials): array
+    {
+        $testedEndpoints = [];
+
+        try {
+            // Test 1: Basic authentication via /me
+            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me', [
+                'auth_bearer' => $credentials['access_token'],
+                'timeout' => 10,
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me',
+                'status' => $statusCode === 200 ? 'success' : 'failed',
+                'http_code' => $statusCode,
+            ];
+
+            if ($statusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Authentication failed',
+                    'details' => 'Could not authenticate with Microsoft Graph API (HTTP ' . $statusCode . ').',
+                    'suggestion' => 'Try reconnecting your MS Teams integration via OAuth.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            // Test 2: Verify Teams scope by accessing joinedTeams
+            $teamsResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me/joinedTeams', [
+                'auth_bearer' => $credentials['access_token'],
+                'query' => ['$top' => 1],
+                'timeout' => 10,
+            ]);
+
+            $teamsStatusCode = $teamsResponse->getStatusCode();
+            $testedEndpoints[] = [
+                'endpoint' => '/me/joinedTeams',
+                'status' => $teamsStatusCode === 200 ? 'success' : 'failed',
+                'http_code' => $teamsStatusCode,
+            ];
+
+            if ($teamsStatusCode !== 200) {
+                return [
+                    'success' => false,
+                    'message' => 'Missing Teams permissions',
+                    'details' => 'Authentication works but Teams scopes are not granted (HTTP ' . $teamsStatusCode . ').',
+                    'suggestion' => 'Reconnect this integration to request the correct Teams permissions. Some Teams scopes require IT admin consent in Azure Portal.',
+                    'tested_endpoints' => $testedEndpoints,
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Connection successful',
+                'details' => 'Successfully connected to Microsoft Graph API. Teams access verified.',
+                'suggestion' => '',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        } catch (\Exception $e) {
+            $testedEndpoints[] = [
+                'endpoint' => 'unknown',
+                'status' => 'error',
+                'http_code' => 0,
+            ];
+
+            return [
+                'success' => false,
+                'message' => 'Connection failed',
+                'details' => 'Could not reach Microsoft Graph API: ' . $e->getMessage(),
+                'suggestion' => 'Check your network connection or try reconnecting the integration.',
+                'tested_endpoints' => $testedEndpoints,
+            ];
+        }
+    }
+
     public function listTeams(array $credentials): array
     {
         try {
