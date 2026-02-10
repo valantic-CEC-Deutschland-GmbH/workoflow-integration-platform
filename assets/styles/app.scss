@@ -3514,6 +3514,64 @@ body {
       }
     }
   }
+
+  .dropdown-search {
+    position: relative;
+    padding: 0 var(--space-sm) var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--space-xs);
+
+    i {
+      position: absolute;
+      left: calc(var(--space-sm) + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: var(--text-xs);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 12px 8px 32px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+      transition: var(--transition);
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+      }
+
+      &::placeholder {
+        color: var(--text-muted);
+      }
+    }
+  }
+
+  .dropdown-show-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+
+    &:hover {
+      background: var(--bg-secondary);
+    }
+  }
 }
 
 // Search box

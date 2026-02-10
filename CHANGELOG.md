@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-10
 
+### Added
+- **Search filter in "Add Personalized Skill" dropdown** — Type to instantly filter skills by name. Experimental skills are now hidden by default; click "..." at the bottom to reveal them.
+
 ### Fixed
 - **Outlook Mail, Outlook Calendar, and MS Teams integrations now connect with correct permissions** — Previously, clicking "Connect with Microsoft" for these new integrations used the SharePoint OAuth flow, which requested the wrong permissions. Now each integration requests only the permissions it needs (e.g., Mail.Read for Outlook Mail, Calendars.Read for Calendar, Teams scopes for MS Teams). If you previously connected one of these integrations, please disconnect and reconnect it.
 - **"Test Connection" for Microsoft integrations now verifies actual permissions** — Previously, Test Connection only checked if a token existed. Now it also verifies that the required API scopes are granted (e.g., testing mail folder access for Outlook Mail, calendar access for Calendar, team membership for MS Teams) and provides specific error messages if permissions are missing.

@@ -41,8 +41,21 @@
                     data-integration-dropdown-target="menu"
                     style="display: none;"
                 >
+                    <div class="dropdown-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               placeholder="{{ 'integration.search_skills'|trans|default('Search skills...') }}"
+                               data-integration-dropdown-target="searchInput"
+                               data-action="input->integration-dropdown#filter"
+                               autocomplete="off">
+                    </div>
                     {% for availableType in availableTypes %}
-                        <a href="{{ path('app_tool_setup', {type: availableType.type}) }}" class="dropdown-item">
+                        <a href="{{ path('app_tool_setup', {type: availableType.type}) }}"
+                           class="dropdown-item"
+                           data-integration-dropdown-target="item"
+                           data-name="{{ availableType.name|lower }}"
+                           data-experimental="{{ availableType.isExperimental|default(false) ? 'true' : 'false' }}"
+                           {% if availableType.isExperimental|default(false) %}style="display: none;"{% endif %}>
                             {% if availableType.type == 'jira' %}
                                 <i class="fab fa-jira"></i>
                             {% elseif availableType.type == 'confluence' %}
@@ -75,6 +88,11 @@
                             <span>{{ availableType.name }}{% if availableType.isExperimental|default(false) %} <i class="fas fa-flask" style="color: var(--color-primary);" title="{{ 'status.experimental'|trans|default('Experimental') }}"></i>{% endif %}</span>
                         </a>
                     {% endfor %}
+                    <button type="button" class="dropdown-show-more"
+                            data-integration-dropdown-target="showMore"
+                            data-action="click->integration-dropdown#toggleExperimental">
+                        <span>&bull;&bull;&bull;</span>
+                    </button>
                 </div>
             </div>
         </div>
