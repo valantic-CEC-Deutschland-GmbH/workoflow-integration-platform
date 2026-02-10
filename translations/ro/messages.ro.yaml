@@ -504,6 +504,7 @@ footer:
     platform: Platformă de integrare
     pptx: PPTX
     rag: RAG
+    metrics: Metrici
 
 validation:
   name_required: Numele este obligatoriu
@@ -578,6 +579,9 @@ release_notes:
     infrastructure:
       name: Workoflow Infrastructură
       description: Infrastructură auto-hostată conformă GDPR cu servicii bazate în UE. Implementează n8n, Qdrant, MinIO, Redis și PostgreSQL cu certificări ISO 27001/27018.
+    metrics:
+      name: Workoflow Metrici
+      description: Tablouri de bord de monitorizare bazate pe Grafana pentru platforma Workoflow. Include rezumat executiv, urmărirea costurilor și utilizării LLM, execuții de fluxuri de lucru, activitatea utilizatorilor și analize de utilizare a instrumentelor.
 
 prompt:
   vault_title: Prompt Vault

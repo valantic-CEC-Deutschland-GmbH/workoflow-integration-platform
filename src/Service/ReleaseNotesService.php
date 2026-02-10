@@ -58,6 +58,13 @@ class ReleaseNotesService
             'github' => 'https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-hosting',
             'icon' => 'fa-server',
         ],
+        'metrics' => [
+            'name' => 'release_notes.projects.metrics.name',
+            'description' => 'release_notes.projects.metrics.description',
+            'url' => 'https://raw.githubusercontent.com/valantic-CEC-Deutschland-GmbH/workoflow-metrics/main/CHANGELOG.md',
+            'github' => 'https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-metrics',
+            'icon' => 'fa-chart-line',
+        ],
     ];
 
     public function __construct(

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-10
 
 ### Added
+- **Workoflow Metrics repository added to footer and release notes** — The open-source Grafana monitoring dashboards repo is now linked in the site footer and its changelog appears on the Release Notes page
 - **New Outlook Mail integration (experimental)** — AI agents can now search and read your Outlook emails on your behalf. Supports keyword search, folder browsing, and reading full email content including attachments list. Read-only access.
 - **New Outlook Calendar integration (experimental)** — AI agents can now query your Outlook calendar, search events, and check availability for scheduling. Supports date range queries, recurring event expansion, and free/busy checks for colleagues. Read-only access.
 - **New MS Teams integration (experimental)** — AI agents can now read and send messages in your MS Teams channels and chats. Supports listing teams/channels, reading channel messages, posting to channels, browsing 1:1/group chats, and creating new channels. Requires IT admin consent for some permissions.

@@ -504,6 +504,7 @@ footer:
     platform: Integracijos platforma
     pptx: PPTX
     rag: RAG
+    metrics: Metrika
 
 validation:
   name_required: Pavadinimas privalomas
@@ -578,6 +579,9 @@ release_notes:
     infrastructure:
       name: Workoflow infrastruktūra
       description: BDAR atitinkanti savarankiškai talpinama infrastruktūra su ES paslaugomis. Diegia n8n, Qdrant, MinIO, Redis ir PostgreSQL su ISO 27001/27018 sertifikacijomis.
+    metrics:
+      name: Workoflow metrika
+      description: Grafana pagrįstos stebėjimo informacinės lentos Workoflow platformai. Apima vadovų suvestinę, LLM kaštų ir naudojimo sekimą, darbo eigų vykdymus, vartotojų veiklą ir įrankių naudojimo analizę.
 
 prompt:
   vault_title: Prompt Vault

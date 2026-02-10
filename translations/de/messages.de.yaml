@@ -505,6 +505,7 @@ footer:
     platform: Integrationsplattform
     pptx: PPTX
     rag: RAG
+    metrics: Metriken
 
 validation:
   name_required: Name ist erforderlich
@@ -579,6 +580,9 @@ release_notes:
     infrastructure:
       name: Workoflow Infrastruktur
       description: DSGVO-konforme Self-Hosted-Infrastruktur mit EU-basierten Diensten. Betreibt n8n, Qdrant, MinIO, Redis und PostgreSQL mit ISO 27001/27018-Zertifizierungen.
+    metrics:
+      name: Workoflow Metriken
+      description: Grafana-basierte Monitoring-Dashboards für die Workoflow-Plattform. Enthält Executive Summary, LLM-Kosten- und Nutzungsverfolgung, Workflow-Ausführungen, Benutzeraktivität und Tool-Nutzungsanalysen.
 
 prompt:
   vault_title: Prompt Vault
