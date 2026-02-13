@@ -138,6 +138,16 @@ class SharePointService
                 error_log('Results scored and sorted by relevance for userQuery: ' . $userQuery);
             }
 
+            // Detect potential boilerplate terms to help the agent filter results
+            $boilerplateTerms = [];
+            if ($userQuery !== null && $userQuery !== '' && count($results) > 2) {
+                $queryTerms = $this->extractQueryTerms($userQuery);
+                $boilerplateTerms = $this->detectBoilerplateTerms($results, $queryTerms);
+                if (!empty($boilerplateTerms)) {
+                    error_log('Boilerplate terms detected: ' . implode(', ', $boilerplateTerms));
+                }
+            }
+
             // Group results by type for better user experience (matching SharePoint native search UI)
             $groupedResults = $this->groupResultsByType($results);
 
@@ -149,6 +159,7 @@ class SharePointService
                 'searchQuery' => $kqlQuery,
                 'relevanceScored' => $relevanceScored,
                 'autoBroadened' => $autoBroadened,
+                'boilerplateTerms' => $boilerplateTerms,
             ];
         } catch (\Exception $e) {
             error_log('SharePoint Pages Search Error: ' . $e->getMessage());
@@ -1274,6 +1285,24 @@ class SharePointService
                 $score += 5;
             }
 
+            // Policy/guideline indicator boost: up to 15 points
+            // Documents whose title or filename contains policy-indicator words
+            // are more likely to be the authoritative source users are looking for
+            $policyIndicators = [
+                'richtlinie', 'leitlinie', 'policy', 'guideline', 'regelung',
+                'handbuch', 'manual', 'guide', 'procedure', 'prozess',
+                'checkliste', 'checklist', 'faq', 'overview', 'übersicht',
+            ];
+            $titleAndName = $title . ' ' . $name;
+            $policyBoost = 0;
+            foreach ($policyIndicators as $indicator) {
+                if (str_contains($titleAndName, $indicator)) {
+                    $policyBoost = 15;
+                    break;
+                }
+            }
+            $score += $policyBoost;
+
             $result['relevanceScore'] = $score;
         }
         unset($result);
@@ -1319,6 +1348,70 @@ class SharePointService
         });
 
         return array_values($words);
+    }
+
+    /**
+     * Detect search terms that likely appear as boilerplate (company address, footers, signatures)
+     * rather than as topical content.
+     *
+     * A term is considered boilerplate if it appears in the summary/description of 60%+ of results
+     * AND co-occurs with address-pattern indicators (street names, postal codes, company suffixes).
+     *
+     * @param array<int, array<string, mixed>> $results Search results to analyze
+     * @param array<int, string> $queryTerms The search terms to check
+     * @return array<int, string> Terms detected as likely boilerplate
+     */
+    public function detectBoilerplateTerms(array $results, array $queryTerms): array
+    {
+        if (count($results) < 3) {
+            return [];
+        }
+
+        $addressIndicators = [
+            'straße', 'str.', 'weg', 'platz', 'allee', 'gasse',
+            'gmbh', 'ag', 'kg', 'ohg', 'mbh', 'inc', 'ltd', 'corp',
+        ];
+
+        $postalCodePattern = '/\b\d{5}\b/';
+
+        $boilerplateTerms = [];
+        $resultCount = count($results);
+        $threshold = 0.6;
+
+        foreach ($queryTerms as $term) {
+            $termLower = strtolower($term);
+            $addressContextCount = 0;
+
+            foreach ($results as $result) {
+                $snippet = strtolower(($result['summary'] ?? '') . ' ' . ($result['description'] ?? ''));
+
+                if (!str_contains($snippet, $termLower)) {
+                    continue;
+                }
+
+                $hasAddressIndicator = false;
+                foreach ($addressIndicators as $indicator) {
+                    if (str_contains($snippet, $indicator)) {
+                        $hasAddressIndicator = true;
+                        break;
+                    }
+                }
+
+                if (!$hasAddressIndicator) {
+                    $hasAddressIndicator = (bool) preg_match($postalCodePattern, $snippet);
+                }
+
+                if ($hasAddressIndicator) {
+                    $addressContextCount++;
+                }
+            }
+
+            if (($addressContextCount / $resultCount) >= $threshold) {
+                $boilerplateTerms[] = $termLower;
+            }
+        }
+
+        return $boilerplateTerms;
     }
 
     /**
