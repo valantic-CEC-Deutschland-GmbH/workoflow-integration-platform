@@ -85,4 +85,26 @@ class SharePointServiceScoringTest extends TestCase
         $this->assertEquals('Urlaubsrichtlinie 2026', $scored[0]['title']);
         $this->assertGreaterThan($scored[1]['relevanceScore'], $scored[0]['relevanceScore']);
     }
+
+    public function testBoilerplateDetectionInSearchResults(): void
+    {
+        // Tests that when a search term appears in address-like patterns across
+        // many results, it's flagged as potential boilerplate
+        $results = [
+            ['title' => 'Contract A', 'name' => 'Contract_A.docx', 'summary' => 'Reichskanzler-Müller-Straße 14 68165 Mannheim', 'description' => '', 'lastModifiedDateTime' => '2026-01-01T10:00:00Z', 'type' => 'file'],
+            ['title' => 'Contract B', 'name' => 'Contract_B.docx', 'summary' => 'Standort Mannheim Reichskanzler-Müller-Straße', 'description' => '', 'lastModifiedDateTime' => '2026-01-01T10:00:00Z', 'type' => 'file'],
+            ['title' => 'Offer C', 'name' => 'Offer_C.docx', 'summary' => '68165 Mannheim valantic GmbH', 'description' => '', 'lastModifiedDateTime' => '2026-01-01T10:00:00Z', 'type' => 'file'],
+            ['title' => 'Contract D', 'name' => 'Contract_D.docx', 'summary' => 'Mannheim Reichskanzler-Müller-Straße 14', 'description' => '', 'lastModifiedDateTime' => '2026-01-01T10:00:00Z', 'type' => 'file'],
+            ['title' => 'HR Policy', 'name' => 'Reisekostenrichtlinie.pdf', 'summary' => 'Mannheim Dienstreise Reisekosten policy', 'description' => '', 'lastModifiedDateTime' => '2025-06-01T10:00:00Z', 'type' => 'file'],
+        ];
+
+        $method = new \ReflectionMethod(SharePointService::class, 'detectBoilerplateTerms');
+        $boilerplate = $method->invoke($this->service, $results, ['mannheim']);
+
+        $this->assertContains(
+            'mannheim',
+            $boilerplate,
+            'Mannheim should be detected as boilerplate when it appears in address-like patterns in most results'
+        );
+    }
 }
