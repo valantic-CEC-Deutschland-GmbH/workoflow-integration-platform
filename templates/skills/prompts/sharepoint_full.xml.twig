@@ -486,6 +486,10 @@
       <step>2. For EACH result, evaluate: "Is this document actually ABOUT what the user is looking for?"</step>
       <step>3. Check title/filename first - this is the strongest relevance signal</step>
       <step>4. Check content snippet - does it discuss the topic or just mention it?</step>
+      <step>4b. Check the boilerplateTerms field in the search response — if present, these terms were
+        detected as appearing in company address/footer patterns across most results. Treat results that
+        ONLY match on boilerplate terms as LOW relevance. If ALL results only match on boilerplate terms,
+        follow the all-results-irrelevant workflow with intent-based retry.</step>
       <step>5. Discard LOW-relevance results entirely</step>
       <step>6. Sort remaining by: HIGH-relevance first, then MEDIUM-relevance</step>
       <step>7. Present only relevant results with explanation of filtering if many were removed</step>
@@ -766,6 +770,11 @@
       <wrong>Presenting "Support for Power BI project III.docx" for a travel policy search because "Mannheim" appears in the document</wrong>
       <why-wrong>"Mannheim" appears in "Reichskanzler-Müller-Straße 14, 68165 Mannheim" — the company address block that exists in every valantic document. This is boilerplate, not topical content. The document is a sales offer about Power BI, completely unrelated to travel.</why-wrong>
       <correct>Recognize address/signature/footer/letterhead mentions as incidental boilerplate. If a keyword only appears in standard company address blocks across ALL results, treat all results as LOW relevance. Retry with different search terms targeting the actual topic, or report no relevant documents found.</correct>
+    </mistake>
+    <mistake id="ignoring-boilerplate-hint">
+      <wrong>Ignoring the boilerplateTerms field in search results and presenting documents where the search term only matched company address text</wrong>
+      <why-wrong>The boilerplateTerms field explicitly tells you which search terms were detected as address/footer boilerplate. Ignoring this signal leads to presenting contracts and offers that are completely unrelated to the user's query.</why-wrong>
+      <correct>When boilerplateTerms is non-empty, re-evaluate all results: if a result's only keyword match is on a boilerplate term, classify it as LOW relevance. Then follow the intent-based retry strategy with different search terms.</correct>
     </mistake>
     <mistake id="narrowing-to-subsite">
       <wrong>Using path:"https://valanticmore.sharepoint.com/sites/CEC-Onboarding-Journey" to narrow search to a guessed sub-site</wrong>
