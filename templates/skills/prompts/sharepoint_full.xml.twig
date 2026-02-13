@@ -776,6 +776,11 @@
       <why-wrong>The boilerplateTerms field explicitly tells you which search terms were detected as address/footer boilerplate. Ignoring this signal leads to presenting contracts and offers that are completely unrelated to the user's query.</why-wrong>
       <correct>When boilerplateTerms is non-empty, re-evaluate all results: if a result's only keyword match is on a boilerplate term, classify it as LOW relevance. Then follow the intent-based retry strategy with different search terms.</correct>
     </mistake>
+    <mistake id="literal-translation-of-process-query">
+      <wrong>User asks "was brauche ich für meine Reise in Mannheim" → Agent searches: (Reise OR travel) AND Mannheim → Returns contracts mentioning Mannheim address and travel costs</wrong>
+      <why-wrong>The user is asking about the INTERNAL PROCESS for travel expense reimbursement, not searching for documents that literally contain "Reise" and "Mannheim". "Mannheim" is a destination context, not a document keyword. The correct interpretation is: "Find the travel expense policy/guideline" not "Find documents about travel to Mannheim".</why-wrong>
+      <correct>Classify as POLICY_PROCESS_LOOKUP intent. Search: (Reisekostenrichtlinie OR Reisekostenleitlinie OR Reisekosten* OR "travel policy" OR "travel expenses" OR Dienstreise*). Do NOT include "Mannheim" in the KQL query — it's the user's destination, not a document topic. The location is only relevant AFTER finding the policy, to check if there are location-specific rules.</correct>
+    </mistake>
     <mistake id="narrowing-to-subsite">
       <wrong>Using path:"https://valanticmore.sharepoint.com/sites/CEC-Onboarding-Journey" to narrow search to a guessed sub-site</wrong>
       <why-wrong>The document (On-_Offboardings-Februar-26.pdf) actually lived on /sites/OnevalanticCEC, not /sites/CEC-Onboarding-Journey. Narrowing to a guessed sub-site filtered OUT the correct document and returned wrong results. The agent then read and summarized the wrong document.</why-wrong>
