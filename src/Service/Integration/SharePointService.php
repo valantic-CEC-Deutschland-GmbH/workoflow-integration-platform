@@ -1274,6 +1274,24 @@ class SharePointService
                 $score += 5;
             }
 
+            // Policy/guideline indicator boost: up to 15 points
+            // Documents whose title or filename contains policy-indicator words
+            // are more likely to be the authoritative source users are looking for
+            $policyIndicators = [
+                'richtlinie', 'leitlinie', 'policy', 'guideline', 'regelung',
+                'handbuch', 'manual', 'guide', 'procedure', 'prozess',
+                'checkliste', 'checklist', 'faq', 'overview', 'übersicht',
+            ];
+            $titleAndName = $title . ' ' . $name;
+            $policyBoost = 0;
+            foreach ($policyIndicators as $indicator) {
+                if (str_contains($titleAndName, $indicator)) {
+                    $policyBoost = 15;
+                    break;
+                }
+            }
+            $score += $policyBoost;
+
             $result['relevanceScore'] = $score;
         }
         unset($result);
