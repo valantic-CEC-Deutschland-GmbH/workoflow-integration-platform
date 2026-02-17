@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-17
 
+### Added
+- **Azure credential health check** — The `/health` endpoint now validates Azure client credentials so monitoring can detect expired or rotated secrets before users encounter errors with Microsoft integrations (SharePoint, MS Teams, Outlook Mail, Outlook Calendar)
+
 ### Fixed
 - **Microsoft integrations no longer break after client secret rotation** — SharePoint, MS Teams, Outlook Mail, and Outlook Calendar integrations now use the current server credentials when refreshing tokens, so existing users won't get errors after an Azure secret update
 
