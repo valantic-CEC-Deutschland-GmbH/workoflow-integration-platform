@@ -307,8 +307,8 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
 
         $newTokens = $this->sharePointService->refreshToken(
             $credentials['refresh_token'],
-            $credentials['client_id'],
-            $credentials['client_secret'],
+            $_ENV['AZURE_CLIENT_ID'] ?? $credentials['client_id'],
+            $_ENV['AZURE_CLIENT_SECRET'] ?? $credentials['client_secret'],
             $credentials['tenant_id']
         );
 

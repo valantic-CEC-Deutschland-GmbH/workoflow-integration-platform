@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-17
+
+### Fixed
+- **Microsoft integrations no longer break after client secret rotation** — SharePoint, MS Teams, Outlook Mail, and Outlook Calendar integrations now use the current server credentials when refreshing tokens, so existing users won't get errors after an Azure secret update
+
 ## 2026-02-10
 
 ### Added

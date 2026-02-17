@@ -208,8 +208,8 @@ class OutlookMailIntegration implements PersonalizedSkillInterface
 
         $newTokens = $this->outlookMailService->refreshToken(
             $credentials['refresh_token'],
-            $credentials['client_id'],
-            $credentials['client_secret'],
+            $_ENV['AZURE_CLIENT_ID'] ?? $credentials['client_id'],
+            $_ENV['AZURE_CLIENT_SECRET'] ?? $credentials['client_secret'],
             $credentials['tenant_id']
         );
 
