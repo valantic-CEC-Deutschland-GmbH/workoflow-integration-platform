@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **System Prompt available via Tenant API** — The Tenant Settings API now supports `?system_prompt=true` to include the main agent system prompt in the response
 
 ### Fixed
+- **Dashboard "Recent Integrations" now shows most recently used** — The dashboard overview now correctly displays the 5 most recently accessed integrations instead of sorting alphabetically by type
 - **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail
 
 ### Removed
