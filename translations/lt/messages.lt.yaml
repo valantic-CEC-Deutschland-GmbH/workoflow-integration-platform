@@ -102,8 +102,13 @@ organisation:
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
   invite_member: Pakviesti narį
+  invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
+  send_invite: Siųsti kvietimą
+  select_organisation: Pasirinkite organizaciją
   invite:
     invalid_email: Neteisingas el. pašto adresas.
+    invalid_organisation: Pasirinkta netinkama organizacija.
+    user_already_in_organisation: Šis vartotojas jau yra pasirinktos organizacijos narys.
     user_has_organisation: Šis vartotojas jau priklauso kanalui.
     user_added: Vartotojas sėkmingai pridėtas!
     user_not_found: Vartotojas pirmiausia turi užsiregistruoti Workoflow.

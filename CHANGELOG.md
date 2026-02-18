@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - **Tenant Settings API** — New `/api/tenant/{uuid}/settings` endpoint allows the bot to fetch tenant-specific webhook URLs and configuration dynamically, enabling true multi-tenancy instead of a single shared webhook URL
+- **Organisation selector on Invite Member** — The Invite Member dialog now lets you choose which organisation to add the member to, instead of always using the currently active one
 
 ### Changed
 - **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose

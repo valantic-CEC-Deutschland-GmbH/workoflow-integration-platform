@@ -102,8 +102,13 @@ organisation:
   make_admin: Faceți administrator
   make_member: Faceți membru
   invite_member: Invitați membru
+  invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
+  send_invite: Trimiteți invitația
+  select_organisation: Selectați organizația
   invite:
     invalid_email: Adresă de email invalidă.
+    invalid_organisation: Organizație selectată invalidă.
+    user_already_in_organisation: Acest utilizator este deja membru al organizației selectate.
     user_has_organisation: Acest utilizator aparține deja unui canal.
     user_added: Utilizator adăugat cu succes!
     user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.

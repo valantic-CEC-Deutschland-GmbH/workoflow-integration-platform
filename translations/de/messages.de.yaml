@@ -102,8 +102,13 @@ organisation:
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
   invite_member: Mitglied einladen
+  invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
+  send_invite: Einladung senden
+  select_organisation: Organisation auswählen
   invite:
     invalid_email: Ungültige E-Mail-Adresse.
+    invalid_organisation: Ungültige Organisation ausgewählt.
+    user_already_in_organisation: Dieser Benutzer ist bereits Mitglied der ausgewählten Organisation.
     user_has_organisation: Dieser Benutzer gehört bereits einem Kanal an.
     user_added: Benutzer erfolgreich hinzugefügt!
     user_not_found: Benutzer muss sich zuerst bei Workoflow registrieren.
