@@ -93,7 +93,7 @@
                                 {% else %}
                                     <span class="badge badge-inactive">{{ 'status.inactive'|trans }}</span>
                                 {% endif %}
-                                <a href="{{ path('app_integration_setup', {'type': skillType, 'id': integration.id}) }}" class="btn btn-sm btn-secondary">
+                                <a href="{{ path('app_tool_setup', {'type': skillType, 'instance': integration.id}) }}" class="btn btn-sm btn-secondary">
                                     {{ 'integration.edit'|trans }}
                                 </a>
                             </div>
