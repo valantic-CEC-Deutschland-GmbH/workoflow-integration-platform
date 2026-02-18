@@ -93,7 +93,14 @@ class OrganisationController extends AbstractController
         $sessionOrgId = $request->getSession()->get('current_organisation_id');
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
-        if ($member->getOrganisation() !== $organisation) {
+        $memberBelongsToOrg = false;
+        foreach ($member->getUserOrganisations() as $userOrg) {
+            if ($userOrg->getOrganisation()->getId() === $organisation->getId()) {
+                $memberBelongsToOrg = true;
+                break;
+            }
+        }
+        if (!$memberBelongsToOrg) {
             throw $this->createAccessDeniedException();
         }
 

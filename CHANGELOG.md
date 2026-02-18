@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - **Dashboard "Recent Integrations" now shows most recently used** — The dashboard overview now correctly displays the 5 most recently accessed integrations instead of sorting alphabetically by type
 - **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail
+- **Admin can now change member roles in multi-organisation setups** — Previously, clicking "Make Admin" or "Make Member" would fail with a permission error when both users belonged to multiple organisations
 
 ### Removed
 - **MS Teams Configuration section** — Removed the Microsoft App Type, App ID, App Password, and Tenant ID fields from the Tenant Settings page; these per-bot-deployment settings belong in the bot's environment configuration
