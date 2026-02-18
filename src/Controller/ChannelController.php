@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -22,7 +23,9 @@ class ChannelController extends AbstractController
         private EntityManagerInterface $entityManager,
         private AuditLogService $auditLogService,
         private HttpClientInterface $httpClient,
-        private EncryptionService $encryptionService
+        private EncryptionService $encryptionService,
+        #[Autowire('%kernel.project_dir%')]
+        private string $projectDir
     ) {
     }
 
@@ -40,10 +43,14 @@ class ChannelController extends AbstractController
 
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
 
+        $promptPath = $this->projectDir . '/templates/skills/prompts/main_agent.twig';
+        $systemPromptContent = file_get_contents($promptPath) ?: '';
+
         return $this->render('channel/index.html.twig', [
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'user' => $user,
+            'systemPromptContent' => $systemPromptContent,
         ]);
     }
 
@@ -86,11 +93,6 @@ class ChannelController extends AbstractController
         if (isset($data['n8n_api_key']) && !empty($data['n8n_api_key'])) {
             $encryptedKey = $this->encryptionService->encrypt($data['n8n_api_key']);
             $organisation->setEncryptedN8nApiKey($encryptedKey);
-        }
-
-        // Update UserOrganisation fields
-        if ($userOrganisation && isset($data['system_prompt'])) {
-            $userOrganisation->setSystemPrompt($data['system_prompt']);
         }
 
         try {

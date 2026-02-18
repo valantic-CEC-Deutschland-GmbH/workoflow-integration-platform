@@ -273,9 +273,8 @@
                             <label for="system_prompt" class="form-label">System Prompt</label>
                             <textarea class="form-textarea"
                                       id="system_prompt"
-                                      name="system_prompt"
                                       placeholder="Enter the agent's instructions and personality..."
-                                      {% if not app.user.isAdmin() %}readonly{% endif %}>{{ userOrganisation.systemPrompt ?? '' }}</textarea>
+                                      readonly>{{ systemPromptContent }}</textarea>
                         </div>
                     </div>
 

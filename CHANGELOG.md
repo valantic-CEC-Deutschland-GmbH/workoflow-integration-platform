@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose
+- **System Prompt is now read-only** — The System Prompt field on the Tenant Settings page now displays the platform's main agent prompt as a read-only reference; it is no longer editable per tenant
+- **System Prompt available via Tenant API** — The Tenant Settings API now supports `?system_prompt=true` to include the main agent system prompt in the response
 
 ### Fixed
 - **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail

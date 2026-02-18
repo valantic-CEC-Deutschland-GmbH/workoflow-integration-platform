@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\OrganisationRepository;
 use App\Service\AuditLogService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,8 @@ class TenantApiController extends AbstractController
         private AuditLogService $auditLogService,
         private string $apiAuthUser,
         private string $apiAuthPassword,
+        #[Autowire('%kernel.project_dir%')]
+        private string $projectDir,
     ) {
     }
 
@@ -46,15 +49,22 @@ class TenantApiController extends AbstractController
             ]
         );
 
+        $settings = [
+            'name' => $organisation->getName(),
+            'uuid' => $organisation->getUuid(),
+            'webhook_type' => $webhookType,
+            'webhook_url' => $webhookUrl,
+        ];
+
+        if ($request->query->get('system_prompt') === 'true') {
+            $promptPath = $this->projectDir . '/templates/skills/prompts/main_agent.twig';
+            $settings['system_prompt'] = file_get_contents($promptPath) ?: '';
+        }
+
         return $this->json([
             'success' => true,
             'complete' => $complete,
-            'settings' => [
-                'name' => $organisation->getName(),
-                'uuid' => $organisation->getUuid(),
-                'webhook_type' => $webhookType,
-                'webhook_url' => $webhookUrl,
-            ],
+            'settings' => $settings,
         ]);
     }
 
