@@ -10,18 +10,14 @@
                     <a href="{% if app.request.locale == 'de' %}https://www.valantic.com/de/impressum-und-rechtshinweise/{% else %}https://www.valantic.com/en/legal-notice/{% endif %}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       style="color: #3b82f6; text-decoration: none; transition: color 0.2s;"
-                       onmouseover="this.style.color='#60a5fa'"
-                       onmouseout="this.style.color='#3b82f6'">
+                       class="view-all-link">
                         {{ 'footer.legal_notice'|trans }}
                     </a>
                     <span style="color: #666;">•</span>
                     <a href="{% if app.request.locale == 'de' %}https://www.valantic.com/de/datenschutzerklaerung/{% else %}https://www.valantic.com/en/data-privacy-declaration/{% endif %}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       style="color: #3b82f6; text-decoration: none; transition: color 0.2s;"
-                       onmouseover="this.style.color='#60a5fa'"
-                       onmouseout="this.style.color='#3b82f6'">
+                       class="view-all-link">
                         {{ 'footer.data_privacy'|trans }}
                     </a>
                 </div>
