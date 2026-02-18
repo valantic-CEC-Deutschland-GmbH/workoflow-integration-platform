@@ -423,6 +423,8 @@ action:
 
 file:
   title: Dateien
+  explanation_p1: Laden Sie Dateien hoch, um Ihren KI-Agenten mit eigenen Daten zu trainieren. Hier hochgeladene Dokumente werden für Retrieval-Augmented Generation (RAG) verwendet, sodass der Agent Ihre Inhalte durchsuchen und bei der Beantwortung von Fragen referenzieren kann.
+  explanation_p2: Unterstützte Formate sind PDF, DOCX, XLSX, CSV, TXT, JSON und Bilder. Je mehr relevante Daten Sie bereitstellen, desto genauer und hilfreicher werden die Antworten Ihres KI-Agenten.
   upload: Hochladen
   upload_files: Dateien hochladen
   no_files: Noch keine Dateien hochgeladen.

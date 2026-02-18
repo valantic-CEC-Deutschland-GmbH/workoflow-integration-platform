@@ -2644,6 +2644,47 @@ body {
   }
 }
 
+// Files page header
+.files-header {
+  margin-bottom: var(--space-2xl);
+  padding: var(--space-xl);
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+
+  .files-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .files-explanation {
+    max-width: 900px;
+
+    p {
+      color: var(--text-secondary);
+      font-size: var(--text-base);
+      margin: var(--space-sm) 0;
+      line-height: 1.6;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
 // Files page specific styles
 .files-page {
   .files-table {

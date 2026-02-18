@@ -423,6 +423,8 @@ action:
 
 file:
   title: Files
+  explanation_p1: Upload files to train your AI agent with your own data. Documents uploaded here are used for Retrieval-Augmented Generation (RAG), allowing the agent to search and reference your content when answering questions.
+  explanation_p2: Supported formats include PDF, DOCX, XLSX, CSV, TXT, JSON, and images. The more relevant data you provide, the more accurate and helpful your AI agent's responses will be.
   upload: Upload
   upload_files: Upload Files
   no_files: No files uploaded yet.

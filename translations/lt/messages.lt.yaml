@@ -423,6 +423,8 @@ action:
 
 file:
   title: Failai
+  explanation_p1: Įkelkite failus, kad apmokytumėte savo AI agentą savo duomenimis. Čia įkelti dokumentai naudojami informacijos gavimo papildytai generacijai (RAG), leidžiant agentui ieškoti ir remtis jūsų turiniu atsakant į klausimus.
+  explanation_p2: Palaikomi formatai apima PDF, DOCX, XLSX, CSV, TXT, JSON ir vaizdus. Kuo daugiau aktualių duomenų pateiksite, tuo tikslesni ir naudingesni bus jūsų AI agento atsakymai.
   upload: Įkelti
   upload_files: Įkelti failus
   no_files: Dar nėra įkeltų failų.

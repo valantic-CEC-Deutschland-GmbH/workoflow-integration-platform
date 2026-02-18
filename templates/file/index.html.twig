@@ -6,11 +6,17 @@
 <div class="dashboard-page files-page">
     
     <div class="dashboard-container">
-        <div class="page-header">
-            <h1 class="dashboard-title">{{ 'file.title'|trans }}</h1>
-            <button type="button" class="btn btn-primary" onclick="showUploadModal()" {% if not isConnected %}disabled title="{{ 'file.upload_disabled_no_connection'|trans|default('Upload disabled - No connection to file storage') }}"{% endif %}>
-                {{ 'file.upload'|trans }}
-            </button>
+        <div class="files-header">
+            <div class="files-header-top">
+                <h1>{{ 'file.title'|trans }}</h1>
+                <button type="button" class="btn btn-primary" onclick="showUploadModal()" {% if not isConnected %}disabled title="{{ 'file.upload_disabled_no_connection'|trans|default('Upload disabled - No connection to file storage') }}"{% endif %}>
+                    {{ 'file.upload'|trans }}
+                </button>
+            </div>
+            <div class="files-explanation">
+                <p>{{ 'file.explanation_p1'|trans }}</p>
+                <p>{{ 'file.explanation_p2'|trans }}</p>
+            </div>
         </div>
 
         {% if connectionError %}

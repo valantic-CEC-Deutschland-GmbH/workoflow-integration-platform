@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-18
 
 ### Added
+- **Files page header with explanation** — The Files page now includes a descriptive header explaining that uploaded files are used to train the AI agent via RAG, matching the style of the Skills page header
 - **Tenant Settings API** — New `/api/tenant/{uuid}/settings` endpoint allows the bot to fetch tenant-specific webhook URLs and configuration dynamically, enabling true multi-tenancy instead of a single shared webhook URL
 - **Organisation selector on Invite Member** — The Invite Member dialog now lets you choose which organisation to add the member to, instead of always using the currently active one
 

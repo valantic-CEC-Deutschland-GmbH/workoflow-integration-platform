@@ -423,6 +423,8 @@ action:
 
 file:
   title: Fișiere
+  explanation_p1: Încărcați fișiere pentru a antrena agentul AI cu datele dvs. proprii. Documentele încărcate aici sunt utilizate pentru Retrieval-Augmented Generation (RAG), permițând agentului să caute și să facă referire la conținutul dvs. atunci când răspunde la întrebări.
+  explanation_p2: Formatele acceptate includ PDF, DOCX, XLSX, CSV, TXT, JSON și imagini. Cu cât furnizați mai multe date relevante, cu atât răspunsurile agentului dvs. AI vor fi mai precise și mai utile.
   upload: Încărcare
   upload_files: Încărcați fișiere
   no_files: Niciun fișier încărcat încă.
