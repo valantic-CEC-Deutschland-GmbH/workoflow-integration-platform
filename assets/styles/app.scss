@@ -2056,6 +2056,12 @@ body {
     padding: var(--space-3xl) var(--space-xl);
     text-align: center;
     margin-bottom: var(--space-2xl);
+    transition: var(--transition);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--bg-card-hover);
+    }
   }
 
   .onboarding-card-icon {
@@ -2129,6 +2135,12 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-xl);
+    transition: var(--transition);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--bg-card-hover);
+    }
 
     h3 {
       font-size: var(--text-lg);
