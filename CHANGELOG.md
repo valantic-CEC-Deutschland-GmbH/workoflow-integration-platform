@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Organisation selector on Invite Member** — The Invite Member dialog now lets you choose which organisation to add the member to, instead of always using the currently active one
 
 ### Changed
-- **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose
+- **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose. URLs have also been updated from `/channel` to `/tenant`
+- **N8N API Key repositioned** — The N8N API Key field is now placed directly below the N8N Visualization URL for better grouping of visualization-related settings
 - **System Prompt is now read-only** — The System Prompt field on the Tenant Settings page now displays the platform's main agent prompt as a read-only reference; it is no longer editable per tenant
 - **System Prompt available via Tenant API** — The Tenant Settings API now supports `?system_prompt=true` to include the main agent system prompt in the response
 

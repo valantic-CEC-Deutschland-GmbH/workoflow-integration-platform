@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[Route('/channel')]
+#[Route('/tenant')]
 #[IsGranted('ROLE_ADMIN')]
 class ChannelController extends AbstractController
 {
@@ -29,7 +29,7 @@ class ChannelController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_channel')]
+    #[Route('', name: 'app_tenant')]
     public function index(Request $request): Response
     {
         /** @var User $user */
@@ -38,7 +38,7 @@ class ChannelController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
@@ -46,7 +46,7 @@ class ChannelController extends AbstractController
         $promptPath = $this->projectDir . '/templates/skills/prompts/main_agent.twig';
         $systemPromptContent = file_get_contents($promptPath) ?: '';
 
-        return $this->render('channel/index.html.twig', [
+        return $this->render('tenant/index.html.twig', [
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'user' => $user,
@@ -54,7 +54,7 @@ class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/update', name: 'app_channel_update', methods: ['POST'])]
+    #[Route('/update', name: 'app_tenant_update', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function update(Request $request): Response
     {
@@ -64,7 +64,7 @@ class ChannelController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
@@ -109,15 +109,15 @@ class ChannelController extends AbstractController
                 ]
             );
 
-            $this->addFlash('success', 'Channel settings have been saved successfully.');
+            $this->addFlash('success', 'Tenant settings have been saved successfully.');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Failed to save settings: ' . $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_channel');
+        return $this->redirectToRoute('app_tenant');
     }
 
-    #[Route('/api/n8n-workflow/{orgId}', name: 'app_channel_n8n_workflow', methods: ['GET'])]
+    #[Route('/api/n8n-workflow/{orgId}', name: 'app_tenant_n8n_workflow', methods: ['GET'])]
     public function fetchN8nWorkflow(string $orgId, Request $request): JsonResponse
     {
         /** @var User $user */

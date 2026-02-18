@@ -70,9 +70,9 @@ auth:
 general:
   title: General
   welcome: Welcome, %name%!
-  organisation: Your Channel
+  organisation: Your Tenant
   integration_api_url: Integration API URL
-  workflow_user_id: Channel Specific ID
+  workflow_user_id: Tenant Specific ID
   copy_curl_command: Copy curl command for tools
   copied: Copied!
   integrations_count: Integrations
@@ -84,18 +84,18 @@ general:
 
 organisation:
   create:
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
     placeholder: e.g. My Company Inc.
     help: You can change the name later in settings.
-    submit: Create Channel
+    submit: Create Tenant
   created:
-    success: Channel created successfully!
-  name: Channel Name
-  settings: Channel Settings
+    success: Tenant created successfully!
+  name: Tenant Name
+  settings: Tenant Settings
   members: Members
   updated:
-    success: Channel updated successfully!
+    success: Tenant updated successfully!
   member:
     role_updated: Role updated successfully!
     cannot_change_own_role: You cannot change your own role.
@@ -109,7 +109,7 @@ organisation:
     invalid_email: Invalid email address.
     invalid_organisation: Invalid organisation selected.
     user_already_in_organisation: This user is already a member of the selected organisation.
-    user_has_organisation: This user already belongs to a channel.
+    user_has_organisation: This user already belongs to a tenant.
     user_added: User added successfully!
     user_not_found: User must register with Workoflow first.
 
@@ -451,7 +451,7 @@ user:
   email: Email
   role: Role
   joined_at: Joined at
-  organisation: Channel
+  organisation: Tenant
   workflow_user_id: My Workflow User ID
 
 profile:
@@ -463,7 +463,7 @@ profile:
   delete_account_confirm: Are you sure you want to delete your account?
   delete_account_consequences: 'This action will:'
   delete_consequence_1: Delete all your integrations
-  delete_consequence_2: Remove your access to the channel
+  delete_consequence_2: Remove your access to the tenant
   delete_consequence_3: Permanently delete all your data
   confirm_delete: Yes, delete account
   api_token: API Token

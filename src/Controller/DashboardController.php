@@ -28,7 +28,7 @@ class DashboardController extends AbstractController
         if (!$organisation) {
             // If user has no organisations at all, redirect to create
             if ($user->getOrganisations()->isEmpty()) {
-                return $this->redirectToRoute('app_channel_create');
+                return $this->redirectToRoute('app_tenant_create');
             }
             // If user has organisations but none selected, select the first one
             $organisation = $user->getOrganisations()->first();
@@ -50,7 +50,7 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route('/channel/create', name: 'app_channel_create', methods: ['GET', 'POST'])]
+    #[Route('/tenant/create', name: 'app_tenant_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function createOrganisation(
         Request $request,

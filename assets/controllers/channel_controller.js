@@ -105,7 +105,7 @@ export default class extends Controller {
             }
 
             // Fetch workflow from API
-            const response = await fetch(`/channel/api/n8n-workflow/${orgId}`);
+            const response = await fetch(`/tenant/api/n8n-workflow/${orgId}`);
             const data = await response.json();
 
             if (data.error || !data.workflow) {

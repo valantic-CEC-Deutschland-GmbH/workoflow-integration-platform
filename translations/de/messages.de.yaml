@@ -70,9 +70,9 @@ auth:
 general:
   title: Allgemein
   welcome: Willkommen, %name%!
-  organisation: Ihr Kanal
+  organisation: Ihr Mandant
   integration_api_url: Integration API URL
-  workflow_user_id: Kanal-spezifische ID
+  workflow_user_id: Mandanten-spezifische ID
   copy_curl_command: curl-Befehl für /tools Endpunkt kopieren
   copied: Kopiert!
   integrations_count: Integrationen
@@ -84,18 +84,18 @@ general:
 
 organisation:
   create:
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
     placeholder: z.B. Meine Firma GmbH
     help: Sie können den Namen später in den Einstellungen ändern.
-    submit: Kanal erstellen
+    submit: Mandant erstellen
   created:
-    success: Kanal erfolgreich erstellt!
-  name: Kanalname
-  settings: Kanaleinstellungen
+    success: Mandant erfolgreich erstellt!
+  name: Mandantenname
+  settings: Mandanteneinstellungen
   members: Mitglieder
   updated:
-    success: Kanal erfolgreich aktualisiert!
+    success: Mandant erfolgreich aktualisiert!
   member:
     role_updated: Rolle erfolgreich aktualisiert!
     cannot_change_own_role: Sie können Ihre eigene Rolle nicht ändern.
@@ -109,7 +109,7 @@ organisation:
     invalid_email: Ungültige E-Mail-Adresse.
     invalid_organisation: Ungültige Organisation ausgewählt.
     user_already_in_organisation: Dieser Benutzer ist bereits Mitglied der ausgewählten Organisation.
-    user_has_organisation: Dieser Benutzer gehört bereits einem Kanal an.
+    user_has_organisation: Dieser Benutzer gehört bereits einem Mandanten an.
     user_added: Benutzer erfolgreich hinzugefügt!
     user_not_found: Benutzer muss sich zuerst bei Workoflow registrieren.
 
@@ -452,7 +452,7 @@ user:
   email: E-Mail
   role: Rolle
   joined_at: Beigetreten am
-  organisation: Kanal
+  organisation: Mandant
   workflow_user_id: Meine Workflow Benutzer-ID
 
 
@@ -465,7 +465,7 @@ profile:
   delete_account_confirm: Sind Sie sicher, dass Sie Ihren Account löschen möchten?
   delete_account_consequences: 'Diese Aktion wird:'
   delete_consequence_1: Alle Ihre Integrationen löschen
-  delete_consequence_2: Ihren Zugang zum Kanal entfernen
+  delete_consequence_2: Ihren Zugang zum Mandanten entfernen
   delete_consequence_3: Alle Ihre Daten unwiderruflich löschen
   confirm_delete: Ja, Account löschen
   api_token: Persönlicher API-Token

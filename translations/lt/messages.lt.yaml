@@ -70,9 +70,9 @@ auth:
 general:
   title: Bendra informacija
   welcome: Sveiki, %name%!
-  organisation: Jūsų kanalas
+  organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL
-  workflow_user_id: Kanalui specifinis ID
+  workflow_user_id: Nuomininkui specifinis ID
   copy_curl_command: Kopijuoti curl komandą įrankiams
   copied: Nukopijuota!
   integrations_count: Integracijos
@@ -84,18 +84,18 @@ general:
 
 organisation:
   create:
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
     placeholder: pvz. Mano įmonė UAB
     help: Pavadinimą galite pakeisti vėliau nustatymuose.
-    submit: Sukurti kanalą
+    submit: Sukurti nuomininką
   created:
-    success: Kanalas sėkmingai sukurtas!
-  name: Kanalo pavadinimas
-  settings: Kanalo nustatymai
+    success: Nuomininkas sėkmingai sukurtas!
+  name: Nuomininko pavadinimas
+  settings: Nuomininko nustatymai
   members: Nariai
   updated:
-    success: Kanalas sėkmingai atnaujintas!
+    success: Nuomininkas sėkmingai atnaujintas!
   member:
     role_updated: Rolė sėkmingai atnaujinta!
     cannot_change_own_role: Negalite keisti savo pačių rolės.

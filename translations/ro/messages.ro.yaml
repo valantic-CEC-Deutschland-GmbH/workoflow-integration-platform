@@ -70,9 +70,9 @@ auth:
 general:
   title: General
   welcome: Bine ați venit, %name%!
-  organisation: Canalul dvs.
+  organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare
-  workflow_user_id: ID specific canalului
+  workflow_user_id: ID specific chiriașului
   copy_curl_command: Copiați comanda curl pentru instrumente
   copied: Copiat!
   integrations_count: Integrări
@@ -84,18 +84,18 @@ general:
 
 organisation:
   create:
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
     placeholder: de ex. Compania Mea SRL
     help: Puteți schimba numele ulterior în setări.
-    submit: Creați canal
+    submit: Creați chiriaș
   created:
-    success: Canal creat cu succes!
-  name: Nume canal
-  settings: Setări canal
+    success: Chiriaș creat cu succes!
+  name: Nume chiriaș
+  settings: Setări chiriaș
   members: Membri
   updated:
-    success: Canal actualizat cu succes!
+    success: Chiriaș actualizat cu succes!
   member:
     role_updated: Rol actualizat cu succes!
     cannot_change_own_role: Nu vă puteți schimba propriul rol.
@@ -109,7 +109,7 @@ organisation:
     invalid_email: Adresă de email invalidă.
     invalid_organisation: Organizație selectată invalidă.
     user_already_in_organisation: Acest utilizator este deja membru al organizației selectate.
-    user_has_organisation: Acest utilizator aparține deja unui canal.
+    user_has_organisation: Acest utilizator aparține deja unui chiriaș.
     user_added: Utilizator adăugat cu succes!
     user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.
 
@@ -463,7 +463,7 @@ profile:
   delete_account_confirm: Sunteți sigur că doriți să vă ștergeți contul?
   delete_account_consequences: 'Această acțiune va:'
   delete_consequence_1: Șterge toate integrările dvs.
-  delete_consequence_2: Elimina accesul dvs. la canal
+  delete_consequence_2: Elimina accesul dvs. la chiriaș
   delete_consequence_3: Șterge permanent toate datele dvs.
   confirm_delete: Da, ștergeți contul
   api_token: Token API
