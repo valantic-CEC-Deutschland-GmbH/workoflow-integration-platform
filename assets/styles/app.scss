@@ -428,7 +428,7 @@ body {
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
         min-width: 250px;
-        max-width: 350px;
+        width: max-content;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         z-index: 1000;
         
@@ -439,6 +439,7 @@ body {
           padding: var(--space-md) var(--space-lg);
           color: var(--text-secondary);
           text-decoration: none;
+          white-space: nowrap;
           transition: var(--transition);
           border-bottom: 1px solid var(--border-color);
           
