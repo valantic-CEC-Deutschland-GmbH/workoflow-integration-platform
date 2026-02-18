@@ -8,10 +8,10 @@ nav:
   general: Allgemein
   skills: Skills
   files: Dateien
-  organisation: Kanal
+  organisation: Mandanteneinstellungen
   profile: Profil
   logout: Abmelden
-  channel: Kanal
+  channel: Mandanteneinstellungen
   members: Mitglieder
   audit_log: Audit-Protokoll
   release_notes: Versionshinweise
@@ -109,42 +109,28 @@ organisation:
     user_not_found: Benutzer muss sich zuerst bei Workoflow registrieren.
 
 channel:
-  title: Kanal
-  management: Kanalverwaltung
-  management.description: Erstellen und verwalten Sie Ihre Kanäle
+  title: Mandanteneinstellungen
+  management: Mandantenverwaltung
+  management.description: Erstellen und verwalten Sie Ihre Mandanten
   create:
-    button: Neuen Kanal erstellen
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
-  uuid: Kanal-UUID
+    button: Neuen Mandanten erstellen
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
+  uuid: Mandanten-UUID
   uuid_help: Diese UUID wird für die API-Endpunkte verwendet
   integration_api_help: Verwenden Sie diese API-URL, um AI-Agenten (z.B. n8n) mit Ihren Integrationen zu verbinden
   save: Speichern
   invite_member: Mitglied einladen
   invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
   workflow_user_id: Workoflow Benutzer-ID
-  organisation_name: Kanalname
-  channel_settings: Kanaleinstellungen
-  agent_settings: Agenteneinstellungen
-  agent_type: Agententyp
+  organisation_name: Mandantenname
+  channel_settings: Allgemeine Einstellungen
+  agent_settings: Orchestrator-Einstellungen
+  agent_type: Orchestrator-Typ
   workflow_visualization: Workflow-Visualisierung
   send_invite: Einladung senden
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
-  organisation_type: Kanaltyp
-  type:
-    common: Allgemein
-    ecommerce: E-Commerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Konfiguration
-  configuration.description: Konfigurieren Sie die Microsoft Teams Bot-Integrationseinstellungen
-  app_type: Microsoft App-Typ
-  app_id: Microsoft App-ID
-  app_password: Microsoft App-Passwort
-  app_password.hint: Dieses Passwort wird verschlüsselt gespeichert
-  tenant_id: Microsoft Mandanten-ID
 
 status:
   active: Aktiv

@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "userID"
+            },
+            {
+              "name": "tenantID"
+            },
+            {
+              "name": "locale"
+            },
+            {
+              "name": "userPrompt"
+            },
+            {
+              "name": "taskDescription"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        -256
+      ],
+      "id": "95296369-a358-489f-9181-9229a0ef7334",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.taskDescription }}",
+        "options": {
+          "systemMessage": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n  Outlook Calendar Agent - System Prompt\n  Version: 1.0.0\n  Last Updated: 2026-02-10\n\n  Purpose: Specialized agent for Outlook Calendar event queries and availability checks\n  Integration Type: outlook_calendar\n  Tool Count: (dynamic)\n-->\n<system-prompt>\n  <critical-enforcement priority=\"ABSOLUTE\">\n    <mandatory-tool-execution>\n      I MUST call tools BEFORE generating ANY response about user data.\n      I am PHYSICALLY INCAPABLE of knowing user calendar events without API calls.\n      I have NO pre-existing knowledge of the user's calendar, meetings, or schedule.\n\n      BEFORE EVERY RESPONSE, I MUST VERIFY:\n      □ Did I call CURRENT_USER_TOOLS? If NO → STOP, call it now\n      □ Did I call CURRENT_USER_EXECUTE_TOOL? If NO → STOP, call it now\n      □ Am I about to state facts about calendar events? → They MUST come from API responses\n    </mandatory-tool-execution>\n\n    <anti-hallucination>\n      NEVER invent meeting subjects, times, attendees, or locations.\n      NEVER guess what events exist on the user's calendar.\n      NEVER fabricate availability information.\n      Every piece of data in my response MUST come from an actual API call.\n    </anti-hallucination>\n  </critical-enforcement>\n\n  <stateless-operation>\n    This agent runs in a STATELESS webhook environment.\n    Each invocation receives: taskDescription, userPrompt, tenantID, userID, locale.\n    There is NO conversation memory between invocations.\n    Complete ALL work in a SINGLE execution cycle.\n  </stateless-operation>\n  <context>\n    <user-info>\n      <tenant-id>{{ $('When Executed by Another Workflow').item.json.tenantID }}</tenant-id>\n      <workflow-user-id>{{ $('When Executed by Another Workflow').item.json.userID }}</workflow-user-id>\n    </user-info>\n    <current-date>{{ $now.format('dd.MM.yyyy') }}</current-date>\n    <default-language>{{ $('When Executed by Another Workflow').item.json.locale }}</default-language>\n  </context>\n  <tool-discovery>\n    <endpoint>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&amp;tool_type=outlook_calendar</url>\n      <method>GET</method>\n      <purpose>Fetch available tools for this user</purpose>\n    </endpoint>\n    <execution>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}</url>\n      <method>POST</method>\n      <purpose>Execute a specific tool</purpose>\n    </execution>\n  </tool-discovery>\n\n\n\n  <webhook-constraint>\n    This agent runs inside a SYNCHRONOUS webhook.\n    Return ONLY completed results. Use PAST TENSE (\"I found 3 meetings...\" not \"Let me check...\").\n    Execution order: discover tools → execute query → format response → return.\n  </webhook-constraint>\n\n  <data-first-mandate>\n    For ANY question about calendar events or availability:\n    1. FIRST query the calendar via API\n    2. THEN answer based on actual results\n    NEVER answer schedule questions from general knowledge.\n  </data-first-mandate>\n\n  <n8n-tool-usage>\n    <discover>\n      Call CURRENT_USER_TOOLS to get available outlook_calendar_* tools with integration_id suffix.\n    </discover>\n    <execute>\n      Call CURRENT_USER_EXECUTE_TOOL with the discovered tool name and parameters.\n      Tool names follow pattern: outlook_calendar_list_events_{integration_id}, outlook_calendar_get_event_{integration_id}, etc.\n    </execute>\n  </n8n-tool-usage>\n\n  <calendar-query-guide>\n    <datetime-format>\n      All datetime parameters use ISO 8601 format:\n      • Date only (start of day): \"2026-02-10T00:00:00Z\"\n      • Date with time: \"2026-02-10T14:30:00Z\"\n      • With timezone offset: \"2026-02-10T14:30:00+01:00\"\n      • End of day: \"2026-02-10T23:59:59Z\"\n    </datetime-format>\n\n    <date-interpretation>\n      When user says \"today\" → use current date from taskDescription context\n      When user says \"tomorrow\" → current date + 1 day\n      When user says \"this week\" → Monday 00:00 to Friday 23:59 (or Sunday if full week)\n      When user says \"next Tuesday\" → calculate the next Tuesday date\n      Always construct proper ISO 8601 date ranges.\n    </date-interpretation>\n\n    <tool-selection>\n      \"What meetings do I have tomorrow?\" → outlook_calendar_list_events (date range: tomorrow 00:00 to 23:59)\n      \"When is my next standup?\" → outlook_calendar_search (query: \"standup\")\n      \"Is Sarah available Tuesday?\" → outlook_calendar_check_availability (email, Tuesday range)\n      \"Show details of the project review\" → outlook_calendar_search → outlook_calendar_get_event\n      \"What calendars do I have?\" → outlook_calendar_list_calendars\n    </tool-selection>\n\n    <recurring-events>\n      Use outlook_calendar_list_events (calendarView) for date range queries — it automatically\n      expands recurring events into individual occurrences. The search endpoint does NOT expand\n      recurring events, so prefer calendarView for \"what's on my calendar\" questions.\n    </recurring-events>\n\n    <availability-check>\n      The outlook_calendar_check_availability tool returns free/busy status only.\n      It does NOT reveal event details of other people — just whether they are free, busy,\n      tentative, or out of office. This respects privacy.\n      Use this when the user asks \"Is X available?\" or \"When can we meet?\"\n    </availability-check>\n  </calendar-query-guide>\n\n  <privacy-rules>\n    <rule>This integration is READ-ONLY — it cannot create, modify, or delete events</rule>\n    <rule>Availability checks only reveal free/busy status, not event details of other users</rule>\n    <rule>Never fabricate calendar data or meeting information</rule>\n  </privacy-rules>\n\n  <output-format>\n    <critical>\n      Return EXACTLY this structure as a JSON object:\n\n      {\n      \"output\": \"Your message text here (in past tense)\",\n      \"attachment\": null\n      }\n\n      RULES:\n      1. Return a JSON object, NOT a JSON string\n      2. Use standard JSON escaping (\\\", \\n, \\\\)\n      3. \"attachment\" is always null for Outlook Calendar agent\n      4. Always include subject, start/end time, and location for each event\n      5. Format times in a human-readable way (e.g., \"10:00 - 11:00\" not raw ISO)\n      6. Use past tense (\"I found 3 meetings...\" not \"Let me check...\")\n    </critical>\n  </output-format>\n\n  <core-principle>\n    You are a helpful assistant that makes calendar management and scheduling easier.\n    Query the user's calendar, check availability, and present results clearly.\n    ALWAYS format dates and times in a human-readable way.\n    For event lists, include subject, time, location, and online meeting info.\n    NEVER fabricate calendar data — every field must come from API responses.\n    Complete ALL work before responding, and ALWAYS use past tense.\n  </core-principle>\n</system-prompt>\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        -256
+      ],
+      "id": "5b2e80f2-b65e-410f-9e97-3176c150207c",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -80
+      ],
+      "id": "982e871e-6932-4645-836b-45d2bdb01348",
+      "name": "workoflow-proxy1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "cLd5WshSqySpWGKz",
+          "name": "azure-open-ai-proxy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Always call this tool FIRST to understand what Outlook Calendar tools are available for this user. This returns a dynamic list of tools based on the user's Outlook Calendar integration configuration. The response will show you which tools you can execute via CURRENT_USER_EXECUTE_TOOL. If the tools array is empty, the user hasn't configured a Outlook Calendar integration yet.",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&tool_type=outlook_calendar",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        64
+      ],
+      "id": "eed9de93-425e-41e4-b1dd-27bb28db8fde",
+      "name": "CURRENT_USER_TOOLS1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Execute a Outlook Calendar tool after discovering available tools with CURRENT_USER_TOOLS. You must specify the tool_id from the discovery response and provide all required parameters as strings. Analyze the tool's parameter schema from CURRENT_USER_TOOLS to know which parameters to include.",
+        "method": "POST",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tool_id\": \"{{ $fromAI('toolId', 'The exact tool_id from CURRENT_USER_TOOLS response (e.g., outlook_calendar_search_123)', 'string') }}\",\n  \"parameters\": {{ JSON.stringify($fromAI('parameters', 'Tool parameters as a JSON object. All values must be strings, not numbers. Refer to the tool schema from CURRENT_USER_TOOLS to know which parameters are required.', 'json')) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        64
+      ],
+      "id": "481709b0-d2b8-40a9-b373-3bcb1cfa25f0",
+      "name": "CURRENT_USER_EXECUTE_TOOL1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        []
+      ]
+    },
+    "workoflow-proxy1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_TOOLS1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_EXECUTE_TOOL1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "userID": "asjgajsjgasjj",
+        "tenantID": "0cd3a714-adc1-4540-bd08-7316a80b34f3",
+        "locale": "de",
+        "userPrompt": "test",
+        "taskDescription": "gg"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "c05075230b6e7924fad6850755c864f4945f3a365e0e5e0749c41c356f32c0bc"
+  }
+}

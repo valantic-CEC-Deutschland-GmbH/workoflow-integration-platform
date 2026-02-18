@@ -8,10 +8,10 @@ nav:
   general: Bendra informacija
   skills: Įgūdžiai
   files: Failai
-  organisation: Kanalas
+  organisation: Nuomininko nustatymai
   profile: Profilis
   logout: Atsijungti
-  channel: Kanalas
+  channel: Nuomininko nustatymai
   members: Nariai
   audit_log: Audito žurnalas
   release_notes: Leidimo pastabos
@@ -109,42 +109,28 @@ organisation:
     user_not_found: Vartotojas pirmiausia turi užsiregistruoti Workoflow.
 
 channel:
-  title: Kanalas
-  management: Kanalų valdymas
-  management.description: Kurkite ir valdykite savo kanalus
+  title: Nuomininko nustatymai
+  management: Nuomininkų valdymas
+  management.description: Kurkite ir valdykite savo nuomininkus
   create:
-    button: Sukurti naują kanalą
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
-  uuid: Kanalo UUID
+    button: Sukurti naują nuomininką
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
+  uuid: Nuomininko UUID
   uuid_help: Šis UUID naudojamas API galiniams taškams
   integration_api_help: Naudokite šį API URL AI agentams (pvz. n8n) prijungti prie jūsų integracijų
   save: Išsaugoti
   invite_member: Pakviesti narį
   invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
   workflow_user_id: Workoflow vartotojo ID
-  organisation_name: Kanalo pavadinimas
-  channel_settings: Kanalo nustatymai
-  agent_settings: Agento nustatymai
-  agent_type: Agento tipas
+  organisation_name: Nuomininko pavadinimas
+  channel_settings: Bendrieji nustatymai
+  agent_settings: Orkestratoriaus nustatymai
+  agent_type: Orkestratoriaus tipas
   workflow_visualization: Darbo eigos vizualizacija
   send_invite: Siųsti kvietimą
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
-  organisation_type: Kanalo tipas
-  type:
-    common: Bendras
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams konfigūracija
-  configuration.description: Konfigūruokite Microsoft Teams boto integracijos nustatymus
-  app_type: Microsoft programos tipas
-  app_id: Microsoft programos ID
-  app_password: Microsoft programos slaptažodis
-  app_password.hint: Šis slaptažodis bus saugomas užšifruotai
-  tenant_id: Microsoft nuomininko ID
 
 status:
   active: Aktyvus

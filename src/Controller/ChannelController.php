@@ -88,30 +88,6 @@ class ChannelController extends AbstractController
             $organisation->setEncryptedN8nApiKey($encryptedKey);
         }
 
-        // Handle organisation type
-        if (isset($data['organisation_type'])) {
-            $organisation->setOrganisationType($data['organisation_type']);
-        }
-
-        // Handle MS Teams fields
-        if (isset($data['microsoft_app_type'])) {
-            $organisation->setMicrosoftAppType($data['microsoft_app_type']);
-        }
-
-        if (isset($data['microsoft_app_id'])) {
-            $organisation->setMicrosoftAppId($data['microsoft_app_id']);
-        }
-
-        // Handle encrypted MS Teams password
-        if (isset($data['microsoft_app_password']) && !empty($data['microsoft_app_password'])) {
-            $encryptedPassword = $this->encryptionService->encrypt($data['microsoft_app_password']);
-            $organisation->setEncryptedMicrosoftAppPassword($encryptedPassword);
-        }
-
-        if (isset($data['microsoft_app_tenant_id'])) {
-            $organisation->setMicrosoftAppTenantId($data['microsoft_app_tenant_id']);
-        }
-
         // Update UserOrganisation fields
         if ($userOrganisation && isset($data['system_prompt'])) {
             $userOrganisation->setSystemPrompt($data['system_prompt']);

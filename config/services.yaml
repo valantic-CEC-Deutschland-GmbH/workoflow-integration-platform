@@ -64,6 +64,11 @@ services:
             $router: '@router'
             $logger: '@logger'
 
+    App\Controller\TenantApiController:
+        arguments:
+            $apiAuthUser: '%app.api_auth_user%'
+            $apiAuthPassword: '%app.api_auth_password%'
+
     App\Controller\RegisterApiController:
         arguments:
             $apiAuthUser: '%env(API_AUTH_USER)%'

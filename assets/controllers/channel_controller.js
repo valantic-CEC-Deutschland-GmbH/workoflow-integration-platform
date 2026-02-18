@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal', 'organisationType', 'msteamsConfigSection'];
+    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal'];
 
     connect() {
         console.log('Channel controller connected');
@@ -46,23 +46,6 @@ export default class extends Controller {
             }
             if (this.hasWorkflowUrlGroupTarget) {
                 this.workflowUrlGroupTarget.style.display = 'none';
-            }
-        }
-    }
-
-    // Called when organisation type changes
-    onOrganisationTypeChange(event) {
-        const organisationType = event.target.value;
-
-        if (organisationType === 'MS Teams') {
-            // Show MS Teams configuration section
-            if (this.hasMsteamsConfigSectionTarget) {
-                this.msteamsConfigSectionTarget.style.display = 'block';
-            }
-        } else {
-            // Hide MS Teams configuration section
-            if (this.hasMsteamsConfigSectionTarget) {
-                this.msteamsConfigSectionTarget.style.display = 'none';
             }
         }
     }

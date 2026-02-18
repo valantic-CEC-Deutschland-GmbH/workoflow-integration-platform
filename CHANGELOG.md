@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-18
+
+### Added
+- **Tenant Settings API** — New `/api/tenant/{uuid}/settings` endpoint allows the bot to fetch tenant-specific webhook URLs and configuration dynamically, enabling true multi-tenancy instead of a single shared webhook URL
+
+### Changed
+- **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose
+
+### Fixed
+- **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail
+
+### Removed
+- **MS Teams Configuration section** — Removed the Microsoft App Type, App ID, App Password, and Tenant ID fields from the Tenant Settings page; these per-bot-deployment settings belong in the bot's environment configuration
+- **Organisation Type dropdown** — Removed the Channel Type selector (Common / eCommerce / MS Teams) as it is no longer needed
+
 ## 2026-02-17
 
 ### Added

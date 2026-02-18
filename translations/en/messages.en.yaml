@@ -8,10 +8,10 @@ nav:
   general: General
   skills: Skills
   files: Files
-  organisation: Channel
+  organisation: Tenant Settings
   profile: Profile
   logout: Logout
-  channel: Channel
+  channel: Tenant Settings
   members: Members
   audit_log: Audit Log
   release_notes: Release Notes
@@ -109,42 +109,28 @@ organisation:
     user_not_found: User must register with Workoflow first.
 
 channel:
-  title: Channel
-  management: Channel Management
-  management.description: Create and manage your channels
+  title: Tenant Settings
+  management: Tenant Management
+  management.description: Create and manage your tenants
   create:
-    button: Create New Channel
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
-  uuid: Channel UUID
+    button: Create New Tenant
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
+  uuid: Tenant UUID
   uuid_help: This UUID is used for the API endpoints
   integration_api_help: Use this API URL to connect AI agents (e.g. n8n) to your integrations
   save: Save
   invite_member: Invite Member
   invite_help: The user must register with Workoflow first
   workflow_user_id: Workoflow User ID
-  organisation_name: Channel Name
-  channel_settings: Channel Settings
-  agent_settings: Agent Settings
-  agent_type: Agent Type
+  organisation_name: Tenant Name
+  channel_settings: General Settings
+  agent_settings: Orchestrator Settings
+  agent_type: Orchestrator Type
   workflow_visualization: Workflow Visualization
   send_invite: Send Invite
   make_admin: Make Admin
   make_member: Make Member
-  organisation_type: Channel Type
-  type:
-    common: Common
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Configuration
-  configuration.description: Configure Microsoft Teams bot integration settings
-  app_type: Microsoft App Type
-  app_id: Microsoft App ID
-  app_password: Microsoft App Password
-  app_password.hint: This password will be stored encrypted for security
-  tenant_id: Microsoft Tenant ID
 
 status:
   active: Active

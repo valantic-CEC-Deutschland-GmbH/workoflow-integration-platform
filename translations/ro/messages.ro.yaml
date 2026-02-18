@@ -8,10 +8,10 @@ nav:
   general: General
   skills: Abilități
   files: Fișiere
-  organisation: Canal
+  organisation: Setări chiriaș
   profile: Profil
   logout: Deconectare
-  channel: Canal
+  channel: Setări chiriaș
   members: Membri
   audit_log: Jurnal de audit
   release_notes: Note de lansare
@@ -109,42 +109,28 @@ organisation:
     user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.
 
 channel:
-  title: Canal
-  management: Gestionarea canalelor
-  management.description: Creați și gestionați canalele dvs.
+  title: Setări chiriaș
+  management: Gestionarea chiriașilor
+  management.description: Creați și gestionați chiriașii dvs.
   create:
-    button: Creați canal nou
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
-  uuid: UUID canal
+    button: Creați chiriaș nou
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
+  uuid: UUID chiriaș
   uuid_help: Acest UUID este utilizat pentru endpoint-urile API
   integration_api_help: Utilizați acest URL API pentru a conecta agenții AI (de ex. n8n) la integrările dvs.
   save: Salvează
   invite_member: Invitați membru
   invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
   workflow_user_id: ID utilizator Workoflow
-  organisation_name: Nume canal
-  channel_settings: Setări canal
-  agent_settings: Setări agent
-  agent_type: Tip agent
+  organisation_name: Nume chiriaș
+  channel_settings: Setări generale
+  agent_settings: Setări orchestrator
+  agent_type: Tip orchestrator
   workflow_visualization: Vizualizare flux de lucru
   send_invite: Trimiteți invitația
   make_admin: Faceți administrator
   make_member: Faceți membru
-  organisation_type: Tip canal
-  type:
-    common: Comun
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: Configurare MS Teams
-  configuration.description: Configurați setările de integrare a botului Microsoft Teams
-  app_type: Tipul aplicației Microsoft
-  app_id: ID aplicație Microsoft
-  app_password: Parolă aplicație Microsoft
-  app_password.hint: Această parolă va fi stocată criptată pentru securitate
-  tenant_id: ID chiriaș Microsoft
 
 status:
   active: Activ
