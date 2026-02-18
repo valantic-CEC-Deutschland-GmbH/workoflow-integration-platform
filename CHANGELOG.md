@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-18
 
+### Changed
+- **Projektron skill renamed to "BCS (Projektron)"** — The skill now displays as "BCS (Projektron)" throughout the platform, reflecting that Projektron is the vendor and BCS (Business Coordination Software) is the product name
+
+### Fixed
+- **Flash messages now display translated text** — Status messages (e.g., after changing a member's role) now show properly translated text instead of raw translation keys like "organisation.member.role_updated"
+
 ### Removed
 - **Duplicate skill chips bar on dashboard** — The "Your agent can work with" section has been removed since it duplicated the Recent Skills section below
 - **Technical API details from dashboard** — The collapsible API & Technical Details section has been moved off the dashboard for a cleaner experience

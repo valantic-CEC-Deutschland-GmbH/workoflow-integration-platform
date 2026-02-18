@@ -249,7 +249,7 @@ integration:
   add_another: Adăugați alt %name%
   add_another_desc: Conectați o altă instanță a acestei integrări
   experimental_notice: Această abilitate este încă în dezvoltare. Funcționalitățile se pot schimba și unele funcții ar putea să nu funcționeze conform așteptărilor.
-  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea Projektron. Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
+  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea BCS (Projektron). Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
   add_jira: Adăugați instanță Jira
   add_confluence: Adăugați instanță Confluence
   add_sharepoint: Adăugați instanță SharePoint

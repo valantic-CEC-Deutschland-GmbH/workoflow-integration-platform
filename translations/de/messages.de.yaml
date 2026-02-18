@@ -249,7 +249,7 @@ integration:
   add_another: Weitere %name% hinzufügen
   add_another_desc: Eine weitere Instanz dieser Integration verbinden
   experimental_notice: Dieser Skill befindet sich noch in der Entwicklung. Funktionen können sich ändern und einige Funktionalitäten funktionieren möglicherweise nicht wie erwartet.
-  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre Projektron-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
+  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre BCS (Projektron)-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
   add_jira: Jira-Instanz hinzufügen
   add_confluence: Confluence-Instanz hinzufügen
   add_sharepoint: SharePoint-Instanz hinzufügen

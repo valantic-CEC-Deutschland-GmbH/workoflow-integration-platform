@@ -249,7 +249,7 @@ integration:
   add_another: Pridėti kitą %name%
   add_another_desc: Prijungti kitą šios integracijos egzempliorių
   experimental_notice: Šis įgūdis vis dar kuriamas. Funkcijos gali keistis ir kai kurios galimybės gali neveikti taip, kaip tikėtasi.
-  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate Projektron sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
+  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate BCS (Projektron) sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
   add_jira: Pridėti Jira egzempliorių
   add_confluence: Pridėti Confluence egzempliorių
   add_sharepoint: Pridėti SharePoint egzempliorių

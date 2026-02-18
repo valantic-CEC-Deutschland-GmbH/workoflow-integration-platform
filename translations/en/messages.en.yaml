@@ -249,7 +249,7 @@ integration:
   add_another: Add Another %name%
   add_another_desc: Connect another instance of this integration
   experimental_notice: This skill is still in development. Features may change and some functionality might not work as expected.
-  projektron_session_notice: These values automatically expire after a day, or if you recreate your Projektron session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
+  projektron_session_notice: These values automatically expire after a day, or if you recreate your BCS (Projektron) session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
   add_jira: Add Jira Instance
   add_confluence: Add Confluence Instance
   add_sharepoint: Add SharePoint Instance
