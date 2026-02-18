@@ -5,7 +5,7 @@ common:
   optional: neprivaloma
 
 nav:
-  general: Bendra informacija
+  general: Mano agentas
   skills: Įgūdžiai
   files: Failai
   organisation: Nuomininko nustatymai
@@ -68,18 +68,25 @@ auth:
     privacy: Prisijungdami sutinkate su mūsų privatumo politika.
 
 general:
-  title: Bendra informacija
+  title: Mano agentas
   welcome: Sveiki, %name%!
+  agent_ready_setup: "Jūsų AI agentas paruoštas konfigūravimui."
+  agent_ready: "Jūsų AI agentas turi %count% aktyvų(-ius) įgūdį(-žius)."
+  agent_can_use: "Jūsų agentas gali dirbti su:"
+  onboarding_title: "Suteikite agentui pirmąjį įgūdį"
+  onboarding_description: "Įgūdžiai sujungia jūsų AI agentą su kasdien naudojamais įrankiais. Pridėkite įgūdį, kad pradėtumėte."
+  add_first_skill: "Pridėti pirmąjį įgūdį"
+  manage_skills_title: "Agento įgūdžiai"
+  manage_skills_description: "Konfigūruokite, kokias paslaugas ir galimybes gali naudoti jūsų AI agentas."
+  manage_agent_skills: "Valdyti agento įgūdžius"
+  recent_skills: "Sukonfigūruoti įgūdžiai"
+  view_all: "Peržiūrėti visus"
+  technical_details: "API ir techniniai duomenys"
   organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL
   workflow_user_id: Nuomininkui specifinis ID
   copy_curl_command: Kopijuoti curl komandą įrankiams
   copied: Nukopijuota!
-  integrations_count: Integracijos
-  active_integrations: Aktyvios integracijos
-  your_role: Jūsų rolė
-  manage_integrations: Valdyti integracijas
-  recent_integrations: Naujausios integracijos
   never: Niekada
 
 organisation:

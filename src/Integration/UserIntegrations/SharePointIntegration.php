@@ -327,4 +327,9 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/sharepoint-logo.svg';
+    }
 }

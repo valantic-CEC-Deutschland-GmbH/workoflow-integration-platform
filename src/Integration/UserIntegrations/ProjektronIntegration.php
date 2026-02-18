@@ -223,6 +223,11 @@ class ProjektronIntegration implements PersonalizedSkillInterface
         return null;
     }
 
+    public function getLogoPath(): string
+    {
+        return '/images/logos/Projektron_Logo.png';
+    }
+
     private function getAllTasks(array $credentials): array
     {
         $tasks = $this->projektronService->getAllTasks($credentials);

@@ -390,4 +390,9 @@ class TrelloIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/trello-logo.png';
+    }
 }

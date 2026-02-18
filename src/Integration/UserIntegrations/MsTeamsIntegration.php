@@ -286,6 +286,11 @@ class MsTeamsIntegration implements PersonalizedSkillInterface
         return null;
     }
 
+    public function getLogoPath(): string
+    {
+        return '/images/logos/msteams-icon.svg';
+    }
+
     private function persistRefreshedCredentials(int $configId, array $credentials): void
     {
         try {

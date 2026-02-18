@@ -667,4 +667,9 @@ class HubSpotIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/hubspot-icon.svg';
+    }
 }

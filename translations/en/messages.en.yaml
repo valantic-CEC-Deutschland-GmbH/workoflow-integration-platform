@@ -5,7 +5,7 @@ common:
   optional: optional
 
 nav:
-  general: General
+  general: My Agent
   skills: Skills
   files: Files
   organisation: Tenant Settings
@@ -68,18 +68,25 @@ auth:
     privacy: By signing in, you agree to our privacy policy.
 
 general:
-  title: General
+  title: My Agent
   welcome: Welcome, %name%!
+  agent_ready_setup: "Your AI Agent is ready to be set up."
+  agent_ready: "Your AI Agent has %count% active skill(s)."
+  agent_can_use: "Your agent can work with:"
+  onboarding_title: "Give Your Agent Its First Skill"
+  onboarding_description: "Skills connect your AI agent to the tools you use every day. Add a skill to get started."
+  add_first_skill: "Add Your First Skill"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Configure which services and capabilities your AI agent can use."
+  manage_agent_skills: "Manage Agent Skills"
+  recent_skills: "Configured Skills"
+  view_all: "View All"
+  technical_details: "API & Technical Details"
   organisation: Your Tenant
   integration_api_url: Integration API URL
   workflow_user_id: Tenant Specific ID
   copy_curl_command: Copy curl command for tools
   copied: Copied!
-  integrations_count: Integrations
-  active_integrations: Active Integrations
-  your_role: Your Role
-  manage_integrations: Manage Integrations
-  recent_integrations: Recent Integrations
   never: Never
 
 organisation:

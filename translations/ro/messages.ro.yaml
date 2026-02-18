@@ -5,7 +5,7 @@ common:
   optional: opțional
 
 nav:
-  general: General
+  general: Agentul meu
   skills: Abilități
   files: Fișiere
   organisation: Setări chiriaș
@@ -68,18 +68,25 @@ auth:
     privacy: Prin autentificare, sunteți de acord cu politica noastră de confidențialitate.
 
 general:
-  title: General
+  title: Agentul meu
   welcome: Bine ați venit, %name%!
+  agent_ready_setup: "Agentul dvs. AI este gata de configurare."
+  agent_ready: "Agentul dvs. AI are %count% abilitate(i) activă(e)."
+  agent_can_use: "Agentul dvs. poate lucra cu:"
+  onboarding_title: "Oferiți agentului prima abilitate"
+  onboarding_description: "Abilitățile conectează agentul AI la instrumentele pe care le folosiți zilnic. Adăugați o abilitate pentru a începe."
+  add_first_skill: "Adăugați prima abilitate"
+  manage_skills_title: "Abilități Agent"
+  manage_skills_description: "Configurați ce servicii și capabilități poate folosi agentul AI."
+  manage_agent_skills: "Gestionați abilitățile agentului"
+  recent_skills: "Abilități configurate"
+  view_all: "Vedeți toate"
+  technical_details: "API și detalii tehnice"
   organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare
   workflow_user_id: ID specific chiriașului
   copy_curl_command: Copiați comanda curl pentru instrumente
   copied: Copiat!
-  integrations_count: Integrări
-  active_integrations: Integrări active
-  your_role: Rolul dvs.
-  manage_integrations: Gestionați integrările
-  recent_integrations: Integrări recente
   never: Niciodată
 
 organisation:

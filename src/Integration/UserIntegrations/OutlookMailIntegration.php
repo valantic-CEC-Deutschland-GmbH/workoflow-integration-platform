@@ -185,6 +185,11 @@ class OutlookMailIntegration implements PersonalizedSkillInterface
         return null;
     }
 
+    public function getLogoPath(): string
+    {
+        return '/images/logos/outlook-mail-icon.svg';
+    }
+
     private function persistRefreshedCredentials(int $configId, array $credentials): void
     {
         try {

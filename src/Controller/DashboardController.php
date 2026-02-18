@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Organisation;
+use App\Integration\IntegrationRegistry;
 use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,7 @@ class DashboardController extends AbstractController
 {
     #[Route('/general', name: 'app_general')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository): Response
+    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository, IntegrationRegistry $integrationRegistry): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -42,11 +43,27 @@ class DashboardController extends AbstractController
         $workflowUserId = $userOrganisation ? $userOrganisation->getWorkflowUserId() : null;
         $integrations = $integrationConfigRepository->findByOrganisationAndWorkflowUser($organisation, $workflowUserId);
 
+        // Collect unique configured skill types with their logo paths for the capability chips
+        $configuredSkills = [];
+        foreach ($integrations as $integration) {
+            $type = $integration->getIntegrationType();
+            if (!isset($configuredSkills[$type])) {
+                $registeredIntegration = $integrationRegistry->get($type);
+                $configuredSkills[$type] = [
+                    'type' => $type,
+                    'name' => $integration->getName() ?? ucfirst((string) $type),
+                    'logoPath' => $registeredIntegration ? $registeredIntegration->getLogoPath() : '/images/logos/workoflow-logo.png',
+                ];
+            }
+        }
+
         return $this->render('dashboard/index.html.twig', [
             'user' => $user,
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'integrations' => $integrations,
+            'configuredSkills' => $configuredSkills,
+            'isOnboarding' => count($integrations) === 0,
         ]);
     }
 

@@ -5,7 +5,7 @@ common:
   optional: optional
 
 nav:
-  general: Allgemein
+  general: Mein Agent
   skills: Skills
   files: Dateien
   organisation: Mandanteneinstellungen
@@ -68,18 +68,25 @@ auth:
     privacy: Mit der Anmeldung akzeptieren Sie unsere Datenschutzbestimmungen.
 
 general:
-  title: Allgemein
+  title: Mein Agent
   welcome: Willkommen, %name%!
+  agent_ready_setup: "Ihr KI-Agent ist bereit zur Einrichtung."
+  agent_ready: "Ihr KI-Agent hat %count% aktive(n) Skill(s)."
+  agent_can_use: "Ihr Agent kann arbeiten mit:"
+  onboarding_title: "Geben Sie Ihrem Agenten seinen ersten Skill"
+  onboarding_description: "Skills verbinden Ihren KI-Agenten mit den Tools, die Sie täglich nutzen. Fügen Sie einen Skill hinzu, um loszulegen."
+  add_first_skill: "Ersten Skill hinzufügen"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Konfigurieren Sie, welche Dienste und Fähigkeiten Ihr KI-Agent nutzen kann."
+  manage_agent_skills: "Agent Skills verwalten"
+  recent_skills: "Konfigurierte Skills"
+  view_all: "Alle anzeigen"
+  technical_details: "API & Technische Details"
   organisation: Ihr Mandant
   integration_api_url: Integration API URL
   workflow_user_id: Mandanten-spezifische ID
   copy_curl_command: curl-Befehl für /tools Endpunkt kopieren
   copied: Kopiert!
-  integrations_count: Integrationen
-  active_integrations: Aktive Integrationen
-  your_role: Ihre Rolle
-  manage_integrations: Integrationen verwalten
-  recent_integrations: Neueste Integrationen
   never: Nie
 
 organisation:

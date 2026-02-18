@@ -339,4 +339,9 @@ class CandisIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/candis-icon.svg';
+    }
 }

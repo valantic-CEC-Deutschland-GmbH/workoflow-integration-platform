@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-18
 
+### Changed
+- **Dashboard redesigned as "My Agent"** — The dashboard now focuses on your AI agent's skills instead of technical details, showing active skills at a glance with visual skill chips
+- **New onboarding experience** — New users see a welcoming prompt to add their first skill, guiding them to get started quickly
+- **Technical details collapsed by default** — API URLs and curl commands are now tucked behind an expandable section to reduce clutter
+- **"General" renamed to "My Agent"** — The navigation item now reflects the agent-centric purpose of the dashboard
+- **Integration logos are now defined per skill** — Each skill type provides its own logo path, eliminating hardcoded logo maps and making the system easier to extend
+
 ### Added
 - **Manually add data to Files** — Create text files directly from the Files page without uploading from your device. Click "Manually add data", paste or type your content, and save it as a .txt file for your AI agent to use
 - **Files page header with explanation** — The Files page now includes a descriptive header explaining that uploaded files are used to train the AI agent via RAG, matching the style of the Skills page header
