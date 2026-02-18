@@ -16,7 +16,7 @@ use App\Entity\User;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/general', name: 'app_general')]
+    #[Route('/my-agent', name: 'app_my_agent')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository, IntegrationRegistry $integrationRegistry): Response
     {
@@ -100,7 +100,7 @@ class DashboardController extends AbstractController
                 );
 
                 $this->addFlash('success', 'organisation.created.success');
-                return $this->redirectToRoute('app_general');
+                return $this->redirectToRoute('app_my_agent');
             }
         }
 

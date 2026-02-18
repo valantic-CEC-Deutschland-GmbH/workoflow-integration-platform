@@ -45,19 +45,6 @@
                     {{ 'general.add_first_skill'|trans }}
                 </a>
             </div>
-        {% else %}
-            {# State B: Agent capabilities bar #}
-            <div class="agent-capabilities">
-                <span class="agent-capabilities-label">{{ 'general.agent_can_use'|trans }}</span>
-                <div class="agent-capabilities-chips">
-                    {% for skill in configuredSkills %}
-                        <span class="skill-chip">
-                            <img src="{{ asset(skill.logoPath) }}" alt="{{ skill.type }}" width="18" height="18">
-                            {{ skill.type|upper }}
-                        </span>
-                    {% endfor %}
-                </div>
-            </div>
         {% endif %}
 
         {# Zone 3 - Primary Action Card #}
@@ -103,82 +90,6 @@
             </div>
         {% endif %}
 
-        {# Zone 5 - Technical Details (collapsed by default) #}
-        {% if organisation %}
-            <div class="technical-details-section">
-                <button type="button" class="technical-details-toggle" id="techDetailsToggle">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="4 7 4 4 20 4 20 7"></polyline>
-                        <line x1="9" y1="20" x2="15" y2="20"></line>
-                        <line x1="12" y1="4" x2="12" y2="20"></line>
-                    </svg>
-                    {{ 'general.technical_details'|trans }}
-                    <svg class="toggle-chevron" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M6 9L1 4h10L6 9z"/>
-                    </svg>
-                </button>
-                <div class="technical-details-content" id="techDetailsContent" style="display: none;">
-                    <div class="tech-detail-row">
-                        <span class="tech-detail-label">{{ 'general.integration_api_url'|trans }}:</span>
-                        <code>{{ organisation.integrationApiUrl }}</code>
-                    </div>
-                    {% if userOrganisation and userOrganisation.workflowUserId %}
-                        <div class="tech-detail-row">
-                            <span class="tech-detail-label">{{ 'general.workflow_user_id'|trans }}:</span>
-                            <code>{{ userOrganisation.workflowUserId }}</code>
-                        </div>
-                        <div class="tech-detail-actions">
-                            <button type="button" id="copyCurlBtn" class="btn btn-secondary btn-sm">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                {{ 'general.copy_curl_command'|trans }}
-                            </button>
-                            <span id="copiedMessage" class="copied-message" style="display: none;">{{ 'general.copied'|trans }}</span>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        {% endif %}
-
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Technical details toggle
-    var toggle = document.getElementById('techDetailsToggle');
-    var content = document.getElementById('techDetailsContent');
-    if (toggle && content) {
-        toggle.addEventListener('click', function() {
-            var isHidden = content.style.display === 'none';
-            content.style.display = isHidden ? 'block' : 'none';
-            toggle.classList.toggle('is-open', isHidden);
-        });
-    }
-
-    // Curl copy button
-    var copyCurlBtn = document.getElementById('copyCurlBtn');
-    var copiedMessage = document.getElementById('copiedMessage');
-    if (copyCurlBtn) {
-        copyCurlBtn.addEventListener('click', function() {
-            var currentDomain = window.location.origin;
-            var orgUuid = '{{ organisation.uuid }}';
-            var workflowUserId = '{{ userOrganisation ? userOrganisation.workflowUserId : '' }}';
-            var apiUrl = currentDomain + '/api/integrations/' + orgUuid + '?workflow_user_id=' + workflowUserId;
-            var curlCommand = 'curl -X GET "' + apiUrl + '" \\\n  -H "Accept: application/json" \\\n  -H "Authorization: Basic YOUR_AUTH_TOKEN"';
-
-            navigator.clipboard.writeText(curlCommand).then(function() {
-                copiedMessage.style.display = 'inline';
-                setTimeout(function() {
-                    copiedMessage.style.display = 'none';
-                }, 2000);
-            }).catch(function(err) {
-                console.error('Failed to copy: ', err);
-            });
-        });
-    }
-});
-</script>
 {% endblock %}

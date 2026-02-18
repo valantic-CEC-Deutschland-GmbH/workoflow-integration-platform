@@ -112,7 +112,7 @@ class GoogleAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $targetUrl = $this->router->generate('app_general');
+        $targetUrl = $this->router->generate('app_my_agent');
         return new RedirectResponse($targetUrl);
     }
 
