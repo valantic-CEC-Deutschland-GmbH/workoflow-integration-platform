@@ -1735,6 +1735,16 @@ body {
     color: var(--text-muted);
     font-size: var(--text-sm);
   }
+
+  .view-all-link {
+    font-size: var(--text-sm);
+    color: var(--color-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 // Responsive
