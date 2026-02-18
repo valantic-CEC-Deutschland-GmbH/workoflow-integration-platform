@@ -440,6 +440,15 @@ file:
   upload_error: Failed to upload files
   upload_disabled_no_connection: Upload disabled - No connection to file storage
   connection_error_hint: Please ensure MinIO is running and accessible at the configured endpoint.
+  add_data: Manually add data
+  filename: Filename
+  filename_placeholder: my-data.txt
+  filename_help: Optional. A .txt extension will be added automatically if not provided.
+  content: Content
+  content_placeholder: Paste or type your text content here...
+  content_help: The text content that will be saved as a file for your AI agent to use.
+  save: Save
+  create_text_error: Failed to save text file
   deleted:
     success: File deleted successfully!
     error: Error deleting file.

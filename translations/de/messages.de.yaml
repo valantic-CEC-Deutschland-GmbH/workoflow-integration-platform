@@ -440,6 +440,15 @@ file:
   upload_error: Fehler beim Hochladen der Dateien
   upload_disabled_no_connection: Hochladen deaktiviert - Keine Verbindung zum Dateispeicher
   connection_error_hint: Bitte stellen Sie sicher, dass MinIO läuft und über den konfigurierten Endpunkt erreichbar ist.
+  add_data: Daten manuell hinzufügen
+  filename: Dateiname
+  filename_placeholder: meine-daten.txt
+  filename_help: Optional. Eine .txt-Endung wird automatisch hinzugefügt, falls nicht angegeben.
+  content: Inhalt
+  content_placeholder: Fügen Sie Ihren Textinhalt hier ein oder geben Sie ihn ein...
+  content_help: Der Textinhalt, der als Datei für Ihren KI-Agenten gespeichert wird.
+  save: Speichern
+  create_text_error: Textdatei konnte nicht gespeichert werden
   deleted:
     success: Datei erfolgreich gelöscht!
     error: Fehler beim Löschen der Datei.

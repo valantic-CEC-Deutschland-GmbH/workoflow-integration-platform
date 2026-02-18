@@ -440,6 +440,15 @@ file:
   upload_error: Nepavyko įkelti failų
   upload_disabled_no_connection: Įkėlimas išjungtas - Nėra ryšio su failų saugykla
   connection_error_hint: Įsitikinkite, kad MinIO veikia ir pasiekiamas sukonfigūruotame galiniame taške.
+  add_data: Pridėti duomenis rankiniu būdu
+  filename: Failo pavadinimas
+  filename_placeholder: mano-duomenys.txt
+  filename_help: Neprivaloma. .txt plėtinys bus pridėtas automatiškai, jei nepateiktas.
+  content: Turinys
+  content_placeholder: Įklijuokite arba įveskite tekstinį turinį čia...
+  content_help: Tekstinis turinys, kuris bus išsaugotas kaip failas jūsų AI agentui naudoti.
+  save: Išsaugoti
+  create_text_error: Nepavyko išsaugoti tekstinio failo
   deleted:
     success: Failas sėkmingai ištrintas!
     error: Klaida trinant failą.

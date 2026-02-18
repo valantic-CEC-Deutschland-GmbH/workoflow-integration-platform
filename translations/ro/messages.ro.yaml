@@ -440,6 +440,15 @@ file:
   upload_error: Încărcarea fișierelor a eșuat
   upload_disabled_no_connection: Încărcare dezactivată - Fără conexiune la stocarea fișierelor
   connection_error_hint: Vă rugăm să vă asigurați că MinIO rulează și este accesibil la endpoint-ul configurat.
+  add_data: Adăugați date manual
+  filename: Nume fișier
+  filename_placeholder: datele-mele.txt
+  filename_help: Opțional. O extensie .txt va fi adăugată automat dacă nu este specificată.
+  content: Conținut
+  content_placeholder: Lipiți sau scrieți conținutul text aici...
+  content_help: Conținutul text care va fi salvat ca fișier pentru agentul dvs. AI.
+  save: Salvează
+  create_text_error: Salvarea fișierului text a eșuat
   deleted:
     success: Fișier șters cu succes!
     error: Eroare la ștergerea fișierului.

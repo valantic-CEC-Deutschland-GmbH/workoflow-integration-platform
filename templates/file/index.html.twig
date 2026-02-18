@@ -9,9 +9,14 @@
         <div class="files-header">
             <div class="files-header-top">
                 <h1>{{ 'file.title'|trans }}</h1>
-                <button type="button" class="btn btn-primary" onclick="showUploadModal()" {% if not isConnected %}disabled title="{{ 'file.upload_disabled_no_connection'|trans|default('Upload disabled - No connection to file storage') }}"{% endif %}>
-                    {{ 'file.upload'|trans }}
-                </button>
+                <div class="files-header-actions">
+                    <button type="button" class="btn btn-secondary" onclick="showCreateTextModal()" {% if not isConnected %}disabled{% endif %}>
+                        {{ 'file.add_data'|trans }}
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="showUploadModal()" {% if not isConnected %}disabled title="{{ 'file.upload_disabled_no_connection'|trans|default('Upload disabled - No connection to file storage') }}"{% endif %}>
+                        {{ 'file.upload'|trans }}
+                    </button>
+                </div>
             </div>
             <div class="files-explanation">
                 <p>{{ 'file.explanation_p1'|trans }}</p>
@@ -100,6 +105,35 @@
             <button type="button" class="btn btn-primary" id="uploadBtn" disabled>
                 <span class="spinner hidden" id="uploadSpinner"></span>
                 {{ 'file.upload'|trans }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Create Text File Modal -->
+<div class="modal" id="createTextModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ 'file.add_data'|trans }}</h3>
+            <button type="button" class="modal-close" onclick="hideCreateTextModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="textFilename">{{ 'file.filename'|trans }}</label>
+                <input type="text" id="textFilename" class="form-control" placeholder="{{ 'file.filename_placeholder'|trans }}">
+                <small class="form-help">{{ 'file.filename_help'|trans }}</small>
+            </div>
+            <div class="form-group">
+                <label for="textContent">{{ 'file.content'|trans }}</label>
+                <textarea id="textContent" class="form-control" rows="12" placeholder="{{ 'file.content_placeholder'|trans }}" required></textarea>
+                <small class="form-help">{{ 'file.content_help'|trans }}</small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="hideCreateTextModal()">{{ 'action.cancel'|trans }}</button>
+            <button type="button" class="btn btn-primary" id="saveTextBtn" disabled>
+                <span class="spinner hidden" id="saveTextSpinner"></span>
+                {{ 'file.save'|trans }}
             </button>
         </div>
     </div>
@@ -210,6 +244,64 @@ uploadBtn.addEventListener('click', async () => {
     } finally {
         uploadBtn.disabled = false;
         document.getElementById('uploadSpinner').classList.add('hidden');
+    }
+});
+
+// Create Text File Modal
+function showCreateTextModal() {
+    document.getElementById('createTextModal').classList.add('show');
+}
+
+function hideCreateTextModal() {
+    document.getElementById('createTextModal').classList.remove('show');
+    document.getElementById('textFilename').value = '';
+    document.getElementById('textContent').value = '';
+    document.getElementById('saveTextBtn').disabled = true;
+}
+
+document.getElementById('createTextModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+        hideCreateTextModal();
+    }
+});
+
+const textContent = document.getElementById('textContent');
+const saveTextBtn = document.getElementById('saveTextBtn');
+
+textContent.addEventListener('input', () => {
+    saveTextBtn.disabled = textContent.value.trim() === '';
+});
+
+saveTextBtn.addEventListener('click', async () => {
+    const content = textContent.value.trim();
+    if (!content) return;
+
+    const filename = document.getElementById('textFilename').value.trim();
+    const formData = new FormData();
+    formData.append('content', content);
+    formData.append('filename', filename);
+
+    saveTextBtn.disabled = true;
+    document.getElementById('saveTextSpinner').classList.remove('hidden');
+
+    try {
+        const response = await fetch('{{ path('app_file_create_text') }}', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.error || '{{ 'file.create_text_error'|trans }}');
+        }
+    } catch (error) {
+        alert('{{ 'file.create_text_error'|trans }}');
+    } finally {
+        saveTextBtn.disabled = false;
+        document.getElementById('saveTextSpinner').classList.add('hidden');
     }
 });
 </script>

@@ -2660,6 +2660,12 @@ body {
     margin-bottom: var(--space-md);
   }
 
+  .files-header-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
   h1 {
     font-size: var(--text-3xl);
     margin: 0;
@@ -2990,6 +2996,11 @@ body {
       }
     }
     
+    textarea.form-control {
+      min-height: 250px;
+      resize: vertical;
+    }
+
     .form-help {
       margin-top: var(--space-sm);
       font-size: var(--text-xs);
