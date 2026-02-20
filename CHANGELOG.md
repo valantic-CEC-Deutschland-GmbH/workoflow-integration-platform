@@ -52,6 +52,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - **Microsoft integrations no longer break after client secret rotation** — SharePoint, MS Teams, Outlook Mail, and Outlook Calendar integrations now use the current server credentials when refreshing tokens, so existing users won't get errors after an Azure secret update
 
+## 2026-02-13
+
+### Fixed
+- SharePoint search now returns relevant internal policy documents instead of unrelated business contracts when asking about travel expenses, vacation policies, or other internal processes
+- Improved search result ranking: policy and guideline documents are now prioritized over documents that only incidentally mention search keywords
+- Fixed issue where city names in company addresses caused irrelevant results to appear (e.g., searching for "Mannheim travel" no longer returns every document with the company's Mannheim address)
+
 ## 2026-02-10
 
 ### Added
