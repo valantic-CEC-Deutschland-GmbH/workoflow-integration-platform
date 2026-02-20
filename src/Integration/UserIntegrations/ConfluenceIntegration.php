@@ -264,4 +264,9 @@ class ConfluenceIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/confluence-icon.svg';
+    }
 }

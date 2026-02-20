@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Organisation;
+use App\Integration\IntegrationRegistry;
 use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,9 +16,9 @@ use App\Entity\User;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/general', name: 'app_general')]
+    #[Route('/my-agent', name: 'app_my_agent')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository): Response
+    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository, IntegrationRegistry $integrationRegistry): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -28,7 +29,7 @@ class DashboardController extends AbstractController
         if (!$organisation) {
             // If user has no organisations at all, redirect to create
             if ($user->getOrganisations()->isEmpty()) {
-                return $this->redirectToRoute('app_channel_create');
+                return $this->redirectToRoute('app_tenant_create');
             }
             // If user has organisations but none selected, select the first one
             $organisation = $user->getOrganisations()->first();
@@ -42,15 +43,31 @@ class DashboardController extends AbstractController
         $workflowUserId = $userOrganisation ? $userOrganisation->getWorkflowUserId() : null;
         $integrations = $integrationConfigRepository->findByOrganisationAndWorkflowUser($organisation, $workflowUserId);
 
+        // Collect unique configured skill types with their logo paths for the capability chips
+        $configuredSkills = [];
+        foreach ($integrations as $integration) {
+            $type = $integration->getIntegrationType();
+            if (!isset($configuredSkills[$type])) {
+                $registeredIntegration = $integrationRegistry->get($type);
+                $configuredSkills[$type] = [
+                    'type' => $type,
+                    'name' => $integration->getName() ?? ucfirst((string) $type),
+                    'logoPath' => $registeredIntegration ? $registeredIntegration->getLogoPath() : '/images/logos/workoflow-logo.png',
+                ];
+            }
+        }
+
         return $this->render('dashboard/index.html.twig', [
             'user' => $user,
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'integrations' => $integrations,
+            'configuredSkills' => $configuredSkills,
+            'isOnboarding' => count($integrations) === 0,
         ]);
     }
 
-    #[Route('/channel/create', name: 'app_channel_create', methods: ['GET', 'POST'])]
+    #[Route('/tenant/create', name: 'app_tenant_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function createOrganisation(
         Request $request,
@@ -83,7 +100,7 @@ class DashboardController extends AbstractController
                 );
 
                 $this->addFlash('success', 'organisation.created.success');
-                return $this->redirectToRoute('app_general');
+                return $this->redirectToRoute('app_my_agent');
             }
         }
 

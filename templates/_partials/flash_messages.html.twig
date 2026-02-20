@@ -3,7 +3,7 @@
     {% for message in messages %}
         <div class="alert alert-{{ label }}" role="alert" data-controller="flash-message">
             <div class="alert-content">
-                <span class="alert-message">{{ message }}</span>
+                <span class="alert-message">{{ message|trans }}</span>
                 <button type="button" class="alert-close" data-action="click->flash-message#close" aria-label="Close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>

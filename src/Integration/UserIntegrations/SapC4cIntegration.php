@@ -1561,6 +1561,11 @@ class SapC4cIntegration implements PersonalizedSkillInterface
 HTML;
     }
 
+    public function getLogoPath(): string
+    {
+        return '/images/logos/SAP-Logo.svg';
+    }
+
     public function getSystemPrompt(?IntegrationConfig $config = null): string
     {
         return $this->twig->render('skills/prompts/sap_c4c.xml.twig', [

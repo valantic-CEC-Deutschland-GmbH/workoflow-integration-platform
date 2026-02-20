@@ -40,7 +40,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $scope = $request->query->get('scope', Prompt::SCOPE_PERSONAL);
@@ -91,7 +91,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = new Prompt();
@@ -132,7 +132,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = $this->promptRepository->findByUuid($uuid);
@@ -165,7 +165,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = $this->promptRepository->findByUuid($uuid);
@@ -213,7 +213,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = $this->promptRepository->findByUuid($uuid);
@@ -281,7 +281,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = $this->promptRepository->findByUuid($uuid);
@@ -317,7 +317,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $deletedPrompts = $this->promptRepository->findDeleted($organisation);
@@ -338,7 +338,7 @@ class PromptController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $prompt = $this->promptRepository->findByUuidIncludingDeleted($uuid);

@@ -5,13 +5,13 @@ common:
   optional: optional
 
 nav:
-  general: Allgemein
+  general: Mein Agent
   skills: Skills
   files: Dateien
-  organisation: Kanal
+  organisation: Mandanteneinstellungen
   profile: Profil
   logout: Abmelden
-  channel: Kanal
+  channel: Mandanteneinstellungen
   members: Mitglieder
   audit_log: Audit-Protokoll
   release_notes: Versionshinweise
@@ -68,83 +68,81 @@ auth:
     privacy: Mit der Anmeldung akzeptieren Sie unsere Datenschutzbestimmungen.
 
 general:
-  title: Allgemein
+  title: Mein Agent
   welcome: Willkommen, %name%!
-  organisation: Ihr Kanal
+  agent_ready_setup: "Ihr KI-Agent ist bereit zur Einrichtung."
+  agent_ready: "Ihr KI-Agent hat %count% aktive(n) Skill(s)."
+  agent_can_use: "Ihr Agent kann arbeiten mit:"
+  onboarding_title: "Geben Sie Ihrem Agenten seinen ersten Skill"
+  onboarding_description: "Skills verbinden Ihren KI-Agenten mit den Tools, die Sie täglich nutzen. Fügen Sie einen Skill hinzu, um loszulegen."
+  add_first_skill: "Ersten Skill hinzufügen"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Konfigurieren Sie, welche Dienste und Fähigkeiten Ihr KI-Agent nutzen kann."
+  manage_agent_skills: "Agent Skills verwalten"
+  recent_skills: "Konfigurierte Skills"
+  view_all: "Alle anzeigen"
+  technical_details: "API & Technische Details"
+  organisation: Ihr Mandant
   integration_api_url: Integration API URL
-  workflow_user_id: Kanal-spezifische ID
+  workflow_user_id: Mandanten-spezifische ID
   copy_curl_command: curl-Befehl für /tools Endpunkt kopieren
   copied: Kopiert!
-  integrations_count: Integrationen
-  active_integrations: Aktive Integrationen
-  your_role: Ihre Rolle
-  manage_integrations: Integrationen verwalten
-  recent_integrations: Neueste Integrationen
   never: Nie
 
 organisation:
   create:
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
     placeholder: z.B. Meine Firma GmbH
     help: Sie können den Namen später in den Einstellungen ändern.
-    submit: Kanal erstellen
+    submit: Mandant erstellen
   created:
-    success: Kanal erfolgreich erstellt!
-  name: Kanalname
-  settings: Kanaleinstellungen
+    success: Mandant erfolgreich erstellt!
+  name: Mandantenname
+  settings: Mandanteneinstellungen
   members: Mitglieder
   updated:
-    success: Kanal erfolgreich aktualisiert!
+    success: Mandant erfolgreich aktualisiert!
   member:
     role_updated: Rolle erfolgreich aktualisiert!
     cannot_change_own_role: Sie können Ihre eigene Rolle nicht ändern.
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
   invite_member: Mitglied einladen
+  invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
+  send_invite: Einladung senden
+  select_organisation: Organisation auswählen
   invite:
     invalid_email: Ungültige E-Mail-Adresse.
-    user_has_organisation: Dieser Benutzer gehört bereits einem Kanal an.
+    invalid_organisation: Ungültige Organisation ausgewählt.
+    user_already_in_organisation: Dieser Benutzer ist bereits Mitglied der ausgewählten Organisation.
+    user_has_organisation: Dieser Benutzer gehört bereits einem Mandanten an.
     user_added: Benutzer erfolgreich hinzugefügt!
     user_not_found: Benutzer muss sich zuerst bei Workoflow registrieren.
 
 channel:
-  title: Kanal
-  management: Kanalverwaltung
-  management.description: Erstellen und verwalten Sie Ihre Kanäle
+  title: Mandanteneinstellungen
+  management: Mandantenverwaltung
+  management.description: Erstellen und verwalten Sie Ihre Mandanten
   create:
-    button: Neuen Kanal erstellen
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
-  uuid: Kanal-UUID
+    button: Neuen Mandanten erstellen
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
+  uuid: Mandanten-UUID
   uuid_help: Diese UUID wird für die API-Endpunkte verwendet
   integration_api_help: Verwenden Sie diese API-URL, um AI-Agenten (z.B. n8n) mit Ihren Integrationen zu verbinden
   save: Speichern
   invite_member: Mitglied einladen
   invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
   workflow_user_id: Workoflow Benutzer-ID
-  organisation_name: Kanalname
-  channel_settings: Kanaleinstellungen
-  agent_settings: Agenteneinstellungen
-  agent_type: Agententyp
+  organisation_name: Mandantenname
+  channel_settings: Allgemeine Einstellungen
+  agent_settings: Orchestrator-Einstellungen
+  agent_type: Orchestrator-Typ
   workflow_visualization: Workflow-Visualisierung
   send_invite: Einladung senden
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
-  organisation_type: Kanaltyp
-  type:
-    common: Allgemein
-    ecommerce: E-Commerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Konfiguration
-  configuration.description: Konfigurieren Sie die Microsoft Teams Bot-Integrationseinstellungen
-  app_type: Microsoft App-Typ
-  app_id: Microsoft App-ID
-  app_password: Microsoft App-Passwort
-  app_password.hint: Dieses Passwort wird verschlüsselt gespeichert
-  tenant_id: Microsoft Mandanten-ID
 
 status:
   active: Aktiv
@@ -251,7 +249,7 @@ integration:
   add_another: Weitere %name% hinzufügen
   add_another_desc: Eine weitere Instanz dieser Integration verbinden
   experimental_notice: Dieser Skill befindet sich noch in der Entwicklung. Funktionen können sich ändern und einige Funktionalitäten funktionieren möglicherweise nicht wie erwartet.
-  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre Projektron-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
+  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre BCS (Projektron)-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
   add_jira: Jira-Instanz hinzufügen
   add_confluence: Confluence-Instanz hinzufügen
   add_sharepoint: SharePoint-Instanz hinzufügen
@@ -432,6 +430,8 @@ action:
 
 file:
   title: Dateien
+  explanation_p1: Laden Sie Dateien hoch, um Ihren KI-Agenten mit eigenen Daten zu trainieren. Hier hochgeladene Dokumente werden für Retrieval-Augmented Generation (RAG) verwendet, sodass der Agent Ihre Inhalte durchsuchen und bei der Beantwortung von Fragen referenzieren kann.
+  explanation_p2: Unterstützte Formate sind PDF, DOCX, XLSX, CSV, TXT, JSON und Bilder. Je mehr relevante Daten Sie bereitstellen, desto genauer und hilfreicher werden die Antworten Ihres KI-Agenten.
   upload: Hochladen
   upload_files: Dateien hochladen
   no_files: Noch keine Dateien hochgeladen.
@@ -447,6 +447,15 @@ file:
   upload_error: Fehler beim Hochladen der Dateien
   upload_disabled_no_connection: Hochladen deaktiviert - Keine Verbindung zum Dateispeicher
   connection_error_hint: Bitte stellen Sie sicher, dass MinIO läuft und über den konfigurierten Endpunkt erreichbar ist.
+  add_data: Daten manuell hinzufügen
+  filename: Dateiname
+  filename_placeholder: meine-daten.txt
+  filename_help: Optional. Eine .txt-Endung wird automatisch hinzugefügt, falls nicht angegeben.
+  content: Inhalt
+  content_placeholder: Fügen Sie Ihren Textinhalt hier ein oder geben Sie ihn ein...
+  content_help: Der Textinhalt, der als Datei für Ihren KI-Agenten gespeichert wird.
+  save: Speichern
+  create_text_error: Textdatei konnte nicht gespeichert werden
   deleted:
     success: Datei erfolgreich gelöscht!
     error: Fehler beim Löschen der Datei.
@@ -459,7 +468,7 @@ user:
   email: E-Mail
   role: Rolle
   joined_at: Beigetreten am
-  organisation: Kanal
+  organisation: Mandant
   workflow_user_id: Meine Workflow Benutzer-ID
 
 
@@ -472,7 +481,7 @@ profile:
   delete_account_confirm: Sind Sie sicher, dass Sie Ihren Account löschen möchten?
   delete_account_consequences: 'Diese Aktion wird:'
   delete_consequence_1: Alle Ihre Integrationen löschen
-  delete_consequence_2: Ihren Zugang zum Kanal entfernen
+  delete_consequence_2: Ihren Zugang zum Mandanten entfernen
   delete_consequence_3: Alle Ihre Daten unwiderruflich löschen
   confirm_delete: Ja, Account löschen
   api_token: Persönlicher API-Token

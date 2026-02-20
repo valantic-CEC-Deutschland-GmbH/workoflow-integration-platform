@@ -471,4 +471,9 @@ class WrikeIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/wrike-icon.svg';
+    }
 }

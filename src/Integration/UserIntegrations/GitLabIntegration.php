@@ -1912,4 +1912,9 @@ class GitLabIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/gitlab-icon.svg';
+    }
 }

@@ -225,7 +225,7 @@
                             {{ 'channel.management.description'|trans }}
                         </p>
                     </div>
-                    <a href="{{ path('app_channel_create') }}"
+                    <a href="{{ path('app_tenant_create') }}"
                        class="btn-primary"
                        style="text-decoration: none; white-space: nowrap;">
                         + {{ 'channel.create.button'|trans }}
@@ -234,14 +234,14 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{{ path('app_channel_update') }}" id="channel-form" data-action="submit->channel#submitForm">
+        <form method="post" action="{{ path('app_tenant_update') }}" id="channel-form" data-action="submit->channel#submitForm">
             <div class="channel-grid">
                 <!-- Left Column -->
                 <div class="left-column">
                     <!-- Organisation Properties -->
                     <div class="form-section">
                         <h2 class="section-title">{{ 'channel.channel_settings'|trans }}</h2>
-                        <p class="section-subtitle">Basic channel identification and configuration</p>
+                        <p class="section-subtitle">Basic tenant identification and configuration</p>
 
                         <div class="form-group">
                             <label for="name" class="form-label">{{ 'channel.organisation_name'|trans }}</label>
@@ -262,33 +262,6 @@
                                    readonly>
                         </div>
 
-                        <div class="form-group">
-                            <label for="organisation_type" class="form-label">{{ 'channel.organisation_type'|trans }}</label>
-                            <select class="form-select"
-                                    id="organisation_type"
-                                    name="organisation_type"
-                                    data-channel-target="organisationType"
-                                    data-action="change->channel#onOrganisationTypeChange"
-                                    {% if not app.user.isAdmin() %}disabled{% endif %}>
-                                <option value="">None</option>
-                                <option value="Common" {% if organisation.organisationType == 'Common' %}selected{% endif %}>{{ 'channel.type.common'|trans }}</option>
-                                <option value="eCommerce" {% if organisation.organisationType == 'eCommerce' %}selected{% endif %}>{{ 'channel.type.ecommerce'|trans }}</option>
-                                <option value="MS Teams" {% if organisation.organisationType == 'MS Teams' %}selected{% endif %}>{{ 'channel.type.msteams'|trans }}</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="webhook_url" class="form-label">Webhook URL</label>
-                            <input type="url"
-                                   class="form-control"
-                                   id="webhook_url"
-                                   name="webhook_url"
-                                   data-channel-target="webhookUrl"
-                                   data-action="input->channel#onWebhookUrlChange"
-                                   value="{{ organisation.webhookUrl ?? '' }}"
-                                   placeholder="http://localhost:5678/webhook/016d8b95-..."
-                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
-                        </div>
                     </div>
 
                     <!-- Agent Settings -->
@@ -300,9 +273,8 @@
                             <label for="system_prompt" class="form-label">System Prompt</label>
                             <textarea class="form-textarea"
                                       id="system_prompt"
-                                      name="system_prompt"
                                       placeholder="Enter the agent's instructions and personality..."
-                                      {% if not app.user.isAdmin() %}readonly{% endif %}>{{ userOrganisation.systemPrompt ?? '' }}</textarea>
+                                      readonly>{{ systemPromptContent }}</textarea>
                         </div>
                     </div>
 
@@ -323,7 +295,7 @@
                         </div>
 
                         <div class="form-group" id="workflow-url-group" data-channel-target="workflowUrlGroup" style="{% if organisation.webhookType != 'N8N' %}display: none;{% endif %}">
-                            <label for="workflow_url" class="form-label">Workflow URL</label>
+                            <label for="workflow_url" class="form-label">N8N Visualization URL</label>
                             <input type="url"
                                    class="form-control"
                                    id="workflow_url"
@@ -333,7 +305,7 @@
                                    value="{{ organisation.workflowUrl ?? '' }}"
                                    placeholder="http://localhost:5678/workflow/xRYAqofSE2ljb0d5"
                                    {% if not app.user.isAdmin() %}readonly{% endif %}>
-                            <small class="form-text text-muted">Copy from n8n editor address bar - used for visualization below</small>
+                            <small class="form-text text-muted">This value is only used on this page to render the workflow visualization for end users.</small>
                         </div>
 
                         <div class="form-group" id="n8n-api-key-group" data-channel-target="n8nApiKeyGroup" style="{% if organisation.webhookType != 'N8N' %}display: none;{% endif %}">
@@ -345,59 +317,21 @@
                                    value=""
                                    placeholder="Enter your N8N API key (leave empty to keep current)"
                                    {% if not app.user.isAdmin() %}readonly{% endif %}>
-                            <small class="form-text text-muted">Required to fetch workflow details from N8N</small>
-                        </div>
-                    </div>
-
-                    <!-- MS Teams Configuration -->
-                    <div class="form-section" id="msteams-config-section" data-channel-target="msteamsConfigSection" style="{% if organisation.organisationType != 'MS Teams' %}display: none;{% endif %}">
-                        <h2 class="section-title">{{ 'msteams.configuration'|trans }}</h2>
-                        <p class="section-subtitle">{{ 'msteams.configuration.description'|trans }}</p>
-
-                        <div class="form-group">
-                            <label for="microsoft_app_type" class="form-label">{{ 'msteams.app_type'|trans }}</label>
-                            <select class="form-select"
-                                    id="microsoft_app_type"
-                                    name="microsoft_app_type"
-                                    {% if not app.user.isAdmin() %}disabled{% endif %}>
-                                <option value="">None</option>
-                                <option value="MultiTenant" {% if organisation.microsoftAppType == 'MultiTenant' %}selected{% endif %}>MultiTenant</option>
-                                <option value="SingleTenant" {% if organisation.microsoftAppType == 'SingleTenant' %}selected{% endif %}>SingleTenant</option>
-                            </select>
+                            <small class="form-text text-muted">This value is only used on this page to render the workflow visualization for end users.</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="microsoft_app_id" class="form-label">{{ 'msteams.app_id'|trans }}</label>
-                            <input type="text"
+                            <label for="webhook_url" class="form-label">Webhook URL</label>
+                            <input type="url"
                                    class="form-control"
-                                   id="microsoft_app_id"
-                                   name="microsoft_app_id"
-                                   value="{{ organisation.microsoftAppId ?? '' }}"
-                                   placeholder="00000000-0000-0000-0000-000000000000"
+                                   id="webhook_url"
+                                   name="webhook_url"
+                                   data-channel-target="webhookUrl"
+                                   data-action="input->channel#onWebhookUrlChange"
+                                   value="{{ organisation.webhookUrl ?? '' }}"
+                                   placeholder="http://localhost:5678/webhook/016d8b95-..."
                                    {% if not app.user.isAdmin() %}readonly{% endif %}>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="microsoft_app_password" class="form-label">{{ 'msteams.app_password'|trans }}</label>
-                            <input type="password"
-                                   class="form-control"
-                                   id="microsoft_app_password"
-                                   name="microsoft_app_password"
-                                   value=""
-                                   placeholder="Enter your MS Teams app password (leave empty to keep current)"
-                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
-                            <small class="form-text text-muted">{{ 'msteams.app_password.hint'|trans }}</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="microsoft_app_tenant_id" class="form-label">{{ 'msteams.tenant_id'|trans }}</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="microsoft_app_tenant_id"
-                                   name="microsoft_app_tenant_id"
-                                   value="{{ organisation.microsoftAppTenantId ?? '' }}"
-                                   placeholder="00000000-0000-0000-0000-000000000000"
-                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
+                            <small class="form-text text-muted">This is the webhook receiving the user's prompt/payload. Feel free to use your own API endpoint and build your own customizations.</small>
                         </div>
                     </div>
 

@@ -5,13 +5,13 @@ common:
   optional: neprivaloma
 
 nav:
-  general: Bendra informacija
+  general: Mano agentas
   skills: Įgūdžiai
   files: Failai
-  organisation: Kanalas
+  organisation: Nuomininko nustatymai
   profile: Profilis
   logout: Atsijungti
-  channel: Kanalas
+  channel: Nuomininko nustatymai
   members: Nariai
   audit_log: Audito žurnalas
   release_notes: Leidimo pastabos
@@ -68,83 +68,81 @@ auth:
     privacy: Prisijungdami sutinkate su mūsų privatumo politika.
 
 general:
-  title: Bendra informacija
+  title: Mano agentas
   welcome: Sveiki, %name%!
-  organisation: Jūsų kanalas
+  agent_ready_setup: "Jūsų AI agentas paruoštas konfigūravimui."
+  agent_ready: "Jūsų AI agentas turi %count% aktyvų(-ius) įgūdį(-žius)."
+  agent_can_use: "Jūsų agentas gali dirbti su:"
+  onboarding_title: "Suteikite agentui pirmąjį įgūdį"
+  onboarding_description: "Įgūdžiai sujungia jūsų AI agentą su kasdien naudojamais įrankiais. Pridėkite įgūdį, kad pradėtumėte."
+  add_first_skill: "Pridėti pirmąjį įgūdį"
+  manage_skills_title: "Agento įgūdžiai"
+  manage_skills_description: "Konfigūruokite, kokias paslaugas ir galimybes gali naudoti jūsų AI agentas."
+  manage_agent_skills: "Valdyti agento įgūdžius"
+  recent_skills: "Sukonfigūruoti įgūdžiai"
+  view_all: "Peržiūrėti visus"
+  technical_details: "API ir techniniai duomenys"
+  organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL
-  workflow_user_id: Kanalui specifinis ID
+  workflow_user_id: Nuomininkui specifinis ID
   copy_curl_command: Kopijuoti curl komandą įrankiams
   copied: Nukopijuota!
-  integrations_count: Integracijos
-  active_integrations: Aktyvios integracijos
-  your_role: Jūsų rolė
-  manage_integrations: Valdyti integracijas
-  recent_integrations: Naujausios integracijos
   never: Niekada
 
 organisation:
   create:
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
     placeholder: pvz. Mano įmonė UAB
     help: Pavadinimą galite pakeisti vėliau nustatymuose.
-    submit: Sukurti kanalą
+    submit: Sukurti nuomininką
   created:
-    success: Kanalas sėkmingai sukurtas!
-  name: Kanalo pavadinimas
-  settings: Kanalo nustatymai
+    success: Nuomininkas sėkmingai sukurtas!
+  name: Nuomininko pavadinimas
+  settings: Nuomininko nustatymai
   members: Nariai
   updated:
-    success: Kanalas sėkmingai atnaujintas!
+    success: Nuomininkas sėkmingai atnaujintas!
   member:
     role_updated: Rolė sėkmingai atnaujinta!
     cannot_change_own_role: Negalite keisti savo pačių rolės.
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
   invite_member: Pakviesti narį
+  invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
+  send_invite: Siųsti kvietimą
+  select_organisation: Pasirinkite organizaciją
   invite:
     invalid_email: Neteisingas el. pašto adresas.
+    invalid_organisation: Pasirinkta netinkama organizacija.
+    user_already_in_organisation: Šis vartotojas jau yra pasirinktos organizacijos narys.
     user_has_organisation: Šis vartotojas jau priklauso kanalui.
     user_added: Vartotojas sėkmingai pridėtas!
     user_not_found: Vartotojas pirmiausia turi užsiregistruoti Workoflow.
 
 channel:
-  title: Kanalas
-  management: Kanalų valdymas
-  management.description: Kurkite ir valdykite savo kanalus
+  title: Nuomininko nustatymai
+  management: Nuomininkų valdymas
+  management.description: Kurkite ir valdykite savo nuomininkus
   create:
-    button: Sukurti naują kanalą
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
-  uuid: Kanalo UUID
+    button: Sukurti naują nuomininką
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
+  uuid: Nuomininko UUID
   uuid_help: Šis UUID naudojamas API galiniams taškams
   integration_api_help: Naudokite šį API URL AI agentams (pvz. n8n) prijungti prie jūsų integracijų
   save: Išsaugoti
   invite_member: Pakviesti narį
   invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
   workflow_user_id: Workoflow vartotojo ID
-  organisation_name: Kanalo pavadinimas
-  channel_settings: Kanalo nustatymai
-  agent_settings: Agento nustatymai
-  agent_type: Agento tipas
+  organisation_name: Nuomininko pavadinimas
+  channel_settings: Bendrieji nustatymai
+  agent_settings: Orkestratoriaus nustatymai
+  agent_type: Orkestratoriaus tipas
   workflow_visualization: Darbo eigos vizualizacija
   send_invite: Siųsti kvietimą
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
-  organisation_type: Kanalo tipas
-  type:
-    common: Bendras
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams konfigūracija
-  configuration.description: Konfigūruokite Microsoft Teams boto integracijos nustatymus
-  app_type: Microsoft programos tipas
-  app_id: Microsoft programos ID
-  app_password: Microsoft programos slaptažodis
-  app_password.hint: Šis slaptažodis bus saugomas užšifruotai
-  tenant_id: Microsoft nuomininko ID
 
 status:
   active: Aktyvus
@@ -251,7 +249,7 @@ integration:
   add_another: Pridėti kitą %name%
   add_another_desc: Prijungti kitą šios integracijos egzempliorių
   experimental_notice: Šis įgūdis vis dar kuriamas. Funkcijos gali keistis ir kai kurios galimybės gali neveikti taip, kaip tikėtasi.
-  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate Projektron sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
+  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate BCS (Projektron) sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
   add_jira: Pridėti Jira egzempliorių
   add_confluence: Pridėti Confluence egzempliorių
   add_sharepoint: Pridėti SharePoint egzempliorių
@@ -432,6 +430,8 @@ action:
 
 file:
   title: Failai
+  explanation_p1: Įkelkite failus, kad apmokytumėte savo AI agentą savo duomenimis. Čia įkelti dokumentai naudojami informacijos gavimo papildytai generacijai (RAG), leidžiant agentui ieškoti ir remtis jūsų turiniu atsakant į klausimus.
+  explanation_p2: Palaikomi formatai apima PDF, DOCX, XLSX, CSV, TXT, JSON ir vaizdus. Kuo daugiau aktualių duomenų pateiksite, tuo tikslesni ir naudingesni bus jūsų AI agento atsakymai.
   upload: Įkelti
   upload_files: Įkelti failus
   no_files: Dar nėra įkeltų failų.
@@ -447,6 +447,15 @@ file:
   upload_error: Nepavyko įkelti failų
   upload_disabled_no_connection: Įkėlimas išjungtas - Nėra ryšio su failų saugykla
   connection_error_hint: Įsitikinkite, kad MinIO veikia ir pasiekiamas sukonfigūruotame galiniame taške.
+  add_data: Pridėti duomenis rankiniu būdu
+  filename: Failo pavadinimas
+  filename_placeholder: mano-duomenys.txt
+  filename_help: Neprivaloma. .txt plėtinys bus pridėtas automatiškai, jei nepateiktas.
+  content: Turinys
+  content_placeholder: Įklijuokite arba įveskite tekstinį turinį čia...
+  content_help: Tekstinis turinys, kuris bus išsaugotas kaip failas jūsų AI agentui naudoti.
+  save: Išsaugoti
+  create_text_error: Nepavyko išsaugoti tekstinio failo
   deleted:
     success: Failas sėkmingai ištrintas!
     error: Klaida trinant failą.

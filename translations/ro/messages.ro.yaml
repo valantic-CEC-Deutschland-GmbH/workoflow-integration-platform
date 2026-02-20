@@ -5,13 +5,13 @@ common:
   optional: opțional
 
 nav:
-  general: General
+  general: Agentul meu
   skills: Abilități
   files: Fișiere
-  organisation: Canal
+  organisation: Setări chiriaș
   profile: Profil
   logout: Deconectare
-  channel: Canal
+  channel: Setări chiriaș
   members: Membri
   audit_log: Jurnal de audit
   release_notes: Note de lansare
@@ -68,83 +68,81 @@ auth:
     privacy: Prin autentificare, sunteți de acord cu politica noastră de confidențialitate.
 
 general:
-  title: General
+  title: Agentul meu
   welcome: Bine ați venit, %name%!
-  organisation: Canalul dvs.
+  agent_ready_setup: "Agentul dvs. AI este gata de configurare."
+  agent_ready: "Agentul dvs. AI are %count% abilitate(i) activă(e)."
+  agent_can_use: "Agentul dvs. poate lucra cu:"
+  onboarding_title: "Oferiți agentului prima abilitate"
+  onboarding_description: "Abilitățile conectează agentul AI la instrumentele pe care le folosiți zilnic. Adăugați o abilitate pentru a începe."
+  add_first_skill: "Adăugați prima abilitate"
+  manage_skills_title: "Abilități Agent"
+  manage_skills_description: "Configurați ce servicii și capabilități poate folosi agentul AI."
+  manage_agent_skills: "Gestionați abilitățile agentului"
+  recent_skills: "Abilități configurate"
+  view_all: "Vedeți toate"
+  technical_details: "API și detalii tehnice"
+  organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare
-  workflow_user_id: ID specific canalului
+  workflow_user_id: ID specific chiriașului
   copy_curl_command: Copiați comanda curl pentru instrumente
   copied: Copiat!
-  integrations_count: Integrări
-  active_integrations: Integrări active
-  your_role: Rolul dvs.
-  manage_integrations: Gestionați integrările
-  recent_integrations: Integrări recente
   never: Niciodată
 
 organisation:
   create:
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
     placeholder: de ex. Compania Mea SRL
     help: Puteți schimba numele ulterior în setări.
-    submit: Creați canal
+    submit: Creați chiriaș
   created:
-    success: Canal creat cu succes!
-  name: Nume canal
-  settings: Setări canal
+    success: Chiriaș creat cu succes!
+  name: Nume chiriaș
+  settings: Setări chiriaș
   members: Membri
   updated:
-    success: Canal actualizat cu succes!
+    success: Chiriaș actualizat cu succes!
   member:
     role_updated: Rol actualizat cu succes!
     cannot_change_own_role: Nu vă puteți schimba propriul rol.
   make_admin: Faceți administrator
   make_member: Faceți membru
   invite_member: Invitați membru
+  invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
+  send_invite: Trimiteți invitația
+  select_organisation: Selectați organizația
   invite:
     invalid_email: Adresă de email invalidă.
-    user_has_organisation: Acest utilizator aparține deja unui canal.
+    invalid_organisation: Organizație selectată invalidă.
+    user_already_in_organisation: Acest utilizator este deja membru al organizației selectate.
+    user_has_organisation: Acest utilizator aparține deja unui chiriaș.
     user_added: Utilizator adăugat cu succes!
     user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.
 
 channel:
-  title: Canal
-  management: Gestionarea canalelor
-  management.description: Creați și gestionați canalele dvs.
+  title: Setări chiriaș
+  management: Gestionarea chiriașilor
+  management.description: Creați și gestionați chiriașii dvs.
   create:
-    button: Creați canal nou
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
-  uuid: UUID canal
+    button: Creați chiriaș nou
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
+  uuid: UUID chiriaș
   uuid_help: Acest UUID este utilizat pentru endpoint-urile API
   integration_api_help: Utilizați acest URL API pentru a conecta agenții AI (de ex. n8n) la integrările dvs.
   save: Salvează
   invite_member: Invitați membru
   invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
   workflow_user_id: ID utilizator Workoflow
-  organisation_name: Nume canal
-  channel_settings: Setări canal
-  agent_settings: Setări agent
-  agent_type: Tip agent
+  organisation_name: Nume chiriaș
+  channel_settings: Setări generale
+  agent_settings: Setări orchestrator
+  agent_type: Tip orchestrator
   workflow_visualization: Vizualizare flux de lucru
   send_invite: Trimiteți invitația
   make_admin: Faceți administrator
   make_member: Faceți membru
-  organisation_type: Tip canal
-  type:
-    common: Comun
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: Configurare MS Teams
-  configuration.description: Configurați setările de integrare a botului Microsoft Teams
-  app_type: Tipul aplicației Microsoft
-  app_id: ID aplicație Microsoft
-  app_password: Parolă aplicație Microsoft
-  app_password.hint: Această parolă va fi stocată criptată pentru securitate
-  tenant_id: ID chiriaș Microsoft
 
 status:
   active: Activ
@@ -251,7 +249,7 @@ integration:
   add_another: Adăugați alt %name%
   add_another_desc: Conectați o altă instanță a acestei integrări
   experimental_notice: Această abilitate este încă în dezvoltare. Funcționalitățile se pot schimba și unele funcții ar putea să nu funcționeze conform așteptărilor.
-  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea Projektron. Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
+  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea BCS (Projektron). Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
   add_jira: Adăugați instanță Jira
   add_confluence: Adăugați instanță Confluence
   add_sharepoint: Adăugați instanță SharePoint
@@ -432,6 +430,8 @@ action:
 
 file:
   title: Fișiere
+  explanation_p1: Încărcați fișiere pentru a antrena agentul AI cu datele dvs. proprii. Documentele încărcate aici sunt utilizate pentru Retrieval-Augmented Generation (RAG), permițând agentului să caute și să facă referire la conținutul dvs. atunci când răspunde la întrebări.
+  explanation_p2: Formatele acceptate includ PDF, DOCX, XLSX, CSV, TXT, JSON și imagini. Cu cât furnizați mai multe date relevante, cu atât răspunsurile agentului dvs. AI vor fi mai precise și mai utile.
   upload: Încărcare
   upload_files: Încărcați fișiere
   no_files: Niciun fișier încărcat încă.
@@ -447,6 +447,15 @@ file:
   upload_error: Încărcarea fișierelor a eșuat
   upload_disabled_no_connection: Încărcare dezactivată - Fără conexiune la stocarea fișierelor
   connection_error_hint: Vă rugăm să vă asigurați că MinIO rulează și este accesibil la endpoint-ul configurat.
+  add_data: Adăugați date manual
+  filename: Nume fișier
+  filename_placeholder: datele-mele.txt
+  filename_help: Opțional. O extensie .txt va fi adăugată automat dacă nu este specificată.
+  content: Conținut
+  content_placeholder: Lipiți sau scrieți conținutul text aici...
+  content_help: Conținutul text care va fi salvat ca fișier pentru agentul dvs. AI.
+  save: Salvează
+  create_text_error: Salvarea fișierului text a eșuat
   deleted:
     success: Fișier șters cu succes!
     error: Eroare la ștergerea fișierului.
@@ -470,7 +479,7 @@ profile:
   delete_account_confirm: Sunteți sigur că doriți să vă ștergeți contul?
   delete_account_consequences: 'Această acțiune va:'
   delete_consequence_1: Șterge toate integrările dvs.
-  delete_consequence_2: Elimina accesul dvs. la canal
+  delete_consequence_2: Elimina accesul dvs. la chiriaș
   delete_consequence_3: Șterge permanent toate datele dvs.
   confirm_delete: Da, ștergeți contul
   api_token: Token API

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Organisation;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuditLogService;
@@ -30,7 +31,7 @@ class OrganisationController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         if ($request->isMethod('POST')) {
@@ -67,7 +68,7 @@ class OrganisationController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $members = $userRepository->findByOrganisation($organisation->getId());
@@ -75,6 +76,7 @@ class OrganisationController extends AbstractController
         return $this->render('organisation/members.html.twig', [
             'organisation' => $organisation,
             'members' => $members,
+            'user_organisations' => $user->getOrganisations(),
         ]);
     }
 
@@ -91,7 +93,14 @@ class OrganisationController extends AbstractController
         $sessionOrgId = $request->getSession()->get('current_organisation_id');
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
-        if ($member->getOrganisation() !== $organisation) {
+        $memberBelongsToOrg = false;
+        foreach ($member->getUserOrganisations() as $userOrg) {
+            if ($userOrg->getOrganisation()->getId() === $organisation->getId()) {
+                $memberBelongsToOrg = true;
+                break;
+            }
+        }
+        if (!$memberBelongsToOrg) {
             throw $this->createAccessDeniedException();
         }
 
@@ -142,7 +151,7 @@ class OrganisationController extends AbstractController
 
         if (!$hasAccess || !$targetOrganisation) {
             $this->addFlash('error', 'You do not have access to this organisation');
-            return $this->redirectToRoute('app_general');
+            return $this->redirectToRoute('app_my_agent');
         }
 
         // Store the selected organisation ID in session
@@ -163,7 +172,7 @@ class OrganisationController extends AbstractController
             return $this->redirect($referer);
         }
 
-        return $this->redirectToRoute('app_general');
+        return $this->redirectToRoute('app_my_agent');
     }
 
     #[Route('/invite', name: 'app_organisation_invite', methods: ['POST'])]
@@ -176,8 +185,15 @@ class OrganisationController extends AbstractController
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
-        $sessionOrgId = $request->getSession()->get('current_organisation_id');
-        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        $organisationId = (int) $request->request->get('organisation_id');
+        $organisation = $em->getRepository(Organisation::class)->find($organisationId);
+
+        // Verify the admin has access to the selected organisation
+        if (!$organisation || !$user->getOrganisations()->contains($organisation)) {
+            $this->addFlash('error', 'organisation.invite.invalid_organisation');
+            return $this->redirectToRoute('app_organisation_members');
+        }
 
         $email = $request->request->get('email');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -187,17 +203,20 @@ class OrganisationController extends AbstractController
 
         $existingUser = $userRepository->findOneBy(['email' => $email]);
         if ($existingUser) {
-            if ($existingUser->getOrganisation()) {
-                $this->addFlash('error', 'organisation.invite.user_has_organisation');
+            // Check if user is already in the selected organisation
+            if ($existingUser->getOrganisations()->contains($organisation)) {
+                $this->addFlash('error', 'organisation.invite.user_already_in_organisation');
             } else {
-                $existingUser->setOrganisation($organisation);
-                $existingUser->setRoles([User::ROLE_USER, User::ROLE_MEMBER]);
+                $existingUser->addOrganisation($organisation);
+                if (!$existingUser->isAdmin()) {
+                    $existingUser->setRoles([User::ROLE_USER, User::ROLE_MEMBER]);
+                }
                 $em->flush();
 
                 $auditLogService->log(
                     'organisation.member.added',
                     $user,
-                    ['invited_email' => $email]
+                    ['invited_email' => $email, 'organisation_id' => $organisationId]
                 );
 
                 $this->addFlash('success', 'organisation.invite.user_added');

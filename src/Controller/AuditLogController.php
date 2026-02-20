@@ -28,7 +28,7 @@ class AuditLogController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         // Get filter parameters from request

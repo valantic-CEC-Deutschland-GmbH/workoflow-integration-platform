@@ -35,35 +35,13 @@ class IntegrationController extends AbstractController
     }
 
     /**
-     * Get logo path for integration type
+     * Get logo path for integration type from the registry
      */
-    private function getLogoPath(string $type, bool $isSystem): string
+    private function getLogoPath(string $type): string
     {
-        // System integrations get the Workoflow logo
-        if ($isSystem) {
-            return '/images/logos/workoflow-logo.png';
-        }
+        $integration = $this->integrationRegistry->get($type);
 
-        // Map integration types to logo paths
-        $logoMap = [
-            'jira' => '/images/logos/jira-icon.svg',
-            'confluence' => '/images/logos/confluence-icon.svg',
-            'gitlab' => '/images/logos/gitlab-icon.svg',
-            'trello' => '/images/logos/trello-logo.png',
-            'sharepoint' => '/images/logos/sharepoint-logo.svg',
-            'hubspot' => '/images/logos/hubspot-icon.svg',
-            'wrike' => '/images/logos/wrike-icon.svg',
-            'candis' => '/images/logos/candis-icon.svg',
-            'projektron' => '/images/logos/Projektron_Logo.png',
-            'sap_c4c' => '/images/logos/SAP-Logo.svg',
-            'sap_sac' => '/images/logos/SAP-Logo.svg',
-            'outlook_mail' => '/images/logos/outlook-mail-icon.svg',
-            'outlook_calendar' => '/images/logos/outlook-calendar-icon.svg',
-            'msteams' => '/images/logos/msteams-icon.svg',
-        ];
-
-        // Return mapped logo or default to Workoflow logo
-        return $logoMap[$type] ?? '/images/logos/workoflow-logo.png';
+        return $integration ? $integration->getLogoPath() : '/images/logos/workoflow-logo.png';
     }
 
     #[Route('/', name: 'app_skills')]
@@ -75,7 +53,7 @@ class IntegrationController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         // Get workflow_user_id from the user's organization relationship
@@ -137,7 +115,7 @@ class IntegrationController extends AbstractController
                     'isConnected' => true, // System integrations are always connected
                     'disconnectReason' => null,
                     'lastAccessedAt' => $config?->getLastAccessedAt(),
-                    'logoPath' => $this->getLogoPath($integration->getType(), true),
+                    'logoPath' => $this->getLogoPath($integration->getType()),
                     'isExperimental' => $integration->isExperimental()
                 ];
             } else {
@@ -157,7 +135,7 @@ class IntegrationController extends AbstractController
                         'isConnected' => false,
                         'disconnectReason' => null,
                         'lastAccessedAt' => null,
-                        'logoPath' => $this->getLogoPath($integration->getType(), false),
+                        'logoPath' => $this->getLogoPath($integration->getType()),
                         'isExperimental' => $integration->isExperimental()
                     ];
                 } else {
@@ -186,7 +164,7 @@ class IntegrationController extends AbstractController
                             'isConnected' => $config->isConnected(),
                             'disconnectReason' => $config->getDisconnectReason(),
                             'lastAccessedAt' => $config->getLastAccessedAt(),
-                            'logoPath' => $this->getLogoPath($integration->getType(), false),
+                            'logoPath' => $this->getLogoPath($integration->getType()),
                             'isExperimental' => $integration->isExperimental()
                         ];
                     }
@@ -232,7 +210,7 @@ class IntegrationController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         // Find integration in registry
@@ -621,7 +599,7 @@ class IntegrationController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($instanceId);

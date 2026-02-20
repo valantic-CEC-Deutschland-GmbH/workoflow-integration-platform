@@ -4,6 +4,54 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-18
+
+### Changed
+- **Projektron skill renamed to "BCS (Projektron)"** — The skill now displays as "BCS (Projektron)" throughout the platform, reflecting that Projektron is the vendor and BCS (Business Coordination Software) is the product name
+
+### Fixed
+- **Flash messages now display translated text** — Status messages (e.g., after changing a member's role) now show properly translated text instead of raw translation keys like "organisation.member.role_updated"
+
+### Removed
+- **Duplicate skill chips bar on dashboard** — The "Your agent can work with" section has been removed since it duplicated the Recent Skills section below
+- **Technical API details from dashboard** — The collapsible API & Technical Details section has been moved off the dashboard for a cleaner experience
+
+### Changed
+- **Dashboard redesigned as "My Agent"** — The dashboard now focuses on your AI agent's skills instead of technical details, showing active skills at a glance with visual skill chips
+- **New onboarding experience** — New users see a welcoming prompt to add their first skill, guiding them to get started quickly
+- **Technical details collapsed by default** — API URLs and curl commands are now tucked behind an expandable section to reduce clutter
+- **"General" renamed to "My Agent"** — The navigation item now reflects the agent-centric purpose of the dashboard
+- **Integration logos are now defined per skill** — Each skill type provides its own logo path, eliminating hardcoded logo maps and making the system easier to extend
+
+### Added
+- **Manually add data to Files** — Create text files directly from the Files page without uploading from your device. Click "Manually add data", paste or type your content, and save it as a .txt file for your AI agent to use
+- **Files page header with explanation** — The Files page now includes a descriptive header explaining that uploaded files are used to train the AI agent via RAG, matching the style of the Skills page header
+- **Tenant Settings API** — New `/api/tenant/{uuid}/settings` endpoint allows the bot to fetch tenant-specific webhook URLs and configuration dynamically, enabling true multi-tenancy instead of a single shared webhook URL
+- **Organisation selector on Invite Member** — The Invite Member dialog now lets you choose which organisation to add the member to, instead of always using the currently active one
+
+### Changed
+- **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose. URLs have also been updated from `/channel` to `/tenant`
+- **N8N API Key repositioned** — The N8N API Key field is now placed directly below the N8N Visualization URL for better grouping of visualization-related settings
+- **System Prompt is now read-only** — The System Prompt field on the Tenant Settings page now displays the platform's main agent prompt as a read-only reference; it is no longer editable per tenant
+- **System Prompt available via Tenant API** — The Tenant Settings API now supports `?system_prompt=true` to include the main agent system prompt in the response
+
+### Fixed
+- **Dashboard "Recent Integrations" now shows most recently used** — The dashboard overview now correctly displays the 5 most recently accessed integrations instead of sorting alphabetically by type
+- **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail
+- **Admin can now change member roles in multi-organisation setups** — Previously, clicking "Make Admin" or "Make Member" would fail with a permission error when both users belonged to multiple organisations
+
+### Removed
+- **MS Teams Configuration section** — Removed the Microsoft App Type, App ID, App Password, and Tenant ID fields from the Tenant Settings page; these per-bot-deployment settings belong in the bot's environment configuration
+- **Organisation Type dropdown** — Removed the Channel Type selector (Common / eCommerce / MS Teams) as it is no longer needed
+
+## 2026-02-17
+
+### Added
+- **Azure credential health check** — The `/health` endpoint now validates Azure client credentials so monitoring can detect expired or rotated secrets before users encounter errors with Microsoft integrations (SharePoint, MS Teams, Outlook Mail, Outlook Calendar)
+
+### Fixed
+- **Microsoft integrations no longer break after client secret rotation** — SharePoint, MS Teams, Outlook Mail, and Outlook Calendar integrations now use the current server credentials when refreshing tokens, so existing users won't get errors after an Azure secret update
+
 ## 2026-02-13
 
 ### Fixed

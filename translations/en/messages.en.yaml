@@ -5,13 +5,13 @@ common:
   optional: optional
 
 nav:
-  general: General
+  general: My Agent
   skills: Skills
   files: Files
-  organisation: Channel
+  organisation: Tenant Settings
   profile: Profile
   logout: Logout
-  channel: Channel
+  channel: Tenant Settings
   members: Members
   audit_log: Audit Log
   release_notes: Release Notes
@@ -68,83 +68,81 @@ auth:
     privacy: By signing in, you agree to our privacy policy.
 
 general:
-  title: General
+  title: My Agent
   welcome: Welcome, %name%!
-  organisation: Your Channel
+  agent_ready_setup: "Your AI Agent is ready to be set up."
+  agent_ready: "Your AI Agent has %count% active skill(s)."
+  agent_can_use: "Your agent can work with:"
+  onboarding_title: "Give Your Agent Its First Skill"
+  onboarding_description: "Skills connect your AI agent to the tools you use every day. Add a skill to get started."
+  add_first_skill: "Add Your First Skill"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Configure which services and capabilities your AI agent can use."
+  manage_agent_skills: "Manage Agent Skills"
+  recent_skills: "Configured Skills"
+  view_all: "View All"
+  technical_details: "API & Technical Details"
+  organisation: Your Tenant
   integration_api_url: Integration API URL
-  workflow_user_id: Channel Specific ID
+  workflow_user_id: Tenant Specific ID
   copy_curl_command: Copy curl command for tools
   copied: Copied!
-  integrations_count: Integrations
-  active_integrations: Active Integrations
-  your_role: Your Role
-  manage_integrations: Manage Integrations
-  recent_integrations: Recent Integrations
   never: Never
 
 organisation:
   create:
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
     placeholder: e.g. My Company Inc.
     help: You can change the name later in settings.
-    submit: Create Channel
+    submit: Create Tenant
   created:
-    success: Channel created successfully!
-  name: Channel Name
-  settings: Channel Settings
+    success: Tenant created successfully!
+  name: Tenant Name
+  settings: Tenant Settings
   members: Members
   updated:
-    success: Channel updated successfully!
+    success: Tenant updated successfully!
   member:
     role_updated: Role updated successfully!
     cannot_change_own_role: You cannot change your own role.
   make_admin: Make Admin
   make_member: Make Member
   invite_member: Invite Member
+  invite_help: The user must register with Workoflow first
+  send_invite: Send Invite
+  select_organisation: Select Organisation
   invite:
     invalid_email: Invalid email address.
-    user_has_organisation: This user already belongs to a channel.
+    invalid_organisation: Invalid organisation selected.
+    user_already_in_organisation: This user is already a member of the selected organisation.
+    user_has_organisation: This user already belongs to a tenant.
     user_added: User added successfully!
     user_not_found: User must register with Workoflow first.
 
 channel:
-  title: Channel
-  management: Channel Management
-  management.description: Create and manage your channels
+  title: Tenant Settings
+  management: Tenant Management
+  management.description: Create and manage your tenants
   create:
-    button: Create New Channel
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
-  uuid: Channel UUID
+    button: Create New Tenant
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
+  uuid: Tenant UUID
   uuid_help: This UUID is used for the API endpoints
   integration_api_help: Use this API URL to connect AI agents (e.g. n8n) to your integrations
   save: Save
   invite_member: Invite Member
   invite_help: The user must register with Workoflow first
   workflow_user_id: Workoflow User ID
-  organisation_name: Channel Name
-  channel_settings: Channel Settings
-  agent_settings: Agent Settings
-  agent_type: Agent Type
+  organisation_name: Tenant Name
+  channel_settings: General Settings
+  agent_settings: Orchestrator Settings
+  agent_type: Orchestrator Type
   workflow_visualization: Workflow Visualization
   send_invite: Send Invite
   make_admin: Make Admin
   make_member: Make Member
-  organisation_type: Channel Type
-  type:
-    common: Common
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Configuration
-  configuration.description: Configure Microsoft Teams bot integration settings
-  app_type: Microsoft App Type
-  app_id: Microsoft App ID
-  app_password: Microsoft App Password
-  app_password.hint: This password will be stored encrypted for security
-  tenant_id: Microsoft Tenant ID
 
 status:
   active: Active
@@ -251,7 +249,7 @@ integration:
   add_another: Add Another %name%
   add_another_desc: Connect another instance of this integration
   experimental_notice: This skill is still in development. Features may change and some functionality might not work as expected.
-  projektron_session_notice: These values automatically expire after a day, or if you recreate your Projektron session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
+  projektron_session_notice: These values automatically expire after a day, or if you recreate your BCS (Projektron) session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
   add_jira: Add Jira Instance
   add_confluence: Add Confluence Instance
   add_sharepoint: Add SharePoint Instance
@@ -432,6 +430,8 @@ action:
 
 file:
   title: Files
+  explanation_p1: Upload files to train your AI agent with your own data. Documents uploaded here are used for Retrieval-Augmented Generation (RAG), allowing the agent to search and reference your content when answering questions.
+  explanation_p2: Supported formats include PDF, DOCX, XLSX, CSV, TXT, JSON, and images. The more relevant data you provide, the more accurate and helpful your AI agent's responses will be.
   upload: Upload
   upload_files: Upload Files
   no_files: No files uploaded yet.
@@ -447,6 +447,15 @@ file:
   upload_error: Failed to upload files
   upload_disabled_no_connection: Upload disabled - No connection to file storage
   connection_error_hint: Please ensure MinIO is running and accessible at the configured endpoint.
+  add_data: Manually add data
+  filename: Filename
+  filename_placeholder: my-data.txt
+  filename_help: Optional. A .txt extension will be added automatically if not provided.
+  content: Content
+  content_placeholder: Paste or type your text content here...
+  content_help: The text content that will be saved as a file for your AI agent to use.
+  save: Save
+  create_text_error: Failed to save text file
   deleted:
     success: File deleted successfully!
     error: Error deleting file.
@@ -458,7 +467,7 @@ user:
   email: Email
   role: Role
   joined_at: Joined at
-  organisation: Channel
+  organisation: Tenant
   workflow_user_id: My Workflow User ID
 
 profile:
@@ -470,7 +479,7 @@ profile:
   delete_account_confirm: Are you sure you want to delete your account?
   delete_account_consequences: 'This action will:'
   delete_consequence_1: Delete all your integrations
-  delete_consequence_2: Remove your access to the channel
+  delete_consequence_2: Remove your access to the tenant
   delete_consequence_3: Permanently delete all your data
   confirm_delete: Yes, delete account
   api_token: API Token

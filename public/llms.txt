@@ -1,8 +1,8 @@
 # Workoflow Integration Platform
 
-> AI-first integration hub providing unified REST API access to 95+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis, and platform services. Built for AI agents, automation workflows, and conversational interfaces.
+> AI-first integration hub providing unified REST API access to 95+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron), Candis, and platform services. Built for AI agents, automation workflows, and conversational interfaces.
 
-**Last Updated**: 2025-11-24
+**Last Updated**: 2026-02-18
 **Version**: 1.2.0
 **Architecture**: Multi-tenant Symfony 7.2 platform with plugin-based integration system
 **Authentication**: OAuth2 (Google), Magic Links, Basic Auth + JWT for API
@@ -12,7 +12,7 @@
 
 The platform follows a **Skills-based architecture** where integrations are treated as AI agent "skills":
 
-- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis)
+- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron), Candis)
 - **Platform Skills**: Built-in system tools requiring no external auth (PDF generation, file sharing, web search, employee lookup)
 
 ### Dynamic Tool Discovery
@@ -140,7 +140,7 @@ The platform provides 95+ tools across 11 user integrations:
 - Master data imports (cost centers, contacts, GL accounts)
 - Export operations (create exports, track status)
 
-**Projektron (1 tool)**
+**BCS (Projektron) (1 tool)**
 - Task and project discovery (get all available items)
 - Time tracking preparation (booking URLs)
 
@@ -199,6 +199,13 @@ Basic Auth credentials (default):
 For production, use JWT tokens via magic link authentication.
 
 ### Endpoints
+
+**Tenant Settings** (for bot multi-tenancy):
+```
+GET /api/tenant/{org-uuid}/settings
+Authorization: Basic {base64(user:password)}
+```
+Returns: `{ success, complete, settings: { name, uuid, webhook_type, webhook_url } }`
 
 **List Available Tools**:
 ```

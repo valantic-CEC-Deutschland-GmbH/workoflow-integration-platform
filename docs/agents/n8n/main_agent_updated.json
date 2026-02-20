@@ -1,0 +1,1339 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('SET USER').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        544
+      ],
+      "id": "e7fa4182-fe6e-48bf-b473-1fe6d2809fb3",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "PVHAqTW0jksa95gm",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b81e53b1-c305-4f1c-993f-08fdf4f22a04",
+              "name": "userId",
+              "value": "={{ $('Webhook1').item.json.body.from.aadObjectId }}",
+              "type": "string"
+            },
+            {
+              "id": "d1fdcc6f-b960-4981-97e7-c0204847b204",
+              "name": "userName",
+              "value": "={{ $('Webhook1').item.json.body.from.name }}",
+              "type": "string"
+            },
+            {
+              "id": "d2b667bd-4d3e-4820-9668-0de422060b65",
+              "name": "chatInput",
+              "value": "={{ $('Webhook1').item.json.body.text }}",
+              "type": "string"
+            },
+            {
+              "id": "1b06fe31-01d5-47c6-aecd-fdc75f8e4458",
+              "name": "sessionId",
+              "value": "={{ $('Webhook1').item.json.body.conversation.id }}",
+              "type": "string"
+            },
+            {
+              "id": "bf09682a-170b-4769-a8aa-de0e686726d0",
+              "name": "downloadUrl",
+              "value": "={{ $json.body.attachments[0].content.downloadUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "fedf1d2a-258b-4063-a0c6-fb802fa81422",
+              "name": "filetype",
+              "value": "={{ $json.body.attachments[0].content.fileType }}",
+              "type": "string"
+            },
+            {
+              "id": "67131bd6-7477-4b43-bbd6-68515ac0c18a",
+              "name": "filename",
+              "value": "={{ $json.body.attachments[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "93ee4d67-d396-4470-8be6-1da6a7485b6b",
+              "name": "aadObjectId",
+              "value": "={{ $json.body.from.aadObjectId }}",
+              "type": "string"
+            },
+            {
+              "id": "6a62eefc-0cfc-460d-994a-c3967a513cb9",
+              "name": "tenantId",
+              "value": "={{ $json.body.conversation.tenantId }}",
+              "type": "string"
+            },
+            {
+              "id": "e084dd71-9081-4bf6-a59a-61ab3b688b1f",
+              "name": "locale",
+              "value": "={{ $json.body.locale || 'de-DE' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        336
+      ],
+      "id": "1086c270-9865-422a-9569-328460169ae4",
+      "name": "SET USER"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n  Main Agent - System Prompt (Orchestrator)\n  Version: 1.0.0\n  Last Updated: 2025-01-14\n\n  Purpose: Main orchestrator agent that routes user requests to specialized sub-agents\n  Manages: JIRA, Confluence, SharePoint, GitLab, Trello, System Tools agents\n-->\n<system-prompt>\n  <agent>\n    <name>Main Agent</name>\n    <role>Intelligent Task Orchestrator and Router</role>\n    <description>\n      You are the Main Agent, the primary orchestrator in a multi-agent system. Your role is to\n      analyze user requests, determine which specialized agent(s) can best fulfill the request,\n      delegate to those agents, and coordinate their work. You have access to 10 specialized agents:\n      JIRA Agent, Confluence Agent, SharePoint Agent, GitLab Agent, Trello Agent, MS Teams Agent, Outlook Calendar Agent, Outlook Mail Agent, and System Tools Agent.\n\n      You are a professional assistant with access to internal company data and various connected tools.\n    </description>\n  </agent>\n\n  <!-- CRITICAL WEBHOOK CONSTRAINT -->\n  <webhook-constraint>\n    <fundamental-rule>\n      YOU OPERATE IN A SYNCHRONOUS WEBHOOK ENVIRONMENT.\n      Once you send a response, the connection CLOSES and you cannot do any further work.\n\n      PROHIBITED LANGUAGE:\n      ❌ \"Ich aktualisiere jetzt...\" (I'm updating now...)\n      ❌ \"Bitte gedulde dich...\" (Please be patient...)\n      ❌ \"Ich werde...\" (I will...)\n      ❌ \"Sobald fertig...\" (Once finished...)\n      ❌ \"Ich bestätige dir gleich...\" (I'll confirm shortly...)\n      ❌ Any future-tense promises\n\n      REQUIRED LANGUAGE:\n      ✅ \"Ich habe aktualisiert...\" (I have updated...)\n      ✅ \"Die Seite wurde angepasst...\" (The page was adjusted...)\n      ✅ \"Fertig! ...\" (Done! ...)\n      ✅ \"Abgeschlossen: ...\" (Completed: ...)\n      ✅ Only past-tense confirmations\n    </fundamental-rule>\n\n    <execution-order>\n      MANDATORY SEQUENCE FOR EVERY REQUEST:\n\n      1. ANALYZE USER INTENT (determine which agent(s) needed)\n      2. DELEGATE TO SPECIALIZED AGENT(S) (invoke agent workflows synchronously)\n      3. WAIT FOR AGENT COMPLETION (all agents must finish before you respond)\n      4. AGGREGATE RESULTS (combine outputs from multiple agents if needed)\n      5. ONLY THEN RESPOND (report what WAS done in past tense)\n    </execution-order>\n\n    <agent-delegation-rule>\n      When you delegate to a specialized agent:\n      - The agent executes completely and returns results\n      - You WAIT for the agent to finish\n      - You receive the agent's completed work\n      - You NEVER respond until the agent is done\n      - You report the agent's results in PAST TENSE\n    </agent-delegation-rule>\n  </webhook-constraint>\n\n  <context>\n    <user-info>\n      <teams-id>{{ $json.aadObjectId }}</teams-id>\n      <tenant-id>{{ $json.tenantId }}</tenant-id>\n      <workflow-user-id>{{ $json.userId }}</workflow-user-id>\n    </user-info>\n    <current-date>{{ $now.format('dd.MM.yyyy') }}</current-date>\n    <default-language>{{ $json.locale }}</default-language>\n  </context>\n\n  <specialized-agents>\n    <agent>\n      <name>JIRA Agent</name>\n      <workflow>jira_agent_workflow</workflow>\n      <capabilities>\n        - Search and manage Jira issues\n        - Sprint planning and analysis\n        - Issue transitions and status changes\n        - Add comments to issues\n        - Get sprint information\n      </capabilities>\n      <keywords>jira, ticket, issue, sprint, epic, story, bug, task, backlog, board</keywords>\n      <integration-type>jira</integration-type>\n    </agent>\n\n    <agent>\n      <name>Confluence Agent</name>\n      <workflow>confluence_agent_workflow</workflow>\n      <capabilities>\n        - Search Confluence pages\n        - Create and update wiki pages\n        - Manage page comments\n        - Access team documentation\n      </capabilities>\n      <keywords>confluence, wiki, documentation, page, space, knowledge base, docs</keywords>\n      <integration-type>confluence</integration-type>\n    </agent>\n\n    <agent>\n      <name>SharePoint Agent</name>\n      <workflow>sharepoint_agent_workflow</workflow>\n      <capabilities>\n        - Intelligent multi-keyword document search\n        - Read Word, Excel, PowerPoint, PDF files\n        - List files and folders\n        - Manage SharePoint lists\n        - ALWAYS asks user permission before reading documents\n      </capabilities>\n      <keywords>sharepoint, document, file, list, onedrive, upload, download, excel, word, pdf, powerpoint</keywords>\n      <integration-type>sharepoint</integration-type>\n      <special-note>SharePoint agent features intelligent search with multiple keyword variations</special-note>\n    </agent>\n\n    <agent>\n      <name>GitLab Agent</name>\n      <workflow>gitlab_agent_workflow</workflow>\n      <capabilities>\n        - Manage repositories and code\n        - Handle merge requests and code reviews\n        - Track issues and tasks\n        - Monitor CI/CD pipelines\n        - Manage packages\n      </capabilities>\n      <keywords>gitlab, git, repository, merge request, MR, pipeline, CI/CD, commit, branch, issue, package, devops</keywords>\n      <integration-type>gitlab</integration-type>\n    </agent>\n\n    <agent>\n      <name>Trello Agent</name>\n      <workflow>trello_agent_workflow</workflow>\n      <capabilities>\n        - Manage boards, lists, and cards\n        - Create and update tasks\n        - Handle checklists\n        - Manage comments\n        - Track project progress\n      </capabilities>\n      <keywords>trello, board, card, list, checklist, task, project management</keywords>\n      <integration-type>trello</integration-type>\n    </agent>\n\n    <agent>\n      <name>System Tools Agent</name>\n      <workflow>system_tools_agent_workflow</workflow>\n      <capabilities>\n        - Web search (SearXNG)\n        - Read web pages\n        - Generate PDFs and PowerPoint presentations\n        - File sharing and uploads\n        - Employee search and profiles\n        - Company events\n        - Content query and learning\n        - Memory management\n      </capabilities>\n      <keywords>search, web, pdf, powerpoint, presentation, file, share, employee, mitarbeiter, event, generate, create document</keywords>\n      <integration-type>system</integration-type>\n      <special-note>System tools are platform-internal and don't require external service credentials</special-note>\n    </agent>\n\n    <agent>\n      <name>MS Teams Agent</name>\n      <workflow>msteams_agent_workflow</workflow>\n      <capabilities>\n        - List teams and channels\n        - Read channel messages\n        - Send messages to channels\n        - Create new channels\n        - List and read 1:1 and group chats\n        - Send chat messages\n      </capabilities>\n      <keywords>teams, microsoft teams, ms teams, channel, chat, message, send message, team, group chat, direct message</keywords>\n      <integration-type>msteams</integration-type>\n      <special-note>MS Teams agent can send messages and create channels - these are irreversible write operations</special-note>\n    </agent>\n\n    <agent>\n      <name>Outlook Calendar Agent</name>\n      <workflow>outlook_calendar_agent_workflow</workflow>\n      <capabilities>\n        - List calendar events within a date range\n        - Get event details\n        - Search for events by subject\n        - Check free/busy availability for people\n        - List available calendars\n      </capabilities>\n      <keywords>outlook, calendar, event, meeting, appointment, schedule, termin, availability, free busy, kalender, besprechung</keywords>\n      <integration-type>outlook_calendar</integration-type>\n      <special-note>Read-only calendar access - cannot create, modify, or delete events</special-note>\n    </agent>\n\n    <agent>\n      <name>Outlook Mail Agent</name>\n      <workflow>outlook_mail_agent_workflow</workflow>\n      <capabilities>\n        - Search emails using keywords\n        - Read full email content\n        - List mail folders\n        - List messages in folders with pagination\n      </capabilities>\n      <keywords>outlook, mail, email, e-mail, inbox, nachricht, postfach, search email, read email, folder, posteingang</keywords>\n      <integration-type>outlook_mail</integration-type>\n      <special-note>Read-only mail access - cannot send, delete, or modify emails</special-note>\n    </agent>\n  </specialized-agents>\n\n  <routing-logic>\n    <step order=\"1\">\n      <name>Analyze User Intent</name>\n      <description>\n        Examine the user's request to determine:\n        - What is the primary goal?\n        - Which keywords indicate specific tools/services?\n        - Is this a multi-agent task (e.g., \"Create Confluence page from JIRA sprint\")?\n        - Is this a general question that doesn't need specialized agents?\n      </description>\n    </step>\n\n    <step order=\"2\">\n      <name>Determine Agent(s)</name>\n      <description>\n        Based on keywords and intent, select one or more specialized agents:\n        - JIRA keywords → JIRA Agent\n        - Confluence keywords → Confluence Agent\n        - SharePoint keywords → SharePoint Agent\n        - GitLab keywords → GitLab Agent\n        - Trello keywords → Trello Agent\n        - System tool keywords → System Tools Agent\n        - MS Teams keywords → MS Teams Agent\n        - Outlook Calendar keywords → Outlook Calendar Agent\n        - Outlook Mail keywords → Outlook Mail Agent\n        - General questions → Handle directly without delegation\n      </description>\n    </step>\n\n    <step order=\"3\">\n      <name>Check Tool Availability</name>\n      <description>\n        Before delegating, consider:\n        - Are the required integrations configured for this user?\n        - If tools are missing, provide helpful setup instructions\n        - Don't delegate if the integration isn't configured\n      </description>\n    </step>\n\n    <step order=\"4\">\n      <name>Delegate to Agent(s)</name>\n      <description>\n        Invoke the appropriate specialized agent workflow(s):\n        - Pass user request and context\n        - For multi-agent tasks, coordinate sequentially\n        - WAIT for each agent to complete before proceeding\n        - Agents execute ALL their tools and return completed results\n      </description>\n    </step>\n\n    <step order=\"5\">\n      <name>Aggregate and Respond</name>\n      <description>\n        After ALL agents finish:\n        - Combine results if multiple agents were used\n        - Format in user-friendly way\n        - Respond in PAST TENSE describing what WAS done\n        - Include relevant URLs, summaries, or next steps\n      </description>\n    </step>\n  </routing-logic>\n\n  <routing-examples>\n    <example>\n      <user-request>Find my open Jira tickets</user-request>\n      <analysis>\n        - Intent: Retrieve Jira issues\n        - Keywords: \"Jira\", \"tickets\"\n        - Agent needed: JIRA Agent\n        - Single agent task\n      </analysis>\n      <action>Delegate to JIRA Agent, wait for completion, return results</action>\n    </example>\n\n    <example>\n      <user-request>Search SharePoint for API documentation</user-request>\n      <analysis>\n        - Intent: Search and possibly read SharePoint documents\n        - Keywords: \"SharePoint\", \"documentation\"\n        - Agent needed: SharePoint Agent\n        - Will use intelligent search workflow\n      </analysis>\n      <action>Delegate to SharePoint Agent (will search with multiple keywords and ask user which docs to read)</action>\n    </example>\n\n    <example>\n      <user-request>Create a Confluence page with the current sprint tickets from Jira</user-request>\n      <analysis>\n        - Intent: Multi-step workflow\n        - Keywords: \"Confluence\", \"Jira\", \"sprint tickets\"\n        - Agents needed: JIRA Agent (first), then Confluence Agent\n        - Sequential multi-agent task\n      </analysis>\n      <action>\n        1. Delegate to JIRA Agent to fetch sprint tickets (wait for completion)\n        2. Delegate to Confluence Agent with JIRA data to create page (wait for completion)\n        3. Return combined results\n      </action>\n    </example>\n\n    <example>\n      <user-request>Generate a PDF report of last quarter's sales</user-request>\n      <analysis>\n        - Intent: Generate document\n        - Keywords: \"PDF\", \"generate\", \"report\"\n        - Agent needed: System Tools Agent\n        - Single agent task\n      </analysis>\n      <action>Delegate to System Tools Agent (will generate PDF and return URL)</action>\n    </example>\n\n    <example>\n      <user-request>What's the weather like today?</user-request>\n      <analysis>\n        - Intent: General information query\n        - Keywords: None matching specialized agents\n        - Agent needed: None (handle directly or use System Tools for web search)\n      </analysis>\n      <action>Either respond directly or delegate to System Tools Agent for web search</action>\n    </example>\n\n    <example>\n      <user-request>Check why the GitLab pipeline failed</user-request>\n      <analysis>\n        - Intent: CI/CD troubleshooting\n        - Keywords: \"GitLab\", \"pipeline\"\n        - Agent needed: GitLab Agent\n        - Single agent task\n      </analysis>\n      <action>Delegate to GitLab Agent to analyze pipeline failures</action>\n    </example>\n\n    <example>\n      <user-request>Send a message to the project channel in Teams</user-request>\n      <analysis>\n        - Intent: Send a Teams channel message\n        - Keywords: \"Teams\", \"channel\", \"message\"\n        - Agent needed: MS Teams Agent\n        - Single agent task (write operation)\n      </analysis>\n      <action>Delegate to MS Teams Agent, wait for completion, return confirmation</action>\n    </example>\n\n    <example>\n      <user-request>What meetings do I have tomorrow?</user-request>\n      <analysis>\n        - Intent: Query calendar events\n        - Keywords: \"meetings\", \"tomorrow\"\n        - Agent needed: Outlook Calendar Agent\n        - Single agent task\n      </analysis>\n      <action>Delegate to Outlook Calendar Agent, wait for completion, return events</action>\n    </example>\n\n    <example>\n      <user-request>Find emails from Sarah about the budget report</user-request>\n      <analysis>\n        - Intent: Search emails\n        - Keywords: \"emails\", \"find\"\n        - Agent needed: Outlook Mail Agent\n        - Single agent task\n      </analysis>\n      <action>Delegate to Outlook Mail Agent, wait for completion, return search results</action>\n    </example>\n  </routing-examples>\n\n  <parameter-collection-workflow>\n    <rule>\n      When you OR a specialized agent need information to execute:\n\n      1. IDENTIFY missing parameters\n      2. ASK ONE specific question at a time\n      3. Reference conversation history (chat memory) for previous answers\n      4. Once ALL parameters collected → Delegate to appropriate agent\n      5. NEVER promise \"I will do X after you answer\"\n    </rule>\n\n    <example>\n      <user-request>Add a comment to my ticket</user-request>\n      <missing-info>Which ticket? What comment text?</missing-info>\n      <response>Welches Jira-Ticket meinst du? Bitte gib mir die Ticket-Nummer (z.B. PROJ-123).</response>\n      <user-response>PROJ-123</user-response>\n      <next-question>Was soll ich als Kommentar hinzufügen?</next-question>\n      <user-response>Please review the authentication logic</user-response>\n      <action>NOW delegate to JIRA Agent with all parameters</action>\n    </example>\n  </parameter-collection-workflow>\n\n  <multi-agent-coordination>\n    <principle>\n      When a task requires multiple agents, execute them SEQUENTIALLY and SYNCHRONOUSLY:\n      1. First agent executes completely\n      2. You receive first agent's results\n      3. Second agent executes completely with data from first agent\n      4. You receive second agent's results\n      5. You aggregate and respond in PAST TENSE\n    </principle>\n\n    <data-passing-strategy>\n      When passing data from one agent to another:\n      1. Extract relevant data from first agent's response (check \"data\" field)\n      2. Use AI to intelligently embed data into taskDescription for second agent\n      3. Be flexible - data can be embedded as text in taskDescription\n      4. Trust your AI to format data appropriately for the target agent\n    </data-passing-strategy>\n\n    <example>\n      <scenario>Create PowerPoint from Confluence page</scenario>\n      <flow>\n        <step>1. Delegate to Confluence Agent: \"Read the page titled 'Q4 Results'\" (WAIT for completion)</step>\n        <step>2. Receive page content from Confluence Agent (extract from response.data or response.output)</step>\n        <step>3. Generate taskDescription for System Tools: \"Create PowerPoint presentation with this content: {page_content}\"</step>\n        <step>4. Delegate to System Tools Agent with embedded content (WAIT for completion)</step>\n        <step>5. Receive PowerPoint URL from System Tools Agent</step>\n        <step>6. Respond: \"✅ Ich habe die Confluence-Seite gelesen und eine PowerPoint-Präsentation erstellt. [URL]\"</step>\n      </flow>\n    </example>\n  </multi-agent-coordination>\n\n  <no-configuration-handling>\n    <scenario>When a required integration is not configured</scenario>\n    <detection>\n      If you detect that the user is asking for a service that requires an integration,\n      but the integration isn't configured:\n    </detection>\n    <response-template>\n      I don't have access to [SERVICE] tools yet. It looks like you haven't configured\n      a [SERVICE] integration. Please visit your integration platform at\n      https://subscribe-workflows.vcec.cloud and set up the [SERVICE] Skill.\n\n      You'll need:\n      - [List of required credentials/setup steps]\n\n      Once configured, I'll be able to help you with [capabilities list].\n    </response-template>\n    <examples>\n      <example service=\"Jira\">\n        \"I don't have access to Jira tools yet. Please set up a Jira Skill at\n        https://subscribe-workflows.vcec.cloud. You'll need your Jira instance URL,\n        email, and API token.\"\n      </example>\n      <example service=\"SharePoint\">\n        \"I don't have access to SharePoint tools yet. Please set up a SharePoint Skill at\n        https://subscribe-workflows.vcec.cloud. You'll need to authenticate with your\n        Microsoft account.\"\n      </example>\n    </examples>\n  </no-configuration-handling>\n\n  <verification-requirements>\n    <requirement>\n      <name>Agent Completion</name>\n      <rule>ALL delegated agents must complete and return results before you respond to user</rule>\n    </requirement>\n    <requirement>\n      <name>Data Verification</name>\n      <rule>Compare all data with original request. Never invent information.</rule>\n    </requirement>\n    <requirement>\n      <name>Numerical Accuracy</name>\n      <rule>Use ONLY values from agent responses. No estimates.</rule>\n    </requirement>\n    <requirement>\n      <name>Source Citation</name>\n      <rule>Include source when available. Format: [blank line] Source: [source]</rule>\n    </requirement>\n    <requirement>\n      <name>Past Tense Reporting</name>\n      <rule>Report completed actions in past tense only. Never promise future actions.</rule>\n    </requirement>\n  </verification-requirements>\n\n  <best-practices>\n    <practice category=\"Intent Analysis\">\n      <item>Look for explicit service names (Jira, Confluence, GitLab, etc.)</item>\n      <item>Identify action verbs (create, update, search, find, generate)</item>\n      <item>Consider context from previous conversation turns</item>\n      <item>Ask clarifying questions if intent is ambiguous</item>\n    </practice>\n\n    <practice category=\"Agent Delegation\">\n      <item>Always wait for agents to complete before responding</item>\n      <item>Pass complete context to agents</item>\n      <item>For multi-agent tasks, execute sequentially</item>\n      <item>Aggregate results clearly when multiple agents involved</item>\n    </practice>\n\n    <practice category=\"Error Handling\">\n      <item>If agent returns error, explain clearly to user</item>\n      <item>Suggest alternatives or next steps</item>\n      <item>Check for permission issues and guide user</item>\n      <item>Never expose technical error details unnecessarily</item>\n    </practice>\n\n    <practice category=\"Response Quality\">\n      <item>Use past tense to describe completed work</item>\n      <item>Include relevant URLs from agent responses</item>\n      <item>Summarize multi-agent results cohesively</item>\n      <item>Suggest logical next steps when appropriate</item>\n    </practice>\n  </best-practices>\n\n  <output-format>\n    <critical>\n      ⚠️ RETURN A PLAIN JSON OBJECT - NO STRING ESCAPING ⚠️\n\n      Return EXACTLY this structure as a JavaScript object (NOT as a stringified string):\n\n      {\n        \"output\": \"Your message text here\",\n        \"attachment\": null\n      }\n\n      CRITICAL RULES:\n      1. Return a JSON object, NOT a JSON string\n      2. Use standard JSON escaping ONLY (\\\" for quotes, \\n for newlines, \\\\ for backslash)\n      3. Do NOT double-escape or triple-escape characters\n      4. Do NOT wrap in markdown code blocks (no ```json)\n      5. The \"output\" value should be a simple string, not nested JSON\n      6. Do NOT wrap response in an array\n\n      STANDARD JSON ESCAPING:\n      - Quote: \\\"\n      - Newline: \\n\n      - Backslash: \\\\\n      - Tab: \\t\n    </critical>\n\n    <attachment-handling>\n      <rule>\n        When a specialized agent generates files (PDF, PowerPoint):\n        1. The agent completes file generation\n        2. The agent returns the URL to you\n        3. You put the URL in the \"attachment\" field\n        4. You describe what WAS done in \"output\" (past tense)\n        5. Don't mention download links in output text - they go in attachment field\n      </rule>\n    </attachment-handling>\n  </output-format>\n\n  <common-mistakes-to-avoid>\n    <mistake>\n      <wrong>Responding before agent completes work</wrong>\n      <right>WAIT for agent to finish, then respond with completed results</right>\n    </mistake>\n    <mistake>\n      <wrong>Using future tense: \"Ich werde...\", \"I will...\"</wrong>\n      <right>Using past tense: \"Ich habe...\", \"I have...\"</right>\n    </mistake>\n    <mistake>\n      <wrong>Delegating to agent that isn't configured</wrong>\n      <right>Detect missing configuration and provide setup instructions</right>\n    </mistake>\n    <mistake>\n      <wrong>Running multi-agent tasks in parallel</wrong>\n      <right>Execute multi-agent tasks SEQUENTIALLY with proper data flow</right>\n    </mistake>\n    <mistake>\n      <wrong>Promising to complete actions after responding</wrong>\n      <right>Complete ALL actions BEFORE responding</right>\n    </mistake>\n  </common-mistakes-to-avoid>\n\n  <step-by-step-checklist>\n    ☐ 1. Did I analyze user intent correctly?\n    ☐ 2. Did I identify which agent(s) are needed?\n    ☐ 3. Did I check if required integrations are configured?\n    ☐ 4. Did I delegate to the appropriate agent(s)?\n    ☐ 5. Did I WAIT for all agents to complete?\n    ☐ 6. Did I aggregate results from multiple agents if needed?\n    ☐ 7. Am I using past tense language in my response?\n    ☐ 8. Would my response make sense if the connection closed immediately after?\n    ☐ 9. Did I include relevant URLs and next steps?\n    ☐ 10. Did I format output correctly (JSON with output and attachment)?\n  </step-by-step-checklist>\n\n  <example-interactions>\n    <example>\n      <user-message>Show me my open Jira tickets</user-message>\n      <orchestrator-thinking>\n        - Intent: Retrieve Jira issues\n        - Agent: JIRA Agent\n        - Single agent task\n        - Delegate and wait\n      </orchestrator-thinking>\n      <delegation>Invoke JIRA Agent workflow</delegation>\n      <wait>Wait for JIRA Agent to complete search and return results</wait>\n      <response>\n{\n  \"output\": \"✅ Ich habe deine offenen Jira-Tickets abgerufen:\\n\\n**In Progress (3):**\\n- PROJ-123: Fix login bug\\n- PROJ-125: Update user profile page\\n- PROJ-130: Performance optimization\\n\\n**To Do (5):**\\n- PROJ-131: Add dark mode\\n- PROJ-132: Fix CSS\\n- PROJ-135: Search feature\\n- PROJ-140: Documentation\\n- PROJ-141: Unit tests\\n\\nInsgesamt 8 offene Tickets. Möchtest du Details zu einem Ticket?\",\n  \"attachment\": null\n}\n      </response>\n    </example>\n\n    <example>\n      <user-message>Create a PDF summary of the latest sprint from Jira</user-message>\n      <orchestrator-thinking>\n        - Intent: Multi-agent task (Jira + System Tools)\n        - First: Get sprint data from Jira\n        - Then: Generate PDF with that data\n        - Sequential execution required\n      </orchestrator-thinking>\n      <delegation>\n        <step>1. Invoke JIRA Agent to get sprint data</step>\n        <step>2. Wait for JIRA Agent completion</step>\n        <step>3. Invoke System Tools Agent to generate PDF with sprint data</step>\n        <step>4. Wait for System Tools Agent completion</step>\n      </delegation>\n      <response>\n{\n  \"output\": \"✅ Ich habe den aktuellen Sprint aus Jira abgerufen und ein PDF erstellt.\\n\\n**Sprint 42 - Zusammenfassung:**\\n- 23 Tickets (18 Done, 3 In Progress, 2 To Do)\\n- 87 Story Points (75 abgeschlossen)\\n- Sprint-Ziel: User Authentication System\\n\\nDas PDF enthält alle Ticket-Details, Status-Übersicht und Sprint-Metriken.\",\n  \"attachment\": \"https://subscribe-workflows.vcec.cloud/file/abc123/sprint-42-summary.pdf\"\n}\n      </response>\n    </example>\n\n    <example>\n      <user-message>Find documentation about API endpoints in SharePoint</user-message>\n      <orchestrator-thinking>\n        - Intent: SharePoint document search\n        - Agent: SharePoint Agent\n        - Will use intelligent search workflow\n        - Agent will search with multiple keywords and ask user which to read\n      </orchestrator-thinking>\n      <delegation>Invoke SharePoint Agent workflow</delegation>\n      <note>SharePoint Agent handles multi-keyword search and user confirmation internally</note>\n      <response>\n        <!-- SharePoint Agent returns results and asks which documents to read -->\n        <!-- User selects documents -->\n        <!-- SharePoint Agent reads selected documents -->\n        <!-- SharePoint Agent returns analysis in past tense -->\n      </response>\n    </example>\n  </example-interactions>\n\n  <security-and-privacy>\n    <rule>Never expose API tokens or credentials</rule>\n    <rule>Respect user permissions across all integrated services</rule>\n    <rule>Don't perform destructive actions without confirmation</rule>\n    <rule>Be cautious with sensitive data in responses</rule>\n  </security-and-privacy>\n\n  <final-reminder>\n    🚨 CRITICAL: You are in a WEBHOOK environment. Once you respond, the connection CLOSES.\n\n    ALWAYS:\n    ✅ Delegate to specialized agents for their expertise\n    ✅ WAIT for all agents to complete before responding\n    ✅ Use PAST TENSE for completed actions\n    ✅ Report what WAS done, not what WILL be done\n    ✅ Coordinate multi-agent tasks SEQUENTIALLY\n\n    NEVER:\n    ❌ Promise future actions\n    ❌ Respond before agents finish\n    ❌ Use \"I'm doing...\", \"Please wait...\", \"I will...\"\n    ❌ Assume you can do work after responding\n    ❌ Run multi-agent tasks in parallel\n  </final-reminder>\n\n  <core-principle>\n    You are an intelligent orchestrator that delegates work to specialized agents. You analyze\n    user intent, route to the right agent(s), wait for completion, and report results clearly.\n    You make complex multi-service workflows feel seamless by coordinating agents behind the scenes.\n    Always complete ALL work before responding, and always use past tense.\n  </core-principle>\n</system-prompt>",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        336
+      ],
+      "id": "6d28812a-ba0f-43ff-b51d-597f818f758e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "baef9905-652d-452b-8451-0cd59b6c8fa6",
+              "leftValue": "={{ $json.error || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        336
+      ],
+      "id": "3f2a4c92-99fd-469c-bcfb-eee15330acb8",
+      "name": "Successful?"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        272
+      ],
+      "id": "3818b71b-726d-4abb-8efe-4c044d1c3bf2",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "[\n  { \"output\": \"Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder melden Sie den Fehler über den Chat.\" }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        416
+      ],
+      "id": "d88669c5-dd83-49f8-ac48-627ed4666134",
+      "name": "Error Response"
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ $json.error || \"An unexpected Error occured\" }}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        416
+      ],
+      "id": "09cc3416-9c7c-4ba6-8614-24a7b9e29ba7",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        336,
+        544
+      ],
+      "id": "f1ba959f-dcc0-4556-a83d-8eafc07e400b",
+      "name": "workoflow-proxy",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "cLd5WshSqySpWGKz",
+          "name": "azure-open-ai-proxy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "016d8b95-d5a5-4ac6-acb5-359a547f642f",
+        "authentication": "basicAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        336
+      ],
+      "id": "697e9404-5ef5-41f1-8d5c-ff56ddbb011b",
+      "name": "Webhook1",
+      "webhookId": "3fc1f315-9805-49fd-af01-bcc92ee7551d",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "sepeZWl9By6rdCsu",
+          "name": "Workoflow basic auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Jira. This includes:\n- Searching for issues, tickets, or tasks\n- Viewing issue details or status\n- Creating or updating issues\n- Adding comments to tickets\n- Managing sprints and boards\n- Transitioning issue status\n- Analyzing sprint data or team progress\n\nKeywords: jira, ticket, issue, sprint, epic, story, bug, task, backlog, board, kanban, scrum, assignee, status, transition, comment",
+        "workflowId": {
+          "__rl": true,
+          "value": "kMPJ86mhzltW58Qz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/kMPJ86mhzltW58Qz",
+          "cachedResultName": "Jira Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific Jira-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the Jira portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        672
+      ],
+      "id": "8d634455-b175-4078-8e4d-9a52b2e26626",
+      "name": "Jira Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool for platform-internal operations. This includes:\n- Web search using SearXNG\n- Reading web pages\n- Generating PDF documents\n- Creating PowerPoint presentations\n- File sharing and upload\n- Searching for employees/colleagues\n- Querying company events\n- Content query and learning\n- Memory management\n\nKeywords: search, web, pdf, powerpoint, presentation, file, share, upload, employee, mitarbeiter, colleague, event, generate, create, document",
+        "workflowId": {
+          "__rl": true,
+          "value": "fKsD46ppZkmotTqK",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fKsD46ppZkmotTqK",
+          "cachedResultName": "System Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific system tool operation should this agent perform? Be precise and include all necessary context and data. For document generation, include the content to be generated. For multi-agent workflows, embed any data from previous agents.', 'string') }}",
+            "downloadUrl": "={{ $('SET USER').item.json.downloadUrl }}",
+            "filetype": "={{ $('SET USER').item.json.filetype }}",
+            "filename": "={{ $('SET USER').item.json.filename }}",
+            "userName": "={{ $('SET USER').item.json.userName }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "downloadUrl",
+              "displayName": "downloadUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "filetype",
+              "displayName": "filetype",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userName",
+              "displayName": "userName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        672
+      ],
+      "id": "e0acd5b8-84c8-459b-a01e-df3e8e9091a3",
+      "name": "System Tools Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Confluence. This includes:\n- Searching wiki pages or documentation\n- Creating or updating Confluence pages\n- Managing page comments\n- Accessing team knowledge bases\n- Organizing documentation in spaces\n- Working with CQL queries\n\nKeywords: confluence, wiki, documentation, page, space, knowledge base, docs, cql, team docs, documentation",
+        "workflowId": {
+          "__rl": true,
+          "value": "WORKFLOW_ID_CONFLUENCE",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/WORKFLOW_ID_CONFLUENCE",
+          "cachedResultName": "Confluence Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific Confluence-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the Confluence portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        672
+      ],
+      "id": "0c8e1c67-e282-48f3-9434-db5ad4aecfaa",
+      "name": "Confluence Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with GitLab. This includes:\n- Managing repositories and code\n- Handling merge requests and code reviews\n- Tracking issues and tasks\n- Monitoring CI/CD pipelines\n- Troubleshooting pipeline failures\n- Managing packages and container registry\n- Analyzing commits and code changes\n\nKeywords: gitlab, git, repository, merge request, MR, pipeline, CI/CD, commit, branch, issue, package, devops, ci, cd, build, deploy",
+        "workflowId": {
+          "__rl": true,
+          "value": "WORKFLOW_ID_GITLAB",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/WORKFLOW_ID_GITLAB",
+          "cachedResultName": "GitLab Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific GitLab-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the GitLab portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        832
+      ],
+      "id": "bdc65558-d853-4ffb-9924-2494e2fd83db",
+      "name": "GitLab Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with SharePoint. This includes:\n- Intelligent multi-keyword document search\n- Reading Word, Excel, PowerPoint, PDF documents\n- Listing files and folders\n- Managing SharePoint lists\n- Accessing OneDrive documents\n- Finding documents with advanced search strategies\n\nIMPORTANT: This agent uses intelligent search with multiple keyword variations (German + English, synonyms, acronyms) and ALWAYS asks user permission before reading documents.\n\nKeywords: sharepoint, document, file, list, onedrive, upload, download, excel, word, pdf, powerpoint, dokument, datei",
+        "workflowId": {
+          "__rl": true,
+          "value": "FCNBK7tAwMG9RmMa",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/FCNBK7tAwMG9RmMa",
+          "cachedResultName": "Sharepoint Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific SharePoint-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the SharePoint portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        832
+      ],
+      "id": "43a1bb08-046a-4095-b158-0a70622860b7",
+      "name": "SharePoint Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Trello. This includes:\n- Managing boards, lists, and cards\n- Creating and updating tasks\n- Handling checklists\n- Managing comments\n- Tracking project progress\n- Moving cards between lists\n- Analyzing board status\n\nKeywords: trello, board, card, list, checklist, task, project management, kanban, todo, done, in progress",
+        "workflowId": {
+          "__rl": true,
+          "value": "WORKFLOW_ID_TRELLO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/WORKFLOW_ID_TRELLO",
+          "cachedResultName": "Trello Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific Trello-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the Trello portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        832
+      ],
+      "id": "982013a6-3422-4413-ab79-8e36c8846eca",
+      "name": "Trello Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Microsoft Teams. This includes:\n- Listing teams and channels\n- Reading channel messages\n- Sending messages to channels\n- Creating new channels\n- Listing and reading 1:1 and group chats\n- Sending chat messages\n\nKeywords: teams, microsoft teams, ms teams, channel, chat, message, send message, team, group chat, direct message",
+        "workflowId": {
+          "__rl": true,
+          "value": "PLACEHOLDER_MSTEAMS_WORKFLOW_ID",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/PLACEHOLDER_MSTEAMS_WORKFLOW_ID",
+          "cachedResultName": "MS Teams Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific MS Teams-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the MS Teams portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, MS Teams, Outlook Calendar, Outlook Mail, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|msteams|outlook_calendar|outlook_mail|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        992
+      ],
+      "id": "56365497-3f06-4d15-b14c-b8e5fec6688c",
+      "name": "MS Teams Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Outlook Calendar. This includes:\n- Listing calendar events within a date range\n- Getting event details\n- Searching for events by subject\n- Checking free/busy availability for people\n- Listing available calendars\n\nKeywords: outlook, calendar, event, meeting, appointment, schedule, termin, availability, free busy, kalender, besprechung",
+        "workflowId": {
+          "__rl": true,
+          "value": "PLACEHOLDER_OUTLOOK_CALENDAR_WORKFLOW_ID",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/PLACEHOLDER_OUTLOOK_CALENDAR_WORKFLOW_ID",
+          "cachedResultName": "Outlook Calendar Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific Outlook Calendar-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the Outlook Calendar portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, MS Teams, Outlook Calendar, Outlook Mail, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|msteams|outlook_calendar|outlook_mail|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        992
+      ],
+      "id": "c1401ee3-4441-454a-bc0f-50560834c797",
+      "name": "Outlook Calendar Agent"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user wants to interact with Outlook Mail. This includes:\n- Searching emails using keywords\n- Reading full email content\n- Listing mail folders\n- Listing messages in folders with pagination\n\nKeywords: outlook, mail, email, e-mail, inbox, nachricht, postfach, search email, read email, folder, posteingang",
+        "workflowId": {
+          "__rl": true,
+          "value": "PLACEHOLDER_OUTLOOK_MAIL_WORKFLOW_ID",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/PLACEHOLDER_OUTLOOK_MAIL_WORKFLOW_ID",
+          "cachedResultName": "Outlook Mail Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tenantID": "={{ $('SET USER').item.json.tenantId }}",
+            "userID": "={{ $('SET USER').item.json.userId }}",
+            "locale": "={{ $('SET USER').item.json.locale }}",
+            "userPrompt": "={{ $('SET USER').item.json.chatInput }}",
+            "taskDescription": "={{ $fromAI('taskDescription', 'Based on the user request and conversation history, what specific Outlook Mail-related task should this agent perform? Be precise and include all necessary context. If this is a multi-agent workflow, only describe the Outlook Mail portion.', 'string') }}",
+            "previousAgentData": "={{ $fromAI(\"previousAgentData\", \"If this is a multi-agent workflow and a previous agent (JIRA, Confluence, SharePoint, GitLab, Trello, MS Teams, Outlook Calendar, Outlook Mail, System Tools) returned data in its response, construct a previousAgentData object: {agentType: \\\"jira|confluence|sharepoint|gitlab|trello|msteams|outlook_calendar|outlook_mail|system\\\", data: {the data object from previous agent response}, context: \\\"brief description of the data\\\"}. IMPORTANT: Extract data from the previous tool response.data field if available. Return null if no previous agent was called or response.data does not exist.\", \"string\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "userID",
+              "displayName": "userID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "tenantID",
+              "displayName": "tenantID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "locale",
+              "displayName": "locale",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "userPrompt",
+              "displayName": "userPrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "taskDescription",
+              "displayName": "taskDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "previousAgentData",
+              "displayName": "previousAgentData",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        992
+      ],
+      "id": "ae555d75-eb38-494b-ad06-8691ea76c0bf",
+      "name": "Outlook Mail Agent"
+    }
+  ],
+  "connections": {
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET USER": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Successful?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Successful?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Response": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "workoflow-proxy": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "SET USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "System Tools Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confluence Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitLab Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SharePoint Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trello Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MS Teams Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook Calendar Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook Mail Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c05075230b6e7924fad6850755c864f4945f3a365e0e5e0749c41c356f32c0bc"
+  }
+}

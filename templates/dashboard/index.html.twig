@@ -4,170 +4,92 @@
 
 {% block body %}
 <div class="dashboard-page">
-    
     <div class="dashboard-container">
-        <h1 class="dashboard-title">{{ 'general.welcome'|trans({'%name%': user.name}) }}</h1>
-        
-        {% if organisation %}
-            <div class="organisation-info">
-                <h5>{{ 'general.organisation'|trans }}</h5>
-                <p class="org-name">{{ organisation.name }}</p>
-                <p class="org-api-url">
-                    <span class="label">{{ 'general.integration_api_url'|trans }}:</span>
-                    <code>{{ organisation.integrationApiUrl }}</code>
-                </p>
-                {% if userOrganisation and userOrganisation.workflowUserId %}
-                <p class="org-api-url">
-                    <span class="label">{{ 'general.workflow_user_id'|trans|default('Workflow User ID') }}:</span>
-                    <code>{{ userOrganisation.workflowUserId }}</code>
-                </p>
-                <div class="curl-command-section">
-                    <button type="button" id="copyCurlBtn" class="btn btn-secondary btn-copy-curl">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        {{ 'general.copy_curl_command'|trans|default('Copy curl command for tools') }}
-                    </button>
-                    <span id="copiedMessage" class="copied-message" style="display: none;">{{ 'general.copied'|trans|default('Copied!') }}</span>
-                </div>
+
+        {# Zone 1 - Agent Identity Header #}
+        <div class="dashboard-hero">
+            <div class="agent-avatar">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="10" rx="2"/>
+                    <circle cx="8.5" cy="16" r="1.5"/>
+                    <circle cx="15.5" cy="16" r="1.5"/>
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                    <path d="M12 3v1"/>
+                </svg>
+            </div>
+            <div class="dashboard-hero-text">
+                <h1 class="dashboard-title">{{ 'general.welcome'|trans({'%name%': user.name}) }}</h1>
+                {% if isOnboarding %}
+                    <p class="dashboard-subtitle">{{ 'general.agent_ready_setup'|trans }}</p>
+                {% else %}
+                    <p class="dashboard-subtitle">{{ 'general.agent_ready'|trans({'%count%': integrations|length}) }}</p>
                 {% endif %}
-            </div>
-        {% endif %}
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h2 class="stat-number">{{ integrations|length }}</h2>
-                <p class="stat-label">{{ 'general.integrations_count'|trans }}</p>
-                <a href="{{ path('app_skills') }}" class="btn btn-primary">
-                    {{ 'general.manage_integrations'|trans }}
-                </a>
-            </div>
-            
-            <div class="stat-card">
-                <h2 class="stat-number">{{ integrations|filter(i => i.active)|length }}</h2>
-                <p class="stat-label">{{ 'general.active_integrations'|trans }}</p>
-            </div>
-
-            <div class="stat-card">
-                <h2 class="stat-number">{{ user.isAdmin() ? 'Admin' : 'Member' }}</h2>
-                <p class="stat-label">{{ 'general.your_role'|trans }}</p>
+                {% if organisation %}
+                    <p class="dashboard-tenant-name">{{ organisation.name }}</p>
+                {% endif %}
             </div>
         </div>
 
-        {% if integrations|length > 0 %}
-            <div class="integrations-section">
-                <h3>{{ 'general.recent_integrations'|trans }}</h3>
-                <div class="integrations-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{{ 'integration.name'|trans }}</th>
-                                <th>{{ 'integration.type'|trans }}</th>
-                                <th>{{ 'integration.status'|trans }}</th>
-                                <th>{{ 'integration.last_accessed'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for integration in integrations|slice(0, 5) %}
-                                <tr>
-                                    <td>{{ integration.name }}</td>
-                                    <td>
-                                        <span class="badge badge-type">{{ integration.type|upper }}</span>
-                                    </td>
-                                    <td>
-                                        {% if integration.active %}
-                                            <span class="badge badge-active">{{ 'status.active'|trans }}</span>
-                                        {% else %}
-                                            <span class="badge badge-inactive">{{ 'status.inactive'|trans }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {{ integration.lastAccessedAt ? integration.lastAccessedAt|date('d.m.Y H:i') : 'general.never'|trans }}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        {# Zone 2 - Conditional content based on user state #}
+        {% if isOnboarding %}
+            {# State A: Onboarding card #}
+            <div class="onboarding-card">
+                <div class="onboarding-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/>
+                    </svg>
+                </div>
+                <h2 class="onboarding-card-title">{{ 'general.onboarding_title'|trans }}</h2>
+                <p class="onboarding-card-description">{{ 'general.onboarding_description'|trans }}</p>
+                <a href="{{ path('app_skills') }}" class="btn btn-primary btn-lg">
+                    {{ 'general.add_first_skill'|trans }}
+                </a>
+            </div>
+        {% endif %}
+
+        {# Zone 3 - Primary Action Card #}
+        <div class="primary-action-card">
+            <div class="primary-action-card-text">
+                <h3>{{ 'general.manage_skills_title'|trans }}</h3>
+                <p>{{ 'general.manage_skills_description'|trans }}</p>
+            </div>
+            <a href="{{ path('app_skills') }}" class="btn btn-primary">
+                {{ 'general.manage_agent_skills'|trans }}
+            </a>
+        </div>
+
+        {# Zone 4 - Recent Skills (only when 1+ skills) #}
+        {% if not isOnboarding %}
+            <div class="recent-skills-section">
+                <div class="recent-skills-header">
+                    <h3>{{ 'general.recent_skills'|trans }}</h3>
+                    <a href="{{ path('app_skills') }}" class="view-all-link">{{ 'general.view_all'|trans }} &rarr;</a>
+                </div>
+                <div class="recent-skills-grid">
+                    {% for integration in integrations|slice(0, 5) %}
+                        <div class="recent-skill-card">
+                            {% set skillType = integration.integrationType %}
+                            {% set logoPath = configuredSkills[skillType] is defined ? configuredSkills[skillType].logoPath : '/images/logos/workoflow-logo.png' %}
+                            <div class="recent-skill-card-header">
+                                <img src="{{ asset(logoPath) }}" alt="{{ skillType }}" width="28" height="28" class="recent-skill-logo">
+                                <span class="recent-skill-name">{{ integration.name }}</span>
+                            </div>
+                            <div class="recent-skill-card-footer">
+                                {% if integration.active %}
+                                    <span class="badge badge-active">{{ 'status.active'|trans }}</span>
+                                {% else %}
+                                    <span class="badge badge-inactive">{{ 'status.inactive'|trans }}</span>
+                                {% endif %}
+                                <a href="{{ path('app_tool_setup', {'type': skillType, 'instance': integration.id}) }}" class="btn btn-sm btn-secondary">
+                                    {{ 'integration.edit'|trans }}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         {% endif %}
+
     </div>
 </div>
-
-<style>
-.curl-command-section {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.btn-copy-curl {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 16px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-copy-curl:hover {
-    background-color: #5a6268;
-}
-
-.copied-message {
-    color: #28a745;
-    font-weight: 500;
-    animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const copyCurlBtn = document.getElementById('copyCurlBtn');
-    const copiedMessage = document.getElementById('copiedMessage');
-
-    if (copyCurlBtn) {
-        copyCurlBtn.addEventListener('click', function() {
-            // Get the current domain
-            const currentDomain = window.location.origin;
-
-            // Get organisation UUID from the API URL
-            const orgUuid = '{{ organisation.uuid }}';
-
-            // Get workflow user ID
-            const workflowUserId = '{{ userOrganisation.workflowUserId }}';
-
-            // Construct the curl command
-            const apiUrl = `${currentDomain}/api/integrations/${orgUuid}?workflow_user_id=${workflowUserId}`;
-            const curlCommand = `curl -X GET "${apiUrl}" \\
-  -H "Accept: application/json" \\
-  -H "Authorization: Basic YOUR_AUTH_TOKEN"`;
-
-            // Copy to clipboard
-            navigator.clipboard.writeText(curlCommand).then(function() {
-                // Show success message
-                copiedMessage.style.display = 'inline';
-
-                // Hide message after 2 seconds
-                setTimeout(function() {
-                    copiedMessage.style.display = 'none';
-                }, 2000);
-            }).catch(function(err) {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy to clipboard');
-            });
-        });
-    }
-});
-</script>
 {% endblock %}

@@ -72,4 +72,9 @@ class WebSearchIntegration implements PlatformSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/workoflow-logo.png';
+    }
 }

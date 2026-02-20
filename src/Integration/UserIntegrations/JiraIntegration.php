@@ -756,4 +756,9 @@ class JiraIntegration implements PersonalizedSkillInterface
     {
         return null;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/jira-icon.svg';
+    }
 }

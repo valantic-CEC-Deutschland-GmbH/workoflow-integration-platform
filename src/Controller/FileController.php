@@ -32,7 +32,7 @@ class FileController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $files = [];
@@ -141,6 +141,57 @@ class FileController extends AbstractController
             'success' => true,
             'files' => $results
         ]);
+    }
+
+    #[Route('/create-text', name: 'app_file_create_text', methods: ['POST'])]
+    public function createTextFile(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $sessionOrgId = $request->getSession()->get('current_organisation_id');
+        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        if (!$organisation) {
+            return new JsonResponse(['error' => 'No organisation'], 400);
+        }
+
+        $content = $request->request->get('content', '');
+        $filename = $request->request->get('filename', '');
+
+        if (trim($content) === '') {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Content cannot be empty'
+            ], 400);
+        }
+
+        try {
+            $result = $this->fileStorageService->uploadContent(
+                $content,
+                $filename,
+                $organisation->getUuid(),
+                $user->getId()
+            );
+
+            $this->auditLogService->log(
+                'file.created_text',
+                $user,
+                [
+                    'filename' => $result['original_name'],
+                    'size' => $result['size']
+                ]
+            );
+
+            return new JsonResponse([
+                'success' => true,
+                'file' => $result
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
     #[Route('/{key}/delete', name: 'app_file_delete', methods: ['POST'], requirements: ['key' => '.+'])]

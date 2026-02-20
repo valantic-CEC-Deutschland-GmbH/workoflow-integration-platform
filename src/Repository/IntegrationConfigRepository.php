@@ -49,7 +49,7 @@ class IntegrationConfigRepository extends ServiceEntityRepository
                 ->setParameter('workflowUserId', $workflowUserId);
         }
 
-        return $qb->orderBy('ic.integrationType', 'ASC')
+        return $qb->orderBy('ic.lastAccessedAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

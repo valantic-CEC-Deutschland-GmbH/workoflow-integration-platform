@@ -12,6 +12,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: PromptRepository::class)]
 #[ORM\Table(name: 'prompt')]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(name: 'uniq_prompt_import_key_org', columns: ['import_key', 'organisation_id'])]
 #[ORM\Index(name: 'idx_prompt_scope', columns: ['scope'])]
 #[ORM\Index(name: 'idx_prompt_category', columns: ['category'])]
 #[ORM\Index(name: 'idx_prompt_deleted', columns: ['deleted_at'])]
@@ -42,7 +43,7 @@ class Prompt
     #[ORM\Column(type: Types::GUID, unique: true)]
     private ?string $uuid = null;
 
-    #[ORM\Column(length: 100, nullable: true, unique: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $importKey = null;
 
     #[ORM\Column(length: 255)]
