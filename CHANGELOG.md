@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-23
+
+### Added
+- **Activity Overview on My Agent dashboard** — See key usage metrics at a glance: agent sessions, tool executions, success rate, API calls, Prompt Vault activity, active skills, and tool types used over the last 30 days
+- **Most Used Tools section** — The dashboard now shows your top 3 most frequently used tools to help you understand how your agent is being utilized
+
 ## 2026-02-18
 
 ### Changed

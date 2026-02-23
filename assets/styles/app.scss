@@ -2168,6 +2168,115 @@ body {
     flex: 1;
   }
 
+  // Zone 3.5 - Activity Overview
+  .activity-overview-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .activity-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+
+    h3 {
+      font-size: var(--text-xl);
+      margin: 0;
+    }
+  }
+
+  .activity-overview-period {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .activity-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    transition: var(--transition);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--bg-card-hover);
+    }
+  }
+
+  .stat-card-icon {
+    color: var(--color-primary);
+    margin-bottom: var(--space-sm);
+  }
+
+  .stat-card-value {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-xs);
+  }
+
+  .stat-card-label {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .top-tools-section {
+    margin-top: var(--space-lg);
+
+    h4 {
+      font-size: var(--text-md);
+      margin: 0 0 var(--space-md) 0;
+    }
+  }
+
+  .top-tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .top-tool-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+    transition: var(--transition);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background: var(--bg-card-hover);
+    }
+  }
+
+  .top-tool-rank {
+    color: var(--color-primary);
+    font-weight: 600;
+    min-width: 24px;
+  }
+
+  .top-tool-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .top-tool-count {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    font-weight: 500;
+  }
+
   // Zone 4 - Recent Skills
   .recent-skills-section {
     margin-bottom: var(--space-2xl);
@@ -2358,6 +2467,10 @@ body {
     .agent-capabilities {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .activity-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .recent-skills-grid {

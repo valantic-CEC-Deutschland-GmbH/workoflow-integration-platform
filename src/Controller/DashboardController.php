@@ -3,22 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Organisation;
+use App\Entity\User;
 use App\Integration\IntegrationRegistry;
 use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
+use App\Service\DashboardStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Entity\User;
 
 class DashboardController extends AbstractController
 {
     #[Route('/my-agent', name: 'app_my_agent')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository, IntegrationRegistry $integrationRegistry): Response
+    public function index(Request $request, IntegrationConfigRepository $integrationConfigRepository, IntegrationRegistry $integrationRegistry, DashboardStatsService $dashboardStatsService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -57,13 +58,20 @@ class DashboardController extends AbstractController
             }
         }
 
+        $isOnboarding = count($integrations) === 0;
+        $stats = null;
+        if (!$isOnboarding && $organisation !== null) {
+            $stats = $dashboardStatsService->getStats($organisation, $user, $workflowUserId);
+        }
+
         return $this->render('dashboard/index.html.twig', [
             'user' => $user,
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'integrations' => $integrations,
             'configuredSkills' => $configuredSkills,
-            'isOnboarding' => count($integrations) === 0,
+            'isOnboarding' => $isOnboarding,
+            'stats' => $stats,
         ]);
     }
 

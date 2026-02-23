@@ -81,6 +81,16 @@ general:
   manage_agent_skills: "Gestionați abilitățile agentului"
   recent_skills: "Abilități configurate"
   view_all: "Vedeți toate"
+  stats_title: "Prezentare activitate"
+  stats_period: "Ultimele %days% zile"
+  stats_agent_sessions: "Sesiuni agent"
+  stats_tool_executions: "Execuții instrumente"
+  stats_success_rate: "Rata de succes"
+  stats_api_calls: "Apeluri API"
+  stats_prompt_activity: "Activitate Prompt Vault"
+  stats_active_skills: "Abilități active"
+  stats_tool_types_used: "Tipuri instrumente utilizate"
+  stats_top_tools: "Cele mai utilizate instrumente"
   technical_details: "API și detalii tehnice"
   organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare

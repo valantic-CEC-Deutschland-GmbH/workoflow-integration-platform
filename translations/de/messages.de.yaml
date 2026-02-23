@@ -81,6 +81,16 @@ general:
   manage_agent_skills: "Agent Skills verwalten"
   recent_skills: "Konfigurierte Skills"
   view_all: "Alle anzeigen"
+  stats_title: "Aktivitätsübersicht"
+  stats_period: "Letzte %days% Tage"
+  stats_agent_sessions: "Agent-Sitzungen"
+  stats_tool_executions: "Tool-Ausführungen"
+  stats_success_rate: "Erfolgsrate"
+  stats_api_calls: "API-Aufrufe"
+  stats_prompt_activity: "Prompt Vault Aktivität"
+  stats_active_skills: "Aktive Skills"
+  stats_tool_types_used: "Verwendete Tool-Typen"
+  stats_top_tools: "Meistgenutzte Tools"
   technical_details: "API & Technische Details"
   organisation: Ihr Mandant
   integration_api_url: Integration API URL

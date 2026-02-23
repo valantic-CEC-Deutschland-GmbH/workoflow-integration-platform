@@ -81,6 +81,16 @@ general:
   manage_agent_skills: "Valdyti agento įgūdžius"
   recent_skills: "Sukonfigūruoti įgūdžiai"
   view_all: "Peržiūrėti visus"
+  stats_title: "Veiklos apžvalga"
+  stats_period: "Paskutinės %days% dienos"
+  stats_agent_sessions: "Agento sesijos"
+  stats_tool_executions: "Įrankių vykdymai"
+  stats_success_rate: "Sėkmės rodiklis"
+  stats_api_calls: "API iškvietimai"
+  stats_prompt_activity: "Prompt Vault veikla"
+  stats_active_skills: "Aktyvūs įgūdžiai"
+  stats_tool_types_used: "Naudotų įrankių tipai"
+  stats_top_tools: "Dažniausiai naudojami įrankiai"
   technical_details: "API ir techniniai duomenys"
   organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL

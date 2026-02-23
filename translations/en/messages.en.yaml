@@ -81,6 +81,16 @@ general:
   manage_agent_skills: "Manage Agent Skills"
   recent_skills: "Configured Skills"
   view_all: "View All"
+  stats_title: "Activity Overview"
+  stats_period: "Last %days% days"
+  stats_agent_sessions: "Agent Sessions"
+  stats_tool_executions: "Tool Executions"
+  stats_success_rate: "Success Rate"
+  stats_api_calls: "API Calls"
+  stats_prompt_activity: "Prompt Vault Activity"
+  stats_active_skills: "Active Skills"
+  stats_tool_types_used: "Tool Types Used"
+  stats_top_tools: "Most Used Tools"
   technical_details: "API & Technical Details"
   organisation: Your Tenant
   integration_api_url: Integration API URL
