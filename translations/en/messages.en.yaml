@@ -648,7 +648,7 @@ prompt:
   description_placeholder: Brief summary of what this prompt does...
   description_help: A short description helps others understand the purpose of this prompt.
   category: Category
-  select_category: Select a category
+  select_category: Select a category (optional)
   scope: Visibility
   scope_help: Personal prompts are only visible to you. Team prompts are shared with your organisation.
   scope_personal: Personal (only visible to me)

@@ -648,7 +648,7 @@ prompt:
   description_placeholder: Rezumat scurt al ceea ce face acest prompt...
   description_help: O scurtă descriere ajută pe alții să înțeleagă scopul acestui prompt.
   category: Categorie
-  select_category: Selectați o categorie
+  select_category: Selectați o categorie (opțional)
   scope: Vizibilitate
   scope_help: Prompturile personale sunt vizibile doar pentru dvs. Prompturile de echipă sunt partajate cu organizația dvs.
   scope_personal: Personal (vizibil doar pentru mine)

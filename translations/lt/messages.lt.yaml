@@ -648,7 +648,7 @@ prompt:
   description_placeholder: Trumpa santrauka, ką šis promptas daro...
   description_help: Trumpas aprašymas padeda kitiems suprasti šio prompto paskirtį.
   category: Kategorija
-  select_category: Pasirinkite kategoriją
+  select_category: Pasirinkite kategoriją (neprivaloma)
   scope: Matomumas
   scope_help: Asmeniniai promptai matomi tik jums. Komandos promptai dalijami su jūsų organizacija.
   scope_personal: Asmeninis (matomas tik man)
