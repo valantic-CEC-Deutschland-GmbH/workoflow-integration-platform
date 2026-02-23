@@ -2211,7 +2211,7 @@ body {
       .stat-card-tooltip {
         opacity: 1;
         visibility: visible;
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
       }
     }
   }
