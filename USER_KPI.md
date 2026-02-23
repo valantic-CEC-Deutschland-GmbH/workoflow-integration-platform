@@ -31,29 +31,6 @@ WHERE action = 'tool_execution.started'
 
 ---
 
-## Success Rate
-
-**What it shows:** The percentage of tool executions that completed successfully.
-
-**Calculation:**
-
-```
-(completed / started) × 100
-```
-
-Where:
-- **started** = count of `tool_execution.started` audit entries
-- **completed** = count of `tool_execution.completed` audit entries
-
-If no tools were executed in the last 30 days, the value displays as `--` instead of a percentage.
-
-**Interpreting the value:**
-- **90–100%** — Integrations are healthy
-- **Below 80%** — Likely indicates broken credentials, expired tokens, or unreachable external services
-- A `tool_execution.failed` entry means the tool call errored out (network timeout, authentication failure, invalid parameters, etc.)
-
----
-
 ## API Calls
 
 **What it shows:** How many times external systems queried your agent's available tools or prompts, even if no tool was actually executed.

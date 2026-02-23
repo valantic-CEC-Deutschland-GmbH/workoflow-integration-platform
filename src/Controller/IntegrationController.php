@@ -386,7 +386,6 @@ class IntegrationController extends AbstractController
                 $oauthRoute = match ($type) {
                     'hubspot' => 'app_tool_oauth_hubspot_start',
                     'wrike' => 'app_tool_oauth_wrike_start',
-                    'candis' => 'app_tool_oauth_candis_start',
                     'outlook_mail' => 'app_tool_oauth_outlook_mail_start',
                     'outlook_calendar' => 'app_tool_oauth_outlook_calendar_start',
                     'msteams' => 'app_tool_oauth_teams_start',

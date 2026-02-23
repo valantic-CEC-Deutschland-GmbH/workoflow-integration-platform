@@ -99,8 +99,6 @@
                                             <span>{{ 'status.connected_hubspot'|trans|default('Connected to HubSpot') }}</span>
                                         {% elseif integration.getType() == 'wrike' %}
                                             <span>{{ 'status.connected_wrike'|trans|default('Connected to Wrike') }}</span>
-                                        {% elseif integration.getType() == 'candis' %}
-                                            <span>{{ 'status.connected_candis'|trans|default('Connected to Candis') }}</span>
                                         {% elseif integration.getType() == 'outlook_mail' %}
                                             <span>{{ 'status.connected_outlook_mail'|trans|default('Connected to Outlook Mail') }}</span>
                                         {% elseif integration.getType() == 'outlook_calendar' %}
@@ -126,12 +124,6 @@
                                            class="btn btn-secondary"
                                            onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
                                             <i class="fas fa-tasks"></i> {{ 'integration.reconnect_wrike'|trans|default('Reconnect with Wrike') }}
-                                        </a>
-                                    {% elseif integration.getType() == 'candis' %}
-                                        <a href="{{ path('app_tool_oauth_candis_start', {configId: config.id}) }}"
-                                           class="btn btn-secondary"
-                                           onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
-                                            <i class="fas fa-file-invoice"></i> {{ 'integration.reconnect_candis'|trans|default('Reconnect with Candis') }}
                                         </a>
                                     {% elseif integration.getType() == 'outlook_mail' %}
                                         <a href="{{ path('app_tool_oauth_outlook_mail_start', {configId: config.id}) }}"
@@ -185,11 +177,6 @@
                                            class="btn btn-primary">
                                             <i class="fas fa-tasks"></i> {{ field.getLabel() }}
                                         </a>
-                                    {% elseif integration.getType() == 'candis' %}
-                                        <a href="{{ path('app_tool_oauth_candis_start', {configId: config.id}) }}"
-                                           class="btn btn-primary">
-                                            <i class="fas fa-file-invoice"></i> {{ field.getLabel() }}
-                                        </a>
                                     {% elseif integration.getType() == 'outlook_mail' %}
                                         <a href="{{ path('app_tool_oauth_outlook_mail_start', {configId: config.id}) }}"
                                            class="btn btn-primary">
@@ -236,8 +223,6 @@
                                     <p><strong>{{ 'integration.oauth_required_hubspot'|trans|default('HubSpot authorization is required. Click "Connect with HubSpot" below to continue.') }}</strong></p>
                                 {% elseif integration.getType() == 'wrike' %}
                                     <p><strong>{{ 'integration.oauth_required_wrike'|trans|default('Wrike authorization is required. Click "Connect with Wrike" below to continue.') }}</strong></p>
-                                {% elseif integration.getType() == 'candis' %}
-                                    <p><strong>{{ 'integration.oauth_required_candis'|trans|default('Candis authorization is required. Click "Connect with Candis" below to continue. You will select your company during the Candis consent screen.') }}</strong></p>
                                 {% elseif integration.getType() in ['outlook_mail', 'outlook_calendar', 'msteams'] %}
                                     <p><strong>{{ 'integration.oauth_required'|trans|default('Microsoft authorization is required. Click "Connect with Microsoft" below to continue.') }}</strong></p>
                                 {% elseif integration.getType() in ['sap_c4c', 'sap_sac'] %}
@@ -349,10 +334,6 @@
                         {% elseif integration.getType() == 'wrike' %}
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-tasks"></i> {{ 'integration.connect_wrike'|trans|default('Connect with Wrike') }}
-                            </button>
-                        {% elseif integration.getType() == 'candis' %}
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-file-invoice"></i> {{ 'integration.connect_candis'|trans|default('Connect with Candis') }}
                             </button>
                         {% elseif integration.getType() in ['outlook_mail', 'outlook_calendar', 'msteams'] %}
                             <button type="submit" class="btn btn-primary">

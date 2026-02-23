@@ -85,12 +85,17 @@ general:
   stats_period: "Last %days% days"
   stats_agent_sessions: "Agent Sessions"
   stats_tool_executions: "Tool Executions"
-  stats_success_rate: "Success Rate"
   stats_api_calls: "API Calls"
   stats_prompt_activity: "Prompt Vault Activity"
   stats_active_skills: "Active Skills"
   stats_tool_types_used: "Tool Types Used"
   stats_top_tools: "Most Used Tools"
+  stats_tooltip_agent_sessions: "Number of distinct agent invocations (unique sessions) in the last 30 days."
+  stats_tooltip_tool_executions: "Total number of individual tools called by your agent in the last 30 days."
+  stats_tooltip_api_calls: "Number of times external systems queried your available tools or prompts via API."
+  stats_tooltip_prompt_activity: "Total prompt actions (created, updated, upvoted, commented) in the last 30 days."
+  stats_tooltip_active_skills: "Number of integration skills currently configured for your agent."
+  stats_tooltip_tool_types_used: "How many different integration types (e.g. Jira, Confluence) your agent actually used."
   technical_details: "API & Technical Details"
   organisation: Your Tenant
   integration_api_url: Integration API URL
@@ -160,7 +165,6 @@ status:
   connected: Connected
   connected_hubspot: Connected to HubSpot
   connected_wrike: Connected to Wrike
-  connected_candis: Connected to Candis
   connected_outlook_mail: Connected to Outlook Mail
   connected_outlook_calendar: Connected to Outlook Calendar
   connected_msteams: Connected to MS Teams
@@ -205,16 +209,13 @@ integration:
   connect_microsoft: Connect with Microsoft
   connect_hubspot: Connect with HubSpot
   connect_wrike: Connect with Wrike
-  connect_candis: Connect with Candis
   oauth_required: Microsoft authorization is required. Click "Connect with Microsoft" below to continue.
   oauth_required_hubspot: HubSpot authorization is required. Click "Connect with HubSpot" below to continue.
   oauth_required_wrike: Wrike authorization is required. Click "Connect with Wrike" below to continue.
-  oauth_required_candis: Candis authorization is required. Click "Connect with Candis" below to continue. You will select your company during the Candis consent screen.
   oauth_reconnect_confirm: This will replace your existing connection. Continue?
   reconnect_microsoft: Reconnect with Microsoft
   reconnect_hubspot: Reconnect with HubSpot
   reconnect_wrike: Reconnect with Wrike
-  reconnect_candis: Reconnect with Candis
   reconnect_outlook_mail: Reconnect with Microsoft
   reconnect_outlook_calendar: Reconnect with Microsoft
   reconnect_msteams: Reconnect with Microsoft

@@ -85,12 +85,17 @@ general:
   stats_period: "Ultimele %days% zile"
   stats_agent_sessions: "Sesiuni agent"
   stats_tool_executions: "Execuții instrumente"
-  stats_success_rate: "Rata de succes"
   stats_api_calls: "Apeluri API"
   stats_prompt_activity: "Activitate Prompt Vault"
   stats_active_skills: "Abilități active"
   stats_tool_types_used: "Tipuri instrumente utilizate"
   stats_top_tools: "Cele mai utilizate instrumente"
+  stats_tooltip_agent_sessions: "Numărul de invocări distincte ale agentului (sesiuni unice) în ultimele 30 de zile."
+  stats_tooltip_tool_executions: "Numărul total de instrumente individuale apelate de agentul dvs. în ultimele 30 de zile."
+  stats_tooltip_api_calls: "Numărul de interogări API ale sistemelor externe pentru instrumentele sau prompturile dvs. disponibile."
+  stats_tooltip_prompt_activity: "Total acțiuni prompturi (create, actualizate, votate, comentate) în ultimele 30 de zile."
+  stats_tooltip_active_skills: "Numărul de abilități de integrare configurate în prezent pentru agentul dvs."
+  stats_tooltip_tool_types_used: "Câte tipuri diferite de integrare (de ex. Jira, Confluence) a utilizat efectiv agentul dvs."
   technical_details: "API și detalii tehnice"
   organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare
@@ -160,7 +165,6 @@ status:
   connected: Conectat
   connected_hubspot: Conectat la HubSpot
   connected_wrike: Conectat la Wrike
-  connected_candis: Conectat la Candis
   connected_outlook_mail: Conectat la Outlook Mail
   connected_outlook_calendar: Conectat la Outlook Calendar
   connected_msteams: Conectat la MS Teams
@@ -205,16 +209,13 @@ integration:
   connect_microsoft: Conectați-vă cu Microsoft
   connect_hubspot: Conectați-vă cu HubSpot
   connect_wrike: Conectați-vă cu Wrike
-  connect_candis: Conectați-vă cu Candis
   oauth_required: Este necesară autorizarea Microsoft. Faceți clic pe „Conectați-vă cu Microsoft" mai jos pentru a continua.
   oauth_required_hubspot: Este necesară autorizarea HubSpot. Faceți clic pe „Conectați-vă cu HubSpot" mai jos pentru a continua.
   oauth_required_wrike: Este necesară autorizarea Wrike. Faceți clic pe „Conectați-vă cu Wrike" mai jos pentru a continua.
-  oauth_required_candis: Este necesară autorizarea Candis. Faceți clic pe „Conectați-vă cu Candis" mai jos pentru a continua. Veți selecta compania dvs. în timpul ecranului de consimțământ Candis.
   oauth_reconnect_confirm: Aceasta va înlocui conexiunea existentă. Continuați?
   reconnect_microsoft: Reconectați-vă cu Microsoft
   reconnect_hubspot: Reconectați-vă cu HubSpot
   reconnect_wrike: Reconectați-vă cu Wrike
-  reconnect_candis: Reconectați-vă cu Candis
   reconnect_outlook_mail: Reconectați-vă cu Microsoft
   reconnect_outlook_calendar: Reconectați-vă cu Microsoft
   reconnect_msteams: Reconectați-vă cu Microsoft

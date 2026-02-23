@@ -85,12 +85,17 @@ general:
   stats_period: "Paskutinės %days% dienos"
   stats_agent_sessions: "Agento sesijos"
   stats_tool_executions: "Įrankių vykdymai"
-  stats_success_rate: "Sėkmės rodiklis"
   stats_api_calls: "API iškvietimai"
   stats_prompt_activity: "Prompt Vault veikla"
   stats_active_skills: "Aktyvūs įgūdžiai"
   stats_tool_types_used: "Naudotų įrankių tipai"
   stats_top_tools: "Dažniausiai naudojami įrankiai"
+  stats_tooltip_agent_sessions: "Skirtingų agento iškvietimų (unikalių sesijų) skaičius per pastarąsias 30 dienų."
+  stats_tooltip_tool_executions: "Bendras atskirų įrankių, kuriuos jūsų agentas iškvietė per pastarąsias 30 dienų, skaičius."
+  stats_tooltip_api_calls: "Kiek kartų išorinės sistemos per API užklausė jūsų prieinamus įrankius ar promptus."
+  stats_tooltip_prompt_activity: "Visų promptų veiksmų (sukurtų, atnaujintų, balsuotų, komentuotų) skaičius per pastarąsias 30 dienų."
+  stats_tooltip_active_skills: "Šiuo metu jūsų agentui sukonfigūruotų integracijos įgūdžių skaičius."
+  stats_tooltip_tool_types_used: "Kiek skirtingų integracijos tipų (pvz. Jira, Confluence) jūsų agentas iš tikrųjų naudojo."
   technical_details: "API ir techniniai duomenys"
   organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL
@@ -160,7 +165,6 @@ status:
   connected: Prisijungta
   connected_hubspot: Prisijungta prie HubSpot
   connected_wrike: Prisijungta prie Wrike
-  connected_candis: Prisijungta prie Candis
   connected_outlook_mail: Prisijungta prie Outlook Mail
   connected_outlook_calendar: Prisijungta prie Outlook Calendar
   connected_msteams: Prisijungta prie MS Teams
@@ -205,16 +209,13 @@ integration:
   connect_microsoft: Prisijungti su Microsoft
   connect_hubspot: Prisijungti su HubSpot
   connect_wrike: Prisijungti su Wrike
-  connect_candis: Prisijungti su Candis
   oauth_required: Reikalinga Microsoft autorizacija. Spustelėkite „Prisijungti su Microsoft" žemiau, kad tęstumėte.
   oauth_required_hubspot: Reikalinga HubSpot autorizacija. Spustelėkite „Prisijungti su HubSpot" žemiau, kad tęstumėte.
   oauth_required_wrike: Reikalinga Wrike autorizacija. Spustelėkite „Prisijungti su Wrike" žemiau, kad tęstumėte.
-  oauth_required_candis: Reikalinga Candis autorizacija. Spustelėkite „Prisijungti su Candis" žemiau, kad tęstumėte. Candis sutikimo ekrane pasirinksite savo įmonę.
   oauth_reconnect_confirm: Tai pakeis esamą ryšį. Tęsti?
   reconnect_microsoft: Prisijungti iš naujo su Microsoft
   reconnect_hubspot: Prisijungti iš naujo su HubSpot
   reconnect_wrike: Prisijungti iš naujo su Wrike
-  reconnect_candis: Prisijungti iš naujo su Candis
   reconnect_outlook_mail: Prisijungti iš naujo su Microsoft
   reconnect_outlook_calendar: Prisijungti iš naujo su Microsoft
   reconnect_msteams: Prisijungti iš naujo su Microsoft

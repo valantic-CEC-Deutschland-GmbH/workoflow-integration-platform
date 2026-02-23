@@ -45,11 +45,6 @@ class DashboardStatsService
 
             $toolExecCounts = $this->auditLogRepository->countToolExecutions($orgId, $userId, $workflowUserId, $since);
 
-            $successRate = null;
-            if ($toolExecCounts['started'] > 0) {
-                $successRate = round(($toolExecCounts['completed'] / $toolExecCounts['started']) * 100, 1);
-            }
-
             $apiCalls = $this->auditLogRepository->countApiCalls($orgId, $userId, $workflowUserId, $since);
             $promptActivity = $this->auditLogRepository->countPromptActivity($orgId, $userId, $workflowUserId, $since);
 
@@ -63,7 +58,6 @@ class DashboardStatsService
             return [
                 'agent_sessions' => $agentSessions,
                 'tool_executions' => $toolExecCounts['started'],
-                'tool_success_rate' => $successRate,
                 'api_calls' => $apiCalls,
                 'prompt_activity' => $promptActivity,
                 'active_skills' => $activeSkills,
@@ -81,7 +75,6 @@ class DashboardStatsService
         return [
             'agent_sessions' => 0,
             'tool_executions' => 0,
-            'tool_success_rate' => null,
             'api_calls' => 0,
             'prompt_activity' => 0,
             'active_skills' => 0,

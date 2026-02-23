@@ -46,13 +46,6 @@ knpu_oauth2_client:
             client_secret: '%env(WRIKE_CLIENT_SECRET)%'
             redirect_route: app_tool_oauth_wrike_callback
             redirect_params: {}
-        candis:
-            type: generic
-            provider_class: 'App\OAuth2\CandisProvider'
-            client_id: '%env(CANDIS_CLIENT_ID)%'
-            client_secret: '%env(CANDIS_CLIENT_SECRET)%'
-            redirect_route: app_tool_oauth_candis_callback
-            redirect_params: {}
         azure_outlook_mail:
             type: azure
             client_id: '%env(AZURE_CLIENT_ID)%'

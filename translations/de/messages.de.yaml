@@ -85,12 +85,17 @@ general:
   stats_period: "Letzte %days% Tage"
   stats_agent_sessions: "Agent-Sitzungen"
   stats_tool_executions: "Tool-Ausführungen"
-  stats_success_rate: "Erfolgsrate"
   stats_api_calls: "API-Aufrufe"
   stats_prompt_activity: "Prompt Vault Aktivität"
   stats_active_skills: "Aktive Skills"
   stats_tool_types_used: "Verwendete Tool-Typen"
   stats_top_tools: "Meistgenutzte Tools"
+  stats_tooltip_agent_sessions: "Anzahl unterschiedlicher Agent-Aufrufe (einzigartige Sitzungen) in den letzten 30 Tagen."
+  stats_tooltip_tool_executions: "Gesamtzahl der einzelnen Tools, die Ihr Agent in den letzten 30 Tagen aufgerufen hat."
+  stats_tooltip_api_calls: "Anzahl der API-Abfragen externer Systeme nach Ihren verfügbaren Tools oder Prompts."
+  stats_tooltip_prompt_activity: "Gesamtzahl der Prompt-Aktionen (erstellt, aktualisiert, bewertet, kommentiert) in den letzten 30 Tagen."
+  stats_tooltip_active_skills: "Anzahl der aktuell für Ihren Agenten konfigurierten Integrations-Skills."
+  stats_tooltip_tool_types_used: "Wie viele verschiedene Integrationstypen (z.B. Jira, Confluence) Ihr Agent tatsächlich genutzt hat."
   technical_details: "API & Technische Details"
   organisation: Ihr Mandant
   integration_api_url: Integration API URL
@@ -160,7 +165,6 @@ status:
   connected: Verbunden
   connected_hubspot: Mit HubSpot verbunden
   connected_wrike: Mit Wrike verbunden
-  connected_candis: Mit Candis verbunden
   connected_outlook_mail: Mit Outlook Mail verbunden
   connected_outlook_calendar: Mit Outlook Kalender verbunden
   connected_msteams: Mit MS Teams verbunden
@@ -198,16 +202,13 @@ integration:
   connect_microsoft: Mit Microsoft verbinden
   connect_hubspot: Mit HubSpot verbinden
   connect_wrike: Mit Wrike verbinden
-  connect_candis: Mit Candis verbinden
   oauth_required: Microsoft-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Microsoft verbinden", um fortzufahren.
   oauth_required_hubspot: HubSpot-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit HubSpot verbinden", um fortzufahren.
   oauth_required_wrike: Wrike-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Wrike verbinden", um fortzufahren.
-  oauth_required_candis: Candis-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Candis verbinden", um fortzufahren. Sie wählen Ihr Unternehmen während des Candis-Zustimmungsbildschirms aus.
   oauth_reconnect_confirm: Dies ersetzt Ihre bestehende Verbindung. Fortfahren?
   reconnect_microsoft: Erneut mit Microsoft verbinden
   reconnect_hubspot: Erneut mit HubSpot verbinden
   reconnect_wrike: Erneut mit Wrike verbinden
-  reconnect_candis: Erneut mit Candis verbinden
   reconnect_outlook_mail: Erneut mit Microsoft verbinden
   reconnect_outlook_calendar: Erneut mit Microsoft verbinden
   reconnect_msteams: Erneut mit Microsoft verbinden

@@ -7,8 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-23
 
 ### Added
-- **Activity Overview on My Agent dashboard** — See key usage metrics at a glance: agent sessions, tool executions, success rate, API calls, Prompt Vault activity, active skills, and tool types used over the last 30 days
+- **Activity Overview on My Agent dashboard** — See key usage metrics at a glance: agent sessions, tool executions, API calls, Prompt Vault activity, active skills, and tool types used over the last 30 days
+- **Stat card tooltips** — Hover over any metric on the Activity Overview to see a short explanation of what it measures
 - **Most Used Tools section** — The dashboard now shows your top 3 most frequently used tools to help you understand how your agent is being utilized
+
+### Removed
+- **Candis Invoice Management skill** — The Candis integration has been removed from the platform
 
 ## 2026-02-18
 
