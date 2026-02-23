@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\JiraService;
@@ -148,7 +149,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'The comment text to add to the issue'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_get_available_transitions',
@@ -184,7 +186,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Optional comment to add when transitioning the issue'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_transition_issue_to_status',
@@ -208,7 +211,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Optional comment to add during the transition'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_get_board_issues',
@@ -304,7 +308,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Issue key to delete (e.g., PROJ-123)'
                     ]
-                ]
+                ],
+                ToolCategory::DELETE
             ),
             new ToolDefinition(
                 'jira_get_issue_link_types',
@@ -340,7 +345,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Optional comment to add with the link'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_get_project_metadata',
@@ -442,7 +448,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Object with custom field IDs as keys (e.g., {"customfield_10000": "value"}). Plain string values are auto-converted to proper Jira format (ADF for textarea fields, {"id": value} for option fields).'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_get_priorities',
@@ -503,7 +510,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Custom field updates as key-value pairs (optional). Plain string values are auto-converted to proper Jira format.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_bulk_create_issues',
@@ -515,7 +523,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Array of issue data objects. Each object has same structure as jira_create_issue parameters.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_assign_issue',
@@ -533,7 +542,8 @@ class JiraIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'User account ID to assign to. Use null or omit to unassign.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'jira_search_users',

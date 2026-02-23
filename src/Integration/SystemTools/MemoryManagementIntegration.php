@@ -4,6 +4,7 @@ namespace App\Integration\SystemTools;
 
 use App\Integration\PlatformSkillInterface;
 use App\Integration\ToolDefinition;
+use App\Integration\ToolCategory;
 use App\Integration\CredentialField;
 
 class MemoryManagementIntegration implements PlatformSkillInterface
@@ -24,7 +25,8 @@ class MemoryManagementIntegration implements PlatformSkillInterface
             new ToolDefinition(
                 'clear_memory_tool',
                 'Use this tool to clear the conversation memory when requested by the user.',
-                []  // No parameters required based on screenshot
+                [],  // No parameters required based on screenshot
+                ToolCategory::DELETE
             )
         ];
     }

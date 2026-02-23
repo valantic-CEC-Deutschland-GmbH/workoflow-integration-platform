@@ -7,6 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-23
 
 ### Added
+- **Skill filter in Prompt Vault** — Filter prompts by skill/integration (e.g., Jira, Confluence, GitLab) to quickly find prompts designed for a specific tool
+- **Skill dropdown in prompt create/edit forms** — Optionally link a prompt to a specific skill/integration when creating or editing
+- **Skill column in CSV import** — The prompt import now supports a "skill" column to assign prompts to integrations during bulk import
+- **Skill filter in Prompt API** — Use `?skill=jira` to filter prompts by skill via the API
+
+### Changed
+- **Category is now optional for prompts** — Prompts no longer require a category, making it easier to create general-purpose prompts
+- **API response includes skill field** — The prompt API now returns a `skill` field for each prompt
+
+### Added
+- **Tool Access Modes** — Choose between Read Only, Standard, and Full access to control what your AI agents can do. Read Only mode restricts agents to search and read operations. Standard mode adds create and update capabilities. Full mode enables all operations including delete
+- **Tool access mode selector on Profile page** — Switch your tool access mode from your profile with a single click. New users default to Read Only for safety
+- **Tool category badges on Skills setup** — Each tool now shows a Read, Write, or Delete badge so you can see at a glance what each tool does. Tools outside your current access mode appear grayed out
 - **Activity Overview on My Agent dashboard** — See key usage metrics at a glance: agent sessions, tool executions, API calls, Prompt Vault activity, active skills, and tool types used over the last 30 days
 - **Stat card tooltips** — Hover over any metric on the Activity Overview to see a short explanation of what it measures
 - **Most Used Tools section** — The dashboard now shows your top 3 most frequently used tools to help you understand how your agent is being utilized

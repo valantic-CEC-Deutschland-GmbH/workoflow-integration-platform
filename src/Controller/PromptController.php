@@ -6,6 +6,8 @@ use App\Entity\Prompt;
 use App\Entity\User;
 use App\Form\PromptCommentType;
 use App\Form\PromptType;
+use App\Integration\IntegrationRegistry;
+use App\Integration\PersonalizedSkillInterface;
 use App\Repository\PromptRepository;
 use App\Service\AuditLogService;
 use App\Service\PromptService;
@@ -28,6 +30,7 @@ class PromptController extends AbstractController
         private AuditLogService $auditLogService,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
+        private IntegrationRegistry $integrationRegistry,
     ) {
     }
 
@@ -45,11 +48,15 @@ class PromptController extends AbstractController
 
         $scope = $request->query->get('scope', Prompt::SCOPE_PERSONAL);
         $category = $request->query->get('category');
+        $skill = $request->query->get('skill');
         $sort = $request->query->get('sort', 'newest');
 
-        // Treat empty string as null for category filter
+        // Treat empty string as null for filters
         if ($category === '') {
             $category = null;
+        }
+        if ($skill === '') {
+            $skill = null;
         }
 
         // Validate sort option
@@ -59,12 +66,21 @@ class PromptController extends AbstractController
         }
 
         if ($scope === Prompt::SCOPE_PERSONAL) {
-            $prompts = $this->promptRepository->findPersonalPrompts($user, $organisation, $category, $sort);
+            $prompts = $this->promptRepository->findPersonalPrompts($user, $organisation, $category, $sort, $skill);
         } else {
-            $prompts = $this->promptRepository->findOrganisationPrompts($organisation, $category, $sort);
+            $prompts = $this->promptRepository->findOrganisationPrompts($organisation, $category, $sort, $skill);
         }
 
         $counts = $this->promptRepository->countByScope($organisation, $user);
+
+        // Build skills map from PersonalizedSkillInterface integrations
+        $skills = [];
+        foreach ($this->integrationRegistry->all() as $integration) {
+            if ($integration instanceof PersonalizedSkillInterface) {
+                $skills[$integration->getType()] = $integration->getName();
+            }
+        }
+        asort($skills);
 
         // Get user's API token for the helper section
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
@@ -73,8 +89,10 @@ class PromptController extends AbstractController
             'prompts' => $prompts,
             'activeScope' => $scope,
             'activeCategory' => $category,
+            'activeSkill' => $skill,
             'activeSort' => $sort,
             'categories' => $this->promptService->getCategories(),
+            'skills' => $skills,
             'sortOptions' => $sortOptions,
             'counts' => $counts,
             'organisation' => $organisation,
@@ -146,6 +164,14 @@ class PromptController extends AbstractController
             $commentForm = $this->createForm(PromptCommentType::class);
         }
 
+        // Build skills map for badge display
+        $skills = [];
+        foreach ($this->integrationRegistry->all() as $integration) {
+            if ($integration instanceof PersonalizedSkillInterface) {
+                $skills[$integration->getType()] = $integration->getName();
+            }
+        }
+
         return $this->render('prompt/show.html.twig', [
             'prompt' => $prompt,
             'commentForm' => $commentForm?->createView(),
@@ -153,6 +179,7 @@ class PromptController extends AbstractController
             'canDelete' => $this->promptService->canDelete($prompt, $user),
             'hasUpvoted' => $prompt->isOrganisation() ? $prompt->hasUserUpvoted($user) : false,
             'organisation' => $organisation,
+            'skills' => $skills,
         ]);
     }
 

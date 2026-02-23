@@ -5,6 +5,7 @@ namespace App\Integration\SystemTools;
 use App\Integration\PlatformSkillInterface;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
+use App\Integration\ToolCategory;
 use App\Service\ShareFileService;
 
 class ShareFileIntegration implements PlatformSkillInterface
@@ -49,7 +50,8 @@ class ShareFileIntegration implements PlatformSkillInterface
                         'required' => false,
                         'description' => 'MIME type of the file'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             )
         ];
     }

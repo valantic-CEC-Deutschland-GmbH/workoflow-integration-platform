@@ -6004,6 +6004,31 @@ body {
   }
 }
 
+// Skill Badge
+.prompt-skill-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+
+  i {
+    margin-right: 4px;
+  }
+
+  &.large {
+    font-size: var(--text-sm);
+    padding: 6px 16px;
+  }
+
+  &.small {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+}
+
 // Scope Badge
 .prompt-scope-badge {
   display: inline-flex;
@@ -6744,5 +6769,160 @@ select.form-control {
     background: var(--bg-card);
     color: var(--text-primary);
     padding: var(--space-sm);
+  }
+}
+
+// Tool Access Mode Section (Profile Page)
+.tool-mode-section {
+  .mode-cards {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .mode-card {
+    flex: 1;
+    cursor: pointer;
+    border: 2px solid var(--border-color, #2a2a2a);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--card-background, #1a1a1a);
+    transition: all 0.2s ease;
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    &:hover {
+      border-color: var(--primary-color, #3b82f6);
+      background: var(--secondary-background, #2a2a2a);
+    }
+
+    &.active {
+      border-color: var(--primary-color, #3b82f6);
+      background: rgba(59, 130, 246, 0.08);
+    }
+  }
+
+  .mode-card-content {
+    .mode-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+
+      i {
+        font-size: 1.1rem;
+        color: var(--primary-color, #3b82f6);
+      }
+    }
+
+    .mode-card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .mode-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 0 0 0.75rem 0;
+      line-height: 1.4;
+    }
+  }
+
+  .tool-mode-status {
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+
+    &.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10b981;
+      color: #10b981;
+    }
+
+    &.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
+  }
+}
+
+// Tool category badges
+.mode-badge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.mode-badge-read {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.mode-badge-write {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.mode-badge-delete {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+// Tool category badges on setup page
+.tool-category-badge {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+
+  &.badge-read {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
+
+  &.badge-write {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+  }
+
+  &.badge-delete {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+}
+
+.tool-item.tool-restricted {
+  opacity: 0.5;
+
+  .tool-toggle input {
+    pointer-events: none;
+  }
+
+  .tool-restricted-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+}
+
+// Responsive mode cards
+@media (max-width: 768px) {
+  .tool-mode-section .mode-cards {
+    flex-direction: column;
   }
 }

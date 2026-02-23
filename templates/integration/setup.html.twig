@@ -289,11 +289,13 @@
 
                     <div class="tools-management">
                         {% for tool in integration.getTools() %}
-                            <div class="tool-item">
+                            {% set isRestricted = allowedCategories is defined and allowedCategories is not null and tool.getCategory().value not in allowedCategories %}
+                            <div class="tool-item{% if isRestricted %} tool-restricted{% endif %}">
                                 <div class="tool-toggle-wrapper">
                                     <label class="tool-toggle">
                                         <input type="checkbox"
-                                               {% if not config.isToolDisabled(tool.getName()) %}checked{% endif %}
+                                               {% if not config.isToolDisabled(tool.getName()) and not isRestricted %}checked{% endif %}
+                                               {% if isRestricted %}disabled{% endif %}
                                                data-integration="{{ integration.getType() }}"
                                                data-instance="{{ config.id }}"
                                                data-tool="{{ tool.getName() }}"
@@ -302,8 +304,20 @@
                                     </label>
                                 </div>
                                 <div class="tool-details">
-                                    <div class="tool-name">{{ tool.getName() }}</div>
+                                    <div class="tool-name">
+                                        {{ tool.getName() }}
+                                        {% if tool.getCategory().value == 'read' %}
+                                            <span class="tool-category-badge badge-read">{{ 'integration.tool_category_read'|trans }}</span>
+                                        {% elseif tool.getCategory().value == 'write' %}
+                                            <span class="tool-category-badge badge-write">{{ 'integration.tool_category_write'|trans }}</span>
+                                        {% elseif tool.getCategory().value == 'delete' %}
+                                            <span class="tool-category-badge badge-delete">{{ 'integration.tool_category_delete'|trans }}</span>
+                                        {% endif %}
+                                    </div>
                                     <div class="tool-description">{{ tool.getDescription() }}</div>
+                                    {% if isRestricted %}
+                                        <div class="tool-restricted-hint">{{ 'integration.tool_restricted_by_mode'|trans }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}

@@ -5,8 +5,10 @@ namespace App\Service;
 use App\DTO\ToolFilterCriteria;
 use App\Entity\IntegrationConfig;
 use App\Entity\Organisation;
+use App\Entity\User;
 use App\Integration\IntegrationInterface;
 use App\Integration\IntegrationRegistry;
+use App\Integration\ToolCategory;
 use App\Repository\IntegrationConfigRepository;
 
 /**
@@ -17,6 +19,7 @@ use App\Repository\IntegrationConfigRepository;
  * - Tool type filtering (CSV support)
  * - Disabled tool filtering
  * - Tool formatting for API responses
+ * - Tool access mode filtering (read/write/delete)
  */
 class ToolProviderService
 {
@@ -34,7 +37,8 @@ class ToolProviderService
      */
     public function getToolsForOrganisation(
         Organisation $organisation,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?User $user = null
     ): array {
         // Get configs from DB
         $configs = $this->configRepository->findByOrganisationAndWorkflowUser(
@@ -44,6 +48,9 @@ class ToolProviderService
 
         // Build config map for quick lookup
         $configMap = $this->buildConfigMap($configs);
+
+        // Get allowed categories from user's access mode
+        $allowedCategories = $user ? $user->getAllowedToolCategories() : null;
 
         // Get all integrations and filter
         $allIntegrations = $this->integrationRegistry->getAllIntegrations();
@@ -58,7 +65,8 @@ class ToolProviderService
                 $systemTools = $this->processSystemIntegration(
                     $integration,
                     $integrationConfigs,
-                    $criteria
+                    $criteria,
+                    $allowedCategories
                 );
                 $tools = array_merge($tools, $systemTools);
             } else {
@@ -66,7 +74,8 @@ class ToolProviderService
                 $userTools = $this->processUserIntegration(
                     $integration,
                     $integrationConfigs,
-                    $criteria
+                    $criteria,
+                    $allowedCategories
                 );
                 $tools = array_merge($tools, $userTools);
             }
@@ -99,12 +108,14 @@ class ToolProviderService
      * Process system integration (no credentials required)
      *
      * @param IntegrationConfig[] $configs
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function processSystemIntegration(
         IntegrationInterface $integration,
         array $configs,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
     ): array {
         // System tools are excluded by default unless explicitly requested
         if (!$this->shouldIncludeSystemIntegration($integration, $criteria)) {
@@ -122,19 +133,21 @@ class ToolProviderService
         // Build tools
         $disabledTools = $config?->getDisabledTools() ?? [];
 
-        return $this->buildToolsArray($integration, $disabledTools);
+        return $this->buildToolsArray($integration, $disabledTools, null, $allowedCategories);
     }
 
     /**
      * Process user integration (credentials required) - may have multiple instances
      *
      * @param IntegrationConfig[] $configs
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function processUserIntegration(
         IntegrationInterface $integration,
         array $configs,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
     ): array {
         // Skip if filter specifies only system tools
         if ($criteria->includesOnlySystemTools()) {
@@ -161,7 +174,8 @@ class ToolProviderService
             $instanceTools = $this->buildToolsArray(
                 $integration,
                 $disabledTools,
-                $config // Pass config for instance-specific naming
+                $config, // Pass config for instance-specific naming
+                $allowedCategories
             );
 
             $tools = array_merge($tools, $instanceTools);
@@ -198,21 +212,28 @@ class ToolProviderService
     }
 
     /**
-     * Build tools array from integration, filtering disabled tools
+     * Build tools array from integration, filtering disabled tools and by access mode
      *
      * @param array<string> $disabledTools
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function buildToolsArray(
         IntegrationInterface $integration,
         array $disabledTools,
-        ?IntegrationConfig $config = null
+        ?IntegrationConfig $config = null,
+        ?array $allowedCategories = null
     ): array {
         $tools = [];
 
         foreach ($integration->getTools() as $tool) {
             if (in_array($tool->getName(), $disabledTools, true)) {
                 continue; // Skip disabled tools
+            }
+
+            // Filter by access mode categories
+            if ($allowedCategories !== null && !in_array($tool->getCategory(), $allowedCategories, true)) {
+                continue;
             }
 
             $toolName = $tool->getName();

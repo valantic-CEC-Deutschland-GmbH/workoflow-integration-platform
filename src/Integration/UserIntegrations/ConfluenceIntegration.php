@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\ConfluenceService;
@@ -118,7 +119,8 @@ class ConfluenceIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Page status: \'current\' (published, default) or \'draft\' (not published). Use \'draft\' for pages that need review before publishing.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'confluence_update_page',
@@ -160,7 +162,8 @@ class ConfluenceIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Page status: \'current\' (published) or \'draft\'. Leave empty to keep the current status.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             )
         ];
     }

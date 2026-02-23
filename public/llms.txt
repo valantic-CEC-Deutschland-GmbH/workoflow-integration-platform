@@ -2,10 +2,11 @@
 
 > AI-first integration hub providing unified REST API access to 85+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron), and platform services. Built for AI agents, automation workflows, and conversational interfaces.
 
-**Last Updated**: 2026-02-18
+**Last Updated**: 2026-02-23
 **Version**: 1.2.0
 **Architecture**: Multi-tenant Symfony 7.2 platform with plugin-based integration system
 **Authentication**: OAuth2 (Google), Magic Links, Basic Auth + JWT for API
+**Tool Access Modes**: Read Only / Standard / Full — per-user control over which tool categories (Read, Write, Delete) AI agents can use
 **Tech Stack**: PHP 8.4, Symfony 7.2, FrankenPHP, MariaDB 11.2, Redis, MinIO S3
 
 ## Core Concepts
@@ -161,6 +162,17 @@ Returns OpenAPI-style tool definitions with:
 - Descriptions with integration context
 - Parameter schemas with types and validation
 - Required vs optional fields
+- Tool category (`read`, `write`, or `delete`)
+
+### Tool Access Modes
+
+Each user can set a **Tool Access Mode** on their profile to control which tool categories are available:
+
+- **Read Only**: Only `read` tools (search, list, get). Safest mode for browsing data.
+- **Standard**: `read` + `write` tools (create, update, transition). For productive work.
+- **Full**: All tools including `delete`. Use with caution.
+
+The API enforces these modes — tools outside the user's allowed categories are excluded from discovery and return HTTP 403 if executed directly. Existing users default to Standard mode; new users default to Read Only.
 
 **Static Export**:
 

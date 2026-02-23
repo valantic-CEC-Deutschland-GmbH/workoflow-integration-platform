@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\ToolFilterCriteria;
 use App\Entity\IntegrationConfig;
 use App\Entity\Organisation;
+use App\Entity\User;
 use App\Integration\IntegrationRegistry;
 use App\Repository\IntegrationConfigRepository;
 use App\Repository\OrganisationRepository;
@@ -61,8 +62,17 @@ class IntegrationApiController extends AbstractController
         // Capture execution_id for audit logging
         $executionId = $request->query->get('execution_id');
 
+        // Resolve user for tool access mode filtering
+        $user = null;
+        if ($criteria->getWorkflowUserId()) {
+            $user = $this->integrationConfigRepository->findUserByWorkflowUserId(
+                $organisation,
+                $criteria->getWorkflowUserId()
+            );
+        }
+
         // Delegate to service
-        $tools = $this->toolProviderService->getToolsForOrganisation($organisation, $criteria);
+        $tools = $this->toolProviderService->getToolsForOrganisation($organisation, $criteria, $user);
 
         // Log API access with execution_id
         $this->auditLogService->logWithOrganisation(
@@ -140,6 +150,31 @@ class IntegrationApiController extends AbstractController
 
             if (!$targetIntegration || !$targetTool) {
                 return $this->json(['error' => 'Tool not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Resolve user for access mode check
+            $accessUser = null;
+            if ($workflowUserId) {
+                $accessUser = $this->integrationConfigRepository->findUserByWorkflowUserId(
+                    $organisation,
+                    $workflowUserId
+                );
+            }
+
+            // Check tool category against user's access mode
+            if ($accessUser !== null) {
+                $allowedCategories = $accessUser->getAllowedToolCategories();
+                if (!in_array($targetTool->getCategory(), $allowedCategories, true)) {
+                    return $this->json([
+                        'error' => 'Tool restricted by access mode',
+                        'message' => sprintf(
+                            'Tool "%s" requires "%s" access, but your access mode is "%s"',
+                            $toolName,
+                            $targetTool->getCategory()->value,
+                            $accessUser->getToolAccessMode()
+                        ),
+                    ], Response::HTTP_FORBIDDEN);
+                }
             }
 
             // Get credentials if needed

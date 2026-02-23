@@ -31,7 +31,7 @@ class PromptService
         Organisation $organisation,
         string $title,
         string $content,
-        string $category,
+        ?string $category,
         string $scope,
         ?string $description = null
     ): Prompt {
@@ -65,7 +65,7 @@ class PromptService
         User $user,
         string $title,
         string $content,
-        string $category,
+        ?string $category,
         string $scope,
         ?string $description = null
     ): Prompt {

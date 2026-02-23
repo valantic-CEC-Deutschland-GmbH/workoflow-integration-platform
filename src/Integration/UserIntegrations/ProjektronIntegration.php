@@ -6,6 +6,7 @@ use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
+use App\Integration\ToolCategory;
 use App\Service\Integration\ProjektronService;
 use Twig\Environment;
 
@@ -105,7 +106,8 @@ class ProjektronIntegration implements PersonalizedSkillInterface
                         'description' => 'Work description (e.g., "Development", "Meeting", "Code Review")',
                         'required' => true,
                     ],
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'projektron_get_absences',

@@ -5,6 +5,7 @@ namespace App\Integration\UserIntegrations;
 use App\Entity\IntegrationConfig;
 use App\Integration\CredentialField;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Service\Integration\HubSpotService;
 use Twig\Environment;
@@ -109,7 +110,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Lifecycle stage (subscriber, lead, marketingqualifiedlead, salesqualifiedlead, opportunity, customer, evangelist, other)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'hubspot_update_contact',
@@ -169,7 +171,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'New lead status (new, open, in_progress, open_deal, unqualified, attempted_to_contact, connected, bad_timing)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
 
             // ========================================
@@ -263,7 +266,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Company description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'hubspot_update_company',
@@ -329,7 +333,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'New description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
 
             // ========================================
@@ -411,7 +416,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Deal description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'hubspot_update_deal',
@@ -465,7 +471,8 @@ class HubSpotIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'New description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
         ];
     }

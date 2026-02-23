@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\GitLabService;
@@ -179,7 +180,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Commit message'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_update_file',
@@ -215,7 +217,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Commit message'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_delete_file',
@@ -245,7 +248,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Commit message'
                     ]
-                ]
+                ],
+                ToolCategory::DELETE
             ),
             new ToolDefinition(
                 'gitlab_protect_branch',
@@ -275,7 +279,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Access level for merge (0=no access, 30=developer, 40=maintainer, 60=admin)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
 
             // Tags, Branches & Commits
@@ -319,7 +324,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Tag annotation message'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_delete_tag',
@@ -337,7 +343,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Tag name to delete'
                     ]
-                ]
+                ],
+                ToolCategory::DELETE
             ),
             new ToolDefinition(
                 'gitlab_list_branches',
@@ -373,7 +380,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Branch name or commit SHA to create branch from'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_delete_branch',
@@ -391,7 +399,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Branch name to delete'
                     ]
-                ]
+                ],
+                ToolCategory::DELETE
             ),
             new ToolDefinition(
                 'gitlab_get_commit',
@@ -569,7 +578,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Merge request description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_update_merge_request',
@@ -605,7 +615,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'State event: close or reopen'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_add_merge_request_note',
@@ -629,7 +640,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Comment text'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_merge_merge_request',
@@ -671,7 +683,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Merge automatically when pipeline succeeds (default: false)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_approve_merge_request',
@@ -689,7 +702,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Merge request internal ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_unapprove_merge_request',
@@ -707,7 +721,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Merge request internal ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_get_merge_request_approvals',
@@ -761,7 +776,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Merge request internal ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_update_merge_request_assignees',
@@ -791,7 +807,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Array of user IDs to set as reviewers'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_list_my_merge_requests',
@@ -907,7 +924,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Issue description'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_update_issue',
@@ -943,7 +961,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'State event: close or reopen'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_add_issue_note',
@@ -967,7 +986,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Comment text'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_list_issue_notes',
@@ -1009,7 +1029,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Array of user IDs to assign'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_list_all_issues',
@@ -1065,7 +1086,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Discussion comment text'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_resolve_discussion',
@@ -1095,7 +1117,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'True to resolve, false to unresolve'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_add_discussion_note',
@@ -1125,7 +1148,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Reply text'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
 
             // Labels & Milestones
@@ -1367,7 +1391,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Pipeline ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_cancel_pipeline',
@@ -1385,7 +1410,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Pipeline ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_create_pipeline',
@@ -1409,7 +1435,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Array of variables for the pipeline, each with key and value'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_retry_job',
@@ -1427,7 +1454,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Job ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_cancel_job',
@@ -1445,7 +1473,8 @@ class GitLabIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Job ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'gitlab_download_job_artifacts',

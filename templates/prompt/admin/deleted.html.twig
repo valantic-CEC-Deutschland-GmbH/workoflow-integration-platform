@@ -32,9 +32,13 @@
                             <tr>
                                 <td>{{ prompt.title }}</td>
                                 <td>
-                                    <span class="prompt-category-badge small">
-                                        {{ ('prompt.category_' ~ prompt.category)|trans }}
-                                    </span>
+                                    {% if prompt.category %}
+                                        <span class="prompt-category-badge small">
+                                            {{ ('prompt.category_' ~ prompt.category)|trans }}
+                                        </span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
                                 </td>
                                 <td>
                                     {% if prompt.scope == 'organisation' %}

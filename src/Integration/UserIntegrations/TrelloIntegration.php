@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\TrelloService;
@@ -183,7 +184,8 @@ class TrelloIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Comma-separated list of label IDs to add to the card (optional)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'trello_update_card',
@@ -249,7 +251,8 @@ class TrelloIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Comma-separated list of label IDs (replaces existing labels) (optional)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'trello_add_comment',
@@ -267,7 +270,8 @@ class TrelloIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Comment text'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             )
         ];
     }

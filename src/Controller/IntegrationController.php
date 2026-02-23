@@ -307,7 +307,8 @@ class IntegrationController extends AbstractController
                         'organisation' => $organisation,
                         'credentialFields' => $integration->getCredentialFields(),
                         'existingInstances' => $existingInstances,
-                        'isEdit' => $config !== null
+                        'isEdit' => $config !== null,
+                        'allowedCategories' => array_map(fn($c) => $c->value, $user->getAllowedToolCategories()),
                     ]);
                 }
             }
@@ -427,7 +428,8 @@ class IntegrationController extends AbstractController
                         'organisation' => $organisation,
                         'credentialFields' => $integration->getCredentialFields(),
                         'existingInstances' => $existingInstances,
-                        'isEdit' => $config !== null
+                        'isEdit' => $config !== null,
+                        'allowedCategories' => array_map(fn($c) => $c->value, $user->getAllowedToolCategories()),
                     ]);
                 }
             }
@@ -479,7 +481,8 @@ class IntegrationController extends AbstractController
             'organisation' => $organisation,
             'credentialFields' => $integration->getCredentialFields(),
             'existingInstances' => $existingInstances,
-            'isEdit' => $config !== null
+            'isEdit' => $config !== null,
+            'allowedCategories' => array_map(fn($c) => $c->value, $user->getAllowedToolCategories()),
         ]);
     }
 

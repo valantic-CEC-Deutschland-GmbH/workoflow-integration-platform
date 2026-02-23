@@ -13,7 +13,12 @@
         {# Prompt Header #}
         <div class="prompt-detail-header">
             <div class="prompt-detail-meta">
-                <span class="prompt-category-badge large">{{ ('prompt.category_' ~ prompt.category)|trans }}</span>
+                {% if prompt.category %}
+                    <span class="prompt-category-badge large">{{ ('prompt.category_' ~ prompt.category)|trans }}</span>
+                {% endif %}
+                {% if prompt.skill and skills is defined and prompt.skill in skills|keys %}
+                    <span class="prompt-skill-badge large"><i class="fas fa-puzzle-piece"></i> {{ skills[prompt.skill] }}</span>
+                {% endif %}
                 {% if prompt.scope == 'organisation' %}
                     <span class="prompt-scope-badge organisation large">
                         <i class="fas fa-users"></i> {{ 'prompt.scope_organisation'|trans }}

@@ -5,6 +5,7 @@ namespace App\Integration\UserIntegrations;
 use App\Entity\IntegrationConfig;
 use App\Integration\CredentialField;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Service\Integration\WrikeService;
 use Twig\Environment;
@@ -121,7 +122,8 @@ class WrikeIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Due date in YYYY-MM-DD format'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'wrike_update_task',
@@ -169,7 +171,8 @@ class WrikeIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'New due date (YYYY-MM-DD)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'wrike_get_task_comments',
@@ -199,7 +202,8 @@ class WrikeIntegration implements PersonalizedSkillInterface
                         'required' => true,
                         'description' => 'Comment text (supports HTML)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
 
             // ========================================
@@ -299,7 +303,8 @@ class WrikeIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Date to log time for (YYYY-MM-DD, defaults to today)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'wrike_get_timelogs',

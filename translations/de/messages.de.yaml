@@ -213,6 +213,10 @@ integration:
   reconnect_outlook_calendar: Erneut mit Microsoft verbinden
   reconnect_msteams: Erneut mit Microsoft verbinden
   toggle_error: Einstellung konnte nicht aktualisiert werden
+  tool_category_read: Lesen
+  tool_category_write: Schreiben
+  tool_category_delete: Löschen
+  tool_restricted_by_mode: Eingeschränkt durch Ihren aktuellen Werkzeug-Zugriffsmodus
   type: Typ
   status: Status
   last_accessed: Letzter Zugriff
@@ -512,6 +516,15 @@ profile:
   api_param_category: Nach Kategorie filtern (z.B. developer, devops)
   api_param_uuid: Einen bestimmten Prompt per UUID abrufen
   generate_token_first: Generieren Sie zuerst einen Token, um einen einsatzbereiten curl-Befehl zu erhalten.
+  tool_mode: Werkzeug-Zugriffsmodus
+  tool_mode_description: Steuern Sie, welche Werkzeugtypen Ihre KI-Agenten verwenden können. Restriktive Modi verhindern versehentliche Änderungen.
+  mode_read_only: Nur Lesen
+  mode_read_only_desc: Nur Such-, Lese- und Auflistungswerkzeuge. Sicherster Modus.
+  mode_standard: Standard
+  mode_standard_desc: Lese- und Schreibwerkzeuge. Für produktives Arbeiten.
+  mode_full: Vollzugriff
+  mode_full_desc: Alle Werkzeuge inklusive Löschen. Mit Vorsicht verwenden.
+  mode_updated: Werkzeug-Zugriffsmodus aktualisiert.
 
 footer:
   rights: Alle Rechte vorbehalten.
@@ -645,9 +658,14 @@ prompt:
     description: Erstellen Sie Ihren ersten Prompt, um loszulegen
     personal_description: Erstellen Sie Ihren ersten persönlichen Prompt
     org_description: Erstellen Sie den ersten Organisations-Prompt
+  skill: Skill
+  select_skill: Skill auswählen (optional)
+  skill_help: Verknüpfen Sie diesen Prompt optional mit einem bestimmten Skill/Integration.
   filter:
     all_categories: Alle Kategorien
     category: Kategorie
+    skill: Skill
+    all_skills: Alle Skills
     sort: Sortieren nach
   sort:
     newest: Neueste zuerst
@@ -694,6 +712,7 @@ prompt:
     get_all: Alle Prompts abrufen (Persönlich + Team)
     get_by_uuid: Bestimmten Prompt per UUID abrufen
     filter_category: Nach Kategorie filtern
-    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer"
+    filter_skill: Nach Skill filtern
+    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer&skill=jira"
     no_token: Sie müssen zuerst einen API-Token generieren, um Prompts per API abzurufen.
     generate_token: Token im Profil generieren

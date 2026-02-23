@@ -220,6 +220,10 @@ integration:
   reconnect_outlook_calendar: Prisijungti iš naujo su Microsoft
   reconnect_msteams: Prisijungti iš naujo su Microsoft
   toggle_error: Nepavyko atnaujinti nustatymo
+  tool_category_read: Skaitymas
+  tool_category_write: Rašymas
+  tool_category_delete: Trynimas
+  tool_restricted_by_mode: Apribota pagal jūsų dabartinį įrankių prieigos režimą
   workflow_id: Workoflow ID
   functions: Funkcijos
   active_of: aktyvių iš
@@ -511,6 +515,15 @@ profile:
   api_param_uuid: Gauti konkretų promptą pagal UUID
   generate_token_first: Pirmiausia sugeneruokite raktą, kad gautumėte paruoštą curl komandą.
   no_organisation: Nepasirinkta organizacija.
+  tool_mode: Įrankių prieigos režimas
+  tool_mode_description: Valdykite, kokius įrankių tipus gali naudoti jūsų AI agentai. Riboti režimai neleidžia atsitiktinių pakeitimų.
+  mode_read_only: Tik skaitymas
+  mode_read_only_desc: Tik paieškos, skaitymo ir sąrašų įrankiai. Saugiausias režimas.
+  mode_standard: Standartinis
+  mode_standard_desc: Skaitymo ir rašymo įrankiai. Produktyviam darbui.
+  mode_full: Pilna prieiga
+  mode_full_desc: Visi įrankiai, įskaitant trynimą. Naudokite atsargiai.
+  mode_updated: Įrankių prieigos režimas atnaujintas.
 
 footer:
   rights: Visos teisės saugomos.
@@ -612,9 +625,14 @@ prompt:
   tab:
     personal: Mano promptai
     organisation: Komandos promptai
+  skill: Įgūdis
+  select_skill: Pasirinkite įgūdį (neprivaloma)
+  skill_help: Neprivaloma susieti šį promptą su konkrečiu įgūdžiu/integracija.
   filter:
     all_categories: Visos kategorijos
     category: Kategorija
+    skill: Įgūdis
+    all_skills: Visi įgūdžiai
     sort: Rūšiuoti pagal
   sort:
     newest: Naujausi pirmiausia
@@ -692,6 +710,7 @@ prompt:
     get_all: Gauti visus promptus (Asmeniniai + Komandos)
     get_by_uuid: Gauti konkretų promptą pagal UUID
     filter_category: Filtruoti pagal kategoriją
-    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer"
+    filter_skill: Filtruoti pagal įgūdį
+    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer&skill=jira"
     no_token: Pirmiausia turite sugeneruoti API raktą, kad galėtumėte pasiekti promptus per API.
     generate_token: Generuoti raktą profilyje

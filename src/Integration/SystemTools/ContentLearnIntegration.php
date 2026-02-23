@@ -4,6 +4,7 @@ namespace App\Integration\SystemTools;
 
 use App\Integration\PlatformSkillInterface;
 use App\Integration\ToolDefinition;
+use App\Integration\ToolCategory;
 use App\Integration\CredentialField;
 
 class ContentLearnIntegration implements PlatformSkillInterface
@@ -55,7 +56,8 @@ class ContentLearnIntegration implements PlatformSkillInterface
                         'required' => false,
                         'description' => 'The tenant ID'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             )
         ];
     }

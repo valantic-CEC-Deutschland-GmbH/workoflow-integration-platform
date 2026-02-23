@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\MsTeamsService;
@@ -103,7 +104,8 @@ class MsTeamsIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Content type: "text" (plain text, default) or "html" (rich text with formatting)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'teams_create_channel',
@@ -127,7 +129,8 @@ class MsTeamsIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Optional description for the channel'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'teams_list_chats',
@@ -181,7 +184,8 @@ class MsTeamsIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'Content type: "text" (plain text, default) or "html" (rich text with formatting)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
         ];
     }

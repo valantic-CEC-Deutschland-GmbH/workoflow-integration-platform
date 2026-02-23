@@ -16,6 +16,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Index(name: 'idx_prompt_scope', columns: ['scope'])]
 #[ORM\Index(name: 'idx_prompt_category', columns: ['category'])]
 #[ORM\Index(name: 'idx_prompt_deleted', columns: ['deleted_at'])]
+#[ORM\Index(name: 'idx_prompt_skill', columns: ['skill'])]
 class Prompt
 {
     public const SCOPE_PERSONAL = 'personal';
@@ -55,8 +56,11 @@ class Prompt
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $category = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $skill = null;
 
     #[ORM\Column(length: 20)]
     private string $scope = self::SCOPE_PERSONAL;
@@ -175,9 +179,20 @@ class Prompt
         return $this->category;
     }
 
-    public function setCategory(string $category): static
+    public function setCategory(?string $category): static
     {
         $this->category = $category;
+        return $this;
+    }
+
+    public function getSkill(): ?string
+    {
+        return $this->skill;
+    }
+
+    public function setSkill(?string $skill): static
+    {
+        $this->skill = $skill;
         return $this;
     }
 

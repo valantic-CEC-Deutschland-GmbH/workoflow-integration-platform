@@ -220,6 +220,10 @@ integration:
   reconnect_outlook_calendar: Reconectați-vă cu Microsoft
   reconnect_msteams: Reconectați-vă cu Microsoft
   toggle_error: Setarea nu a putut fi actualizată
+  tool_category_read: Citire
+  tool_category_write: Scriere
+  tool_category_delete: Ștergere
+  tool_restricted_by_mode: Restricționat de modul dvs. curent de acces la instrumente
   workflow_id: ID Workoflow
   functions: Funcții
   active_of: active din
@@ -511,6 +515,15 @@ profile:
   api_param_uuid: Obțineți un prompt specific după UUID
   generate_token_first: Generați mai întâi un token pentru a obține o comandă curl gata de utilizat.
   no_organisation: Nicio organizație selectată.
+  tool_mode: Mod acces instrumente
+  tool_mode_description: Controlați ce tipuri de instrumente pot folosi agenții AI. Modurile restrictive previn modificările accidentale.
+  mode_read_only: Doar citire
+  mode_read_only_desc: Doar instrumente de căutare, citire și listare. Cel mai sigur mod.
+  mode_standard: Standard
+  mode_standard_desc: Instrumente de citire și scriere. Pentru lucru productiv.
+  mode_full: Acces complet
+  mode_full_desc: Toate instrumentele inclusiv ștergerea. Utilizați cu precauție.
+  mode_updated: Modul de acces la instrumente a fost actualizat.
 
 footer:
   rights: Toate drepturile rezervate.
@@ -612,9 +625,14 @@ prompt:
   tab:
     personal: Prompturile mele
     organisation: Prompturi echipă
+  skill: Skill
+  select_skill: Selectați un skill (opțional)
+  skill_help: Asociați opțional acest prompt cu un skill/integrare specifică.
   filter:
     all_categories: Toate categoriile
     category: Categorie
+    skill: Skill
+    all_skills: Toate skill-urile
     sort: Sortați după
   sort:
     newest: Cele mai noi primele
@@ -692,6 +710,7 @@ prompt:
     get_all: Obțineți toate prompturile (Personal + Echipă)
     get_by_uuid: Obțineți un prompt specific după UUID
     filter_category: Filtrați după categorie
-    hint_combine: "Sfat: Combinați parametrii, de ex. ?scope=organisation&category=developer"
+    filter_skill: Filtrați după skill
+    hint_combine: "Sfat: Combinați parametrii, de ex. ?scope=organisation&category=developer&skill=jira"
     no_token: Trebuie să generați mai întâi un token API pentru a accesa prompturile prin API.
     generate_token: Generați token-ul în Profil

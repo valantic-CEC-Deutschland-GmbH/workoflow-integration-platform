@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\IntegrationConfig;
 use App\Entity\Organisation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -189,6 +190,26 @@ class IntegrationConfigRepository extends ServiceEntityRepository
         return $qb->orderBy('ic.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Find user by workflow_user_id within an organisation
+     */
+    public function findUserByWorkflowUserId(Organisation $organisation, string $workflowUserId): ?User
+    {
+        $result = $this->getEntityManager()->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->innerJoin('u.userOrganisations', 'uo')
+            ->where('uo.organisation = :organisation')
+            ->andWhere('uo.workflowUserId = :workflowUserId')
+            ->setParameter('organisation', $organisation)
+            ->setParameter('workflowUserId', $workflowUserId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result;
     }
 
     /**

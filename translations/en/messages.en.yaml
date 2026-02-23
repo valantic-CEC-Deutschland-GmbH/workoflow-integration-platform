@@ -220,6 +220,10 @@ integration:
   reconnect_outlook_calendar: Reconnect with Microsoft
   reconnect_msteams: Reconnect with Microsoft
   toggle_error: Failed to update setting
+  tool_category_read: Read
+  tool_category_write: Write
+  tool_category_delete: Delete
+  tool_restricted_by_mode: Restricted by your current tool access mode
   workflow_id: Workoflow ID
   functions: Functions
   active_of: active of
@@ -511,6 +515,15 @@ profile:
   api_param_uuid: Get a specific prompt by UUID
   generate_token_first: Generate a token first to get a ready-to-use curl command.
   no_organisation: No organisation selected.
+  tool_mode: Tool Access Mode
+  tool_mode_description: Control which types of tools your AI agents can use. Restrictive modes prevent accidental modifications.
+  mode_read_only: Read Only
+  mode_read_only_desc: Only search, read and list tools. Safest mode for browsing.
+  mode_standard: Standard
+  mode_standard_desc: Read + write/create/update tools. For productive work.
+  mode_full: Full Access
+  mode_full_desc: All tools including delete. Use with caution.
+  mode_updated: Tool access mode updated.
 
 footer:
   rights: All rights reserved.
@@ -612,9 +625,14 @@ prompt:
   tab:
     personal: My Prompts
     organisation: Team Prompts
+  skill: Skill
+  select_skill: Select a skill (optional)
+  skill_help: Optionally link this prompt to a specific skill/integration.
   filter:
     all_categories: All Categories
     category: Category
+    skill: Skill
+    all_skills: All Skills
     sort: Sort by
   sort:
     newest: Newest first
@@ -692,6 +710,7 @@ prompt:
     get_all: Get All Prompts (Personal + Team)
     get_by_uuid: Get Specific Prompt by UUID
     filter_category: Filter by Category
-    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer"
+    filter_skill: Filter by Skill
+    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer&skill=jira"
     no_token: You need to generate an API token first to access prompts via API.
     generate_token: Generate Token in Profile

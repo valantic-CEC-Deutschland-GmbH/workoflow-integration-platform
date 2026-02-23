@@ -1,7 +1,12 @@
 <div class="prompt-card">
     <a href="{{ path('app_prompt_show', {uuid: prompt.uuid}) }}" class="prompt-card-link">
         <div class="prompt-card-header">
-            <span class="prompt-category-badge">{{ ('prompt.category_' ~ prompt.category)|trans }}</span>
+            {% if prompt.category %}
+                <span class="prompt-category-badge">{{ ('prompt.category_' ~ prompt.category)|trans }}</span>
+            {% endif %}
+            {% if prompt.skill and skills is defined and prompt.skill in skills|keys %}
+                <span class="prompt-skill-badge"><i class="fas fa-puzzle-piece"></i> {{ skills[prompt.skill] }}</span>
+            {% endif %}
             {% if prompt.scope == 'organisation' %}
                 <span class="prompt-scope-badge organisation">
                     <i class="fas fa-users"></i>
