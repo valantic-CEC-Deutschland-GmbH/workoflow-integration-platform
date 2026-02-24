@@ -2,82 +2,16 @@ name: Updater Agent
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
-  pull-requests: write
+    inputs:
+      major:
+        description: 'Include major version updates'
+        type: boolean
+        default: false
 
 jobs:
-  dependency-update:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Install Claude Code CLI
-        run: npm install -g @anthropic-ai/claude-code
-
-      - name: Run dependency update agent
-        env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-        run: |
-          claude -p "$(cat <<'PROMPT'
-          You are a dependency update agent. Your job is to update ALL project dependencies to their latest versions, adapt source code for breaking changes, and create or update a PR with the results.
-
-          Read CLAUDE.md first to understand the project and check for any "Known Dependency Technical Debt" section — skip dependencies listed there.
-
-          ## Step 1: Branch setup
-          Check if an open PR exists on branch ai/dependency-updates:
-            gh pr list --head ai/dependency-updates --state open --json number,title
-          - If a PR exists: check out that branch (git checkout ai/dependency-updates && git pull origin ai/dependency-updates) and continue — there may be new updates to pick up.
-          - If no PR exists: create a fresh branch (git checkout -B ai/dependency-updates origin/main).
-
-          ## Step 2: Discover outdated dependencies
-          Run both (as applicable):
-          - composer outdated --direct --format=json
-          - npm outdated --json
-          If nothing is outdated, print "All dependencies are up to date." and stop.
-
-          ## Step 3: Update dependencies
-          For each outdated dependency:
-          1. Update it (composer require vendor/package:^newversion, npm install package@latest, etc.)
-          2. For major version bumps, use Context7 MCP tools (resolve-library-id then query-docs) to look up migration guides and breaking changes.
-          3. Apply any necessary code changes — update imports, fix deprecated API calls, adjust config files, whatever the migration guide requires. You have full permission to edit source code.
-          4. Run composer install / npm install as needed to ensure everything resolves.
-          5. If a dependency update is too complex (library is abandoned, breaking changes are massive, would require rewriting large parts of the app), skip it and note it for the technical debt section.
-
-          ## Step 4: Verify
-          Run the project's code quality checks if available (e.g. composer code-check, npm run build, npm run lint). Fix any issues caused by your changes.
-
-          ## Step 5: Record skipped dependencies
-          If any dependencies were skipped due to complexity, add or update a "Known Dependency Technical Debt" section at the bottom of CLAUDE.md listing each skipped package, its current version, the target version, and a brief reason why it was skipped. This ensures future runs know to skip them automatically.
-
-          ## Step 6: Commit and push
-          - Stage all changed files
-          - Create a commit: "chore: update dependencies"
-          - Push: git push --force-with-lease origin ai/dependency-updates
-
-          ## Step 7: Create or update PR
-          - If no PR exists yet: create one via gh pr create --base main --head ai/dependency-updates with a title and body listing all updated packages (old → new), grouped by composer/npm, plus a section for skipped dependencies and why.
-          - If a PR already exists: update its body with the latest changes via gh pr edit.
-          PROMPT
-          )" \
-            --dangerously-skip-permissions \
-            --output-format text \
-            --verbose \
-            --model claude-sonnet-4-6 \
-            --mcp-config .github/claude-mcp-config.json
+  update-dependencies:
+    uses: valantic-CEC-Deutschland-GmbH/claude-code-marketplace/.github/workflows/updater-agent.yml@main
+    with:
+      major: ${{ inputs.major }}
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
