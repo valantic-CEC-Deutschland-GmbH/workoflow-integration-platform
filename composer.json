@@ -41,7 +41,7 @@
         "symfony/http-client": "7.3.*",
         "symfony/intl": "7.3.*",
         "symfony/mime": "7.3.*",
-        "symfony/monolog-bundle": "^3.0",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/process": "7.3.*",
         "symfony/property-access": "7.3.*",
         "symfony/property-info": "7.3.*",
