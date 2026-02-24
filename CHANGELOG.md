@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-24
+
+### Changed
+- **Updater Agent** now uses the shared reusable workflow from the Claude Code Marketplace, supporting Docker image updates, GitHub Actions version pins, and configurable major/minor version control
+
 ## 2026-02-23
 
 ### Added

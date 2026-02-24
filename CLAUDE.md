@@ -338,9 +338,11 @@ The following dependencies could not be updated automatically and require manual
 | Package | Current | Target | Reason |
 |---------|---------|--------|--------|
 | `symfony/http-foundation` (and all `symfony/*` packages pinned to `7.2.*`) | 7.2.x | 8.0.x | CVE-2025-64500 (HIGH): PATH_INFO authorization bypass. No fix exists within the 7.2.x branch; fix requires Symfony 8.0.x. Upgrading to Symfony 8.0 is a major framework migration requiring significant testing. The advisory PKSA-365x-2zjk-pt47 is explicitly ignored in `composer.json` until this upgrade is completed. |
-| `phpoffice/phpspreadsheet` | 2.4.1 | 5.4.0 | Three major version jump (2.x → 5.x). Massive breaking changes and API rewrites across versions 3.x, 4.x, and 5.x. Requires significant application code refactoring. |
+| `knpuniversity/oauth2-client-bundle` | 2.19.0 | 2.20.2 | Requires `symfony/framework-bundle ^7.3`, incompatible with current `7.2.*` constraint. Will resolve when Symfony is upgraded. |
+| `symfony/monolog-bundle` | 3.11.1 | 4.0.1 | Requires `symfony/config ^7.3`, incompatible with current `7.2.*` constraint. Will resolve when Symfony is upgraded. |
+| `phpoffice/phpspreadsheet` | 2.4.3 | 5.4.0 | Three major version jump (2.x → 5.x). Massive breaking changes and API rewrites across versions 3.x, 4.x, and 5.x. Requires significant application code refactoring. |
 | `phpoffice/phpword` | 1.4.0 | latest | Pinned to `^1.0`; skip until phpoffice/phpspreadsheet is resolved as they share similar upgrade complexity. |
-| `phpdocumentor/reflection-docblock` | 5.6.2 | 6.0.1 | Major version change. Transitive dependency used by PHPStan and Symfony serializer. Blocked by constraints from other packages. |
+| `phpdocumentor/reflection-docblock` | 5.6.6 | 6.0.1 | Major version change. Transitive dependency used by PHPStan and Symfony serializer. Blocked by constraints from other packages. |
 | `phpstan/phpdoc-parser` | 1.33.0 | 2.3.2 | Major version change. Transitive dependency of PHPStan; upgrade tied to PHPStan compatibility. |
 
 ## Changelog
