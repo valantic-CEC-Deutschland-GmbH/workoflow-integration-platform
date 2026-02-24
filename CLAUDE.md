@@ -341,3 +341,21 @@ docker-compose exec frankenphp npm run build
 - REST API Implementation
 - File Management
 - Multi-Language Support (DE/EN)
+
+## Known Dependency Technical Debt
+
+The following dependencies have available major version updates but were skipped due to complexity and risk of breaking changes. These should be evaluated manually.
+
+| Dependency | Current | Target | Reason |
+|---|---|---|---|
+| `symfony/*` (all components) | 7.3.x | 8.0.x | Symfony 8 requires major PHP 8.4+ API changes, extensive code review, and full test suite verification |
+| `doctrine/dbal` | ^3 (3.10.x) | ^4 | Doctrine DBAL 4 has breaking API changes requiring updates to all query builders and type handling |
+| `doctrine/doctrine-bundle` | ^2.13 (2.18.x) | ^3 | Depends on DBAL 4 upgrade; requires Symfony 7 compatibility review |
+| `doctrine/doctrine-migrations-bundle` | ^3.3 (3.4.x) | ^4 | Major API changes; requires migration class updates |
+| `firebase/php-jwt` | ^7.0 | n/a | Already upgraded to v7 (fixed CVE-2025-45769); `thenetworg/oauth2-azure` previously blocked this but is now fixed |
+| `phpoffice/phpspreadsheet` | ^2.0 (2.4.x) | ^5 | Multiple major API changes between 2.x and 5.x; namespace and method signature changes |
+| `predis/predis` | ^2.2 (2.4.x) | ^3 | Predis 3.x changes connection API and removes legacy Redis commands |
+| `phpdocumentor/reflection-docblock` | ^5.4 (5.6.x) | ^6 | Minor transitive dependency; requires phpstan compatibility check |
+| `phpstan/phpdoc-parser` | ^1.29 (1.33.x) | ^2 | Transitive PHPStan dependency; will be resolved when PHPStan updates its requirements |
+| `phpunit/phpunit` | ^11.4 (11.5.55) | ^13 | PHPUnit 13 removes deprecated test patterns; requires test suite review (current version already patched for CVE-2026-24765) |
+| `docker: mariadb` | 11.8 | 12.x | MariaDB 12 is a major version; requires database schema and query compatibility testing |
