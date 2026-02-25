@@ -335,6 +335,49 @@
                         </div>
                     </div>
 
+                    <!-- Organisation-wide Remote MCP Server -->
+                    <div class="form-section">
+                        <h2 class="section-title">Remote MCP Server</h2>
+                        <p class="section-subtitle">Configure an organisation-wide MCP server. Tools will be available to all members.</p>
+
+                        <div class="form-group">
+                            <label for="org_mcp_server_url" class="form-label">MCP Server URL</label>
+                            <input type="url"
+                                   class="form-control"
+                                   id="org_mcp_server_url"
+                                   name="org_mcp_server_url"
+                                   data-channel-target="orgMcpUrl"
+                                   value="{{ organisation.orgMcpServerUrl ?? '' }}"
+                                   placeholder="https://your-mcp-server.com/mcp"
+                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="org_mcp_auth_header" class="form-label">Auth Header</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="org_mcp_auth_header"
+                                   name="org_mcp_auth_header"
+                                   data-channel-target="orgMcpAuthHeader"
+                                   value=""
+                                   placeholder="Authorization: Bearer your-token (leave empty to keep current)"
+                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
+                        </div>
+
+                        {% if app.user.isAdmin() %}
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <button type="button"
+                                        class="btn-secondary"
+                                        style="padding: 0.5rem 1rem; font-size: 0.875rem;"
+                                        data-channel-target="orgMcpTestButton"
+                                        data-action="click->channel#testOrgMcpConnection">
+                                    Test Connection
+                                </button>
+                                <span data-channel-target="orgMcpResult" style="font-size: 0.875rem;"></span>
+                            </div>
+                        {% endif %}
+                    </div>
+
                     {% if app.user.isAdmin() %}
                         <button type="submit" class="btn-primary">Save Settings</button>
                     {% endif %}

@@ -83,6 +83,90 @@ class ToolProviderService
             }
         }
 
+        // Include organisation-wide MCP server tools
+        $orgMcpTools = $this->buildOrgMcpTools($organisation, $criteria, $allowedCategories);
+        $tools = array_merge($tools, $orgMcpTools);
+
+        return $tools;
+    }
+
+    /**
+     * Build tools from organisation-wide MCP server
+     *
+     * @param ToolCategory[]|null $allowedCategories
+     * @return array
+     */
+    private function buildOrgMcpTools(
+        Organisation $organisation,
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
+    ): array {
+        $orgMcpUrl = $organisation->getOrgMcpServerUrl();
+        if (!$orgMcpUrl) {
+            return [];
+        }
+
+        // Skip if filter specifies only system tools
+        if ($criteria->includesOnlySystemTools()) {
+            return [];
+        }
+
+        // Skip if filter specifies types and remote_mcp is not included
+        if ($criteria->hasToolTypeFilter() && !$criteria->includesSpecificType('remote_mcp')) {
+            return [];
+        }
+
+        // Build credentials from organisation fields
+        $customHeaders = '';
+        $encryptedAuthHeader = $organisation->getEncryptedOrgMcpAuthHeader();
+        if ($encryptedAuthHeader) {
+            try {
+                $customHeaders = $this->encryptionService->decrypt($encryptedAuthHeader);
+            } catch (\Exception) {
+                // If decryption fails, proceed without auth header
+            }
+        }
+
+        $credentials = [
+            'server_url' => $orgMcpUrl,
+            'auth_type' => 'none',
+            'custom_headers' => $customHeaders,
+        ];
+
+        try {
+            $mcpTools = $this->remoteMcpService->discoverTools($credentials);
+        } catch (\Exception) {
+            return [];
+        }
+
+        $tools = [];
+        foreach ($mcpTools as $mcpTool) {
+            $toolName = $mcpTool['name'] ?? '';
+            if ($toolName === '') {
+                continue;
+            }
+
+            // All remote MCP tools are treated as READ by default
+            if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+                continue;
+            }
+
+            $description = $mcpTool['description'] ?? 'Remote MCP tool';
+            $description .= ' (via Org MCP: ' . $orgMcpUrl . ')';
+
+            $parameters = $this->convertMcpInputSchema($mcpTool['inputSchema'] ?? []);
+
+            $tools[] = [
+                'type' => 'function',
+                'function' => [
+                    'name' => $toolName . '_org',
+                    'tool_id' => $toolName . '_org',
+                    'description' => $description,
+                    'parameters' => $parameters,
+                ],
+            ];
+        }
+
         return $tools;
     }
 

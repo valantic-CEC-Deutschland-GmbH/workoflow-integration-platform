@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal'];
+    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal', 'orgMcpUrl', 'orgMcpAuthHeader', 'orgMcpTestButton', 'orgMcpResult'];
 
     connect() {
         console.log('Channel controller connected');
@@ -216,6 +216,47 @@ export default class extends Controller {
         setTimeout(() => {
             alertDiv.remove();
         }, 3000);
+    }
+
+    // Org MCP Connection Test
+    async testOrgMcpConnection() {
+        const url = this.hasOrgMcpUrlTarget ? this.orgMcpUrlTarget.value : '';
+        const authHeader = this.hasOrgMcpAuthHeaderTarget ? this.orgMcpAuthHeaderTarget.value : '';
+
+        if (!url) {
+            this.orgMcpResultTarget.textContent = 'Please enter a server URL';
+            this.orgMcpResultTarget.style.color = '#ef4444';
+            return;
+        }
+
+        // Loading state
+        this.orgMcpTestButtonTarget.disabled = true;
+        this.orgMcpTestButtonTarget.textContent = 'Testing...';
+        this.orgMcpResultTarget.textContent = '';
+
+        try {
+            const response = await fetch('/tenant/test-org-mcp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url, auth_header: authHeader }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.orgMcpResultTarget.textContent = data.message;
+                this.orgMcpResultTarget.style.color = '#10b981';
+            } else {
+                this.orgMcpResultTarget.textContent = data.message;
+                this.orgMcpResultTarget.style.color = '#ef4444';
+            }
+        } catch (error) {
+            this.orgMcpResultTarget.textContent = 'Connection test failed: ' + error.message;
+            this.orgMcpResultTarget.style.color = '#ef4444';
+        } finally {
+            this.orgMcpTestButtonTarget.disabled = false;
+            this.orgMcpTestButtonTarget.textContent = 'Test Connection';
+        }
     }
 
     // Modal Methods

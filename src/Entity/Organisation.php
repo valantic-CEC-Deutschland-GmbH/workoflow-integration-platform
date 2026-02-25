@@ -57,6 +57,12 @@ class Organisation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $encryptedN8nApiKey = null;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $orgMcpServerUrl = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $encryptedOrgMcpAuthHeader = null;
+
     public function __construct()
     {
         $this->userOrganisations = new ArrayCollection();
@@ -263,6 +269,28 @@ class Organisation
     public function setEncryptedN8nApiKey(?string $encryptedN8nApiKey): static
     {
         $this->encryptedN8nApiKey = $encryptedN8nApiKey;
+        return $this;
+    }
+
+    public function getOrgMcpServerUrl(): ?string
+    {
+        return $this->orgMcpServerUrl;
+    }
+
+    public function setOrgMcpServerUrl(?string $orgMcpServerUrl): static
+    {
+        $this->orgMcpServerUrl = $orgMcpServerUrl;
+        return $this;
+    }
+
+    public function getEncryptedOrgMcpAuthHeader(): ?string
+    {
+        return $this->encryptedOrgMcpAuthHeader;
+    }
+
+    public function setEncryptedOrgMcpAuthHeader(?string $encryptedOrgMcpAuthHeader): static
+    {
+        $this->encryptedOrgMcpAuthHeader = $encryptedOrgMcpAuthHeader;
         return $this;
     }
 

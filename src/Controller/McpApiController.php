@@ -122,15 +122,33 @@ class McpApiController extends AbstractController
             'workflow_user_id' => $workflowUserId
         ]);
 
-        // Parse tool ID (might have _configId suffix for user integrations)
+        // Parse tool ID (might have _configId suffix for user integrations or _org suffix for org MCP)
         $parts = explode('_', $toolId);
         $configId = null;
         $toolName = $toolId;
+        $isOrgMcp = false;
 
-        // Check if this is a user integration tool with config ID
-        if (count($parts) > 1 && is_numeric(end($parts))) {
+        // Check if this is an org-wide MCP tool (ends with _org)
+        if (count($parts) > 1 && end($parts) === 'org') {
+            $isOrgMcp = true;
+            array_pop($parts);
+            $toolName = implode('_', $parts);
+        } elseif (count($parts) > 1 && is_numeric(end($parts))) {
+            // Check if this is a user integration tool with config ID
             $configId = (int) array_pop($parts);
             $toolName = implode('_', $parts);
+        }
+
+        // Handle org-wide MCP tool execution
+        if ($isOrgMcp) {
+            return $this->executeOrgMcpTool(
+                $organisation,
+                $user,
+                $toolName,
+                $parameters,
+                $workflowUserId,
+                $executionId
+            );
         }
 
         $config = null;
@@ -446,6 +464,115 @@ class McpApiController extends AbstractController
                     'tool_id' => $toolId,
                     'tool_name' => $toolName,
                     'integration_type' => 'remote_mcp',
+                ],
+                'hint' => $errorDetails['hint'],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Execute a tool on the organisation-wide MCP server.
+     */
+    private function executeOrgMcpTool(
+        \App\Entity\Organisation $organisation,
+        \App\Entity\User $user,
+        string $toolName,
+        array $parameters,
+        ?string $workflowUserId,
+        ?string $executionId
+    ): JsonResponse {
+        $orgMcpUrl = $organisation->getOrgMcpServerUrl();
+        if (!$orgMcpUrl) {
+            return $this->json(['error' => 'Organisation MCP server not configured'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $customHeaders = '';
+        $encryptedAuthHeader = $organisation->getEncryptedOrgMcpAuthHeader();
+        if ($encryptedAuthHeader) {
+            try {
+                $customHeaders = $this->encryptionService->decrypt($encryptedAuthHeader);
+            } catch (\Exception) {
+                return $this->json(['error' => 'Failed to decrypt org MCP auth header'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $credentials = [
+            'server_url' => $orgMcpUrl,
+            'auth_type' => 'none',
+            'custom_headers' => $customHeaders,
+        ];
+
+        $toolId = $toolName . '_org';
+
+        // Log execution start
+        $this->auditLogService->logWithOrganisation(
+            'tool_execution.started',
+            $organisation,
+            $user,
+            [
+                'tool_id' => $toolId,
+                'tool_name' => $toolName,
+                'integration_type' => 'remote_mcp_org',
+                'workflow_user_id' => $workflowUserId,
+                'request_payload' => $this->auditLogService->sanitizeData($parameters),
+                'source' => 'mcp',
+            ],
+            $executionId
+        );
+
+        try {
+            // Strip internal parameters before forwarding
+            $forwardParams = array_diff_key($parameters, array_flip([
+                'organisationId', 'organisationUuid', 'workflowUserId', 'configId',
+            ]));
+
+            $result = $this->remoteMcpService->executeTool($credentials, $toolName, $forwardParams);
+
+            $this->auditLogService->logWithOrganisation(
+                'tool_execution.completed',
+                $organisation,
+                $user,
+                [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp_org',
+                    'workflow_user_id' => $workflowUserId,
+                    'success' => true,
+                    'response_data' => $this->auditLogService->truncateData($result, 5000),
+                    'source' => 'mcp',
+                ],
+                $executionId
+            );
+
+            return $this->json(['success' => true, 'result' => $result]);
+        } catch (\Exception $e) {
+            $errorDetails = $this->formatExceptionDetails($e);
+
+            $this->auditLogService->logWithOrganisation(
+                'tool_execution.failed',
+                $organisation,
+                $user,
+                [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp_org',
+                    'workflow_user_id' => $workflowUserId,
+                    'success' => false,
+                    'error' => $errorDetails['message'],
+                    'source' => 'mcp',
+                ],
+                $executionId
+            );
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Tool execution failed',
+                'message' => $errorDetails['message'],
+                'error_code' => $errorDetails['code'],
+                'context' => [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp_org',
                 ],
                 'hint' => $errorDetails['hint'],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);

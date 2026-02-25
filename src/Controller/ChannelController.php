@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Service\Integration\RemoteMcpService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -24,6 +25,7 @@ class ChannelController extends AbstractController
         private AuditLogService $auditLogService,
         private HttpClientInterface $httpClient,
         private EncryptionService $encryptionService,
+        private RemoteMcpService $remoteMcpService,
         #[Autowire('%kernel.project_dir%')]
         private string $projectDir
     ) {
@@ -93,6 +95,16 @@ class ChannelController extends AbstractController
         if (isset($data['n8n_api_key']) && !empty($data['n8n_api_key'])) {
             $encryptedKey = $this->encryptionService->encrypt($data['n8n_api_key']);
             $organisation->setEncryptedN8nApiKey($encryptedKey);
+        }
+
+        // Handle Organisation MCP Server
+        if (isset($data['org_mcp_server_url'])) {
+            $organisation->setOrgMcpServerUrl($data['org_mcp_server_url'] ?: null);
+        }
+
+        if (isset($data['org_mcp_auth_header']) && !empty($data['org_mcp_auth_header'])) {
+            $encrypted = $this->encryptionService->encrypt($data['org_mcp_auth_header']);
+            $organisation->setEncryptedOrgMcpAuthHeader($encrypted);
         }
 
         try {
@@ -202,5 +214,24 @@ class ChannelController extends AbstractController
                 'error' => 'Failed to fetch workflow: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    #[Route('/test-org-mcp', name: 'app_tenant_test_org_mcp', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function testOrgMcp(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $url = $data['url'] ?? '';
+        $authHeader = $data['auth_header'] ?? '';
+
+        $credentials = [
+            'server_url' => $url,
+            'auth_type' => 'none',
+            'custom_headers' => $authHeader,
+        ];
+
+        $result = $this->remoteMcpService->testConnectionDetailed($credentials);
+
+        return new JsonResponse($result);
     }
 }

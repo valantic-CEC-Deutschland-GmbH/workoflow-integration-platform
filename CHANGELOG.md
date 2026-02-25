@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-25
 
 ### Added
+- **Organisation-wide Remote MCP Server** — Admins can configure a shared MCP server in tenant settings that makes its tools available to all organisation members automatically
 - **Remote MCP Server integration** — Connect any MCP-compatible server as a skill source. Tools are discovered dynamically and available via the API alongside native integrations
 - **Platform field in Prompt Vault** — Tag prompts with the AI platform they are designed for (ChatGPT, Claude, Copilot, Cursor, Gemini, and more). Filter prompts by platform in the UI and via API (`?platform=chatgpt`) to quickly find prompts for the tools you use
 - **Platform filter in Prompt API** — Use `?platform=chatgpt` to filter prompts by target AI platform via the API
