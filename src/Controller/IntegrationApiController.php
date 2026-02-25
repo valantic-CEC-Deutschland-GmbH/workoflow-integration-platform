@@ -12,6 +12,7 @@ use App\Repository\OrganisationRepository;
 use App\Service\AuditLogService;
 use App\Service\ConnectionStatusService;
 use App\Service\EncryptionService;
+use App\Service\Integration\RemoteMcpService;
 use App\Service\ToolProviderService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +33,7 @@ class IntegrationApiController extends AbstractController
         private ToolProviderService $toolProviderService,
         private AuditLogService $auditLogService,
         private ConnectionStatusService $connectionStatusService,
+        private RemoteMcpService $remoteMcpService,
         #[Autowire(service: 'monolog.logger.integration_api')]
         private LoggerInterface $logger,
         private string $apiAuthUser,
@@ -149,6 +151,21 @@ class IntegrationApiController extends AbstractController
             }
 
             if (!$targetIntegration || !$targetTool) {
+                // Fallback: Check if this is a remote MCP tool (tools are dynamic, not in getTools())
+                if ($configId) {
+                    $remoteMcpResult = $this->executeRemoteMcpTool(
+                        $configId,
+                        $organisation,
+                        $toolName,
+                        $parameters,
+                        $workflowUserId,
+                        $executionId
+                    );
+                    if ($remoteMcpResult !== null) {
+                        return $remoteMcpResult;
+                    }
+                }
+
                 return $this->json(['error' => 'Tool not found'], Response::HTTP_NOT_FOUND);
             }
 
@@ -335,6 +352,128 @@ class IntegrationApiController extends AbstractController
                     'tool_id' => $toolId,
                     'tool_name' => $toolName,
                     'integration_type' => $targetIntegration?->getType() ?? 'unknown',
+                ],
+                'hint' => $errorDetails['hint'],
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Execute a remote MCP tool by config ID.
+     * Returns JsonResponse if handled, null if not a remote MCP config.
+     */
+    private function executeRemoteMcpTool(
+        int $configId,
+        \App\Entity\Organisation $organisation,
+        string $toolName,
+        array $parameters,
+        ?string $workflowUserId,
+        ?string $executionId
+    ): ?JsonResponse {
+        $config = $this->integrationConfigRepository->find($configId);
+        if (
+            !$config
+            || $config->getIntegrationType() !== 'remote_mcp'
+            || $config->getOrganisation() !== $organisation
+        ) {
+            return null;
+        }
+
+        if (!$config->isActive() || !$config->isConnected()) {
+            return $this->json(['error' => 'Remote MCP server is not active or disconnected'], Response::HTTP_FORBIDDEN);
+        }
+
+        $encryptedCreds = $config->getEncryptedCredentials();
+        if (!$encryptedCreds) {
+            return $this->json(['error' => 'No credentials configured'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $credentials = json_decode($this->encryptionService->decrypt($encryptedCreds), true);
+        if (empty($credentials)) {
+            return $this->json(['error' => 'Failed to decrypt credentials'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $config->getUser();
+
+        // Add organisation context
+        $parameters['organisationId'] = $organisation->getId();
+        $parameters['organisationUuid'] = $organisation->getUuid();
+        $parameters['workflowUserId'] = $workflowUserId;
+
+        $toolId = $toolName . '_' . $configId;
+
+        // Log execution start
+        $this->auditLogService->logWithOrganisation(
+            'tool_execution.started',
+            $organisation,
+            $user,
+            [
+                'tool_id' => $toolId,
+                'tool_name' => $toolName,
+                'integration_type' => 'remote_mcp',
+                'workflow_user_id' => $workflowUserId,
+                'request_payload' => $this->auditLogService->sanitizeData($parameters),
+            ],
+            $executionId
+        );
+
+        try {
+            // Strip internal parameters before forwarding
+            $forwardParams = array_diff_key($parameters, array_flip([
+                'organisationId', 'organisationUuid', 'workflowUserId', 'configId',
+            ]));
+
+            $result = $this->remoteMcpService->executeTool($credentials, $toolName, $forwardParams);
+
+            $this->integrationConfigRepository->updateLastAccessed($config);
+
+            $this->auditLogService->logWithOrganisation(
+                'tool_execution.completed',
+                $organisation,
+                $user,
+                [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp',
+                    'workflow_user_id' => $workflowUserId,
+                    'success' => true,
+                    'response_data' => $this->auditLogService->truncateData($result, 5000),
+                ],
+                $executionId
+            );
+
+            return $this->json(['success' => true, 'result' => $result]);
+        } catch (\Exception $e) {
+            $errorDetails = $this->formatExceptionDetails($e);
+
+            if ($this->connectionStatusService->isCredentialFailure($e, 'remote_mcp')) {
+                $this->connectionStatusService->markDisconnected($config, $errorDetails['message']);
+            }
+
+            $this->auditLogService->logWithOrganisation(
+                'tool_execution.failed',
+                $organisation,
+                $user ?? null,
+                [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp',
+                    'workflow_user_id' => $workflowUserId,
+                    'success' => false,
+                    'error' => $errorDetails['message'],
+                ],
+                $executionId
+            );
+
+            return $this->json([
+                'success' => false,
+                'error' => 'Tool execution failed',
+                'message' => $errorDetails['message'],
+                'error_code' => $errorDetails['code'],
+                'context' => [
+                    'tool_id' => $toolId,
+                    'tool_name' => $toolName,
+                    'integration_type' => 'remote_mcp',
                 ],
                 'hint' => $errorDetails['hint'],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);

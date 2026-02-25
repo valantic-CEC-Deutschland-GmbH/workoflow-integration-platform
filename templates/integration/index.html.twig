@@ -263,6 +263,11 @@ http_headers = { "X-Prompt-Token" = "{{ userOrganisation.personalAccessToken }}"
                 availableTypes: availableTypes
             }) }}
 
+            {# Remote MCP Servers Section #}
+            {{ component('remote_mcp_table', {
+                integrations: integrations
+            }) }}
+
             {# Platform Skills Card Component #}
             {{ component('platform_skills_card', {
                 integrations: integrations

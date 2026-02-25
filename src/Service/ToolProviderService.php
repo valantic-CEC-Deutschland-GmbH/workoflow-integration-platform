@@ -10,6 +10,7 @@ use App\Integration\IntegrationInterface;
 use App\Integration\IntegrationRegistry;
 use App\Integration\ToolCategory;
 use App\Repository\IntegrationConfigRepository;
+use App\Service\Integration\RemoteMcpService;
 
 /**
  * Service for providing and filtering integration tools for API access
@@ -26,7 +27,8 @@ class ToolProviderService
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
         private readonly IntegrationConfigRepository $configRepository,
-        private readonly EncryptionService $encryptionService
+        private readonly EncryptionService $encryptionService,
+        private readonly RemoteMcpService $remoteMcpService,
     ) {
     }
 
@@ -169,6 +171,13 @@ class ToolProviderService
                 continue;
             }
 
+            // For remote_mcp integrations, discover tools dynamically
+            if ($integration->getType() === 'remote_mcp') {
+                $remoteMcpTools = $this->buildRemoteMcpTools($config, $allowedCategories);
+                $tools = array_merge($tools, $remoteMcpTools);
+                continue;
+            }
+
             // Build tools for this instance with unique IDs
             $disabledTools = $config->getDisabledTools();
             $instanceTools = $this->buildToolsArray(
@@ -267,6 +276,91 @@ class ToolProviderService
     }
 
     /**
+     * Build tools from a remote MCP server via dynamic discovery
+     *
+     * @param ToolCategory[]|null $allowedCategories
+     * @return array
+     */
+    private function buildRemoteMcpTools(
+        IntegrationConfig $config,
+        ?array $allowedCategories = null
+    ): array {
+        $credentials = $this->getDecryptedCredentials($config);
+        if (!$credentials) {
+            return [];
+        }
+
+        try {
+            $mcpTools = $this->remoteMcpService->discoverTools($credentials);
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $disabledTools = $config->getDisabledTools();
+        $serverUrl = $credentials['server_url'] ?? '';
+        $tools = [];
+
+        foreach ($mcpTools as $mcpTool) {
+            $toolName = $mcpTool['name'] ?? '';
+            if ($toolName === '' || in_array($toolName, $disabledTools, true)) {
+                continue;
+            }
+
+            // All remote MCP tools are treated as READ by default
+            if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+                continue;
+            }
+
+            $description = $mcpTool['description'] ?? 'Remote MCP tool';
+            if ($serverUrl !== '') {
+                $description .= ' (via Remote MCP: ' . $serverUrl . ')';
+            }
+
+            // Convert MCP inputSchema to our parameter format
+            $parameters = $this->convertMcpInputSchema($mcpTool['inputSchema'] ?? []);
+
+            $tools[] = [
+                'type' => 'function',
+                'function' => [
+                    'name' => $toolName . '_' . $config->getId(),
+                    'tool_id' => $toolName . '_' . $config->getId(),
+                    'description' => $description,
+                    'parameters' => $parameters,
+                ],
+            ];
+        }
+
+        return $tools;
+    }
+
+    /**
+     * Convert MCP inputSchema (JSON Schema) to our API parameter format
+     *
+     * @param array $inputSchema
+     * @return array
+     */
+    private function convertMcpInputSchema(array $inputSchema): array
+    {
+        if (empty($inputSchema)) {
+            return [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ];
+        }
+
+        // MCP inputSchema is already JSON Schema format, pass through
+        $properties = $inputSchema['properties'] ?? [];
+        $required = $inputSchema['required'] ?? [];
+
+        return [
+            'type' => 'object',
+            'properties' => empty($properties) ? new \stdClass() : $properties,
+            'required' => $required,
+        ];
+    }
+
+    /**
      * Format tool parameters for API response
      *
      * @param array $parameters
@@ -328,6 +422,7 @@ class ToolProviderService
             'jira', 'confluence' => $credentials['url'] ?? null,
             'gitlab' => $credentials['gitlab_url'] ?? null,
             'sharepoint' => $credentials['sharepoint_url'] ?? null,
+            'remote_mcp' => $credentials['server_url'] ?? null,
             default => null
         };
     }
