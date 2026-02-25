@@ -28,29 +28,196 @@
                             {{ 'integration.mcp.description'|trans|default('Connect your AI assistant (Claude Desktop, Cursor, etc.) to Workoflow using the MCP protocol. Your personal access token automatically identifies you and your organisation.') }}
                         </p>
 
-                        {# Claude Desktop Configuration #}
-                        <div class="api-helper-item">
-                            <label><i class="fas fa-desktop"></i> {{ 'integration.mcp.claude_desktop'|trans|default('Claude Desktop Configuration') }}</label>
-                            <p class="mcp-hint">{{ 'integration.mcp.claude_desktop_hint'|trans|default('Add this to your Claude Desktop settings file:') }}</p>
-                            <p class="mcp-path"><code>~/.config/Claude/claude_desktop_config.json</code> (Linux) or <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS)</p>
-                            <div class="curl-command-wrapper">
-                                <pre><code id="mcpClaudeDesktop">{
+                        {# Client Tab Navigation #}
+                        <div class="mcp-client-tabs">
+                            <button type="button" class="mcp-client-tab active" data-mcp-tab="claude-desktop" onclick="switchMcpTab('claude-desktop')">
+                                <i class="fas fa-desktop"></i> Claude Desktop
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="claude-code" onclick="switchMcpTab('claude-code')">
+                                <i class="fas fa-terminal"></i> Claude Code
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="cursor" onclick="switchMcpTab('cursor')">
+                                <i class="fas fa-mouse-pointer"></i> Cursor
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="vscode" onclick="switchMcpTab('vscode')">
+                                <i class="fas fa-code"></i> VS Code
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="windsurf" onclick="switchMcpTab('windsurf')">
+                                <i class="fas fa-wind"></i> Windsurf
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="gemini" onclick="switchMcpTab('gemini')">
+                                <i class="fas fa-gem"></i> Gemini CLI
+                            </button>
+                            <button type="button" class="mcp-client-tab" data-mcp-tab="codex" onclick="switchMcpTab('codex')">
+                                <i class="fas fa-robot"></i> Codex
+                            </button>
+                        </div>
+
+                        {# Claude Desktop #}
+                        <div class="mcp-client-pane active" id="mcp-pane-claude-desktop">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-desktop"></i> Claude Desktop</label>
+                                <p class="mcp-hint">{{ 'integration.mcp.claude_desktop_hint'|trans|default('Add this to your Claude Desktop settings file:') }}</p>
+                                <p class="mcp-path"><code>~/.config/Claude/claude_desktop_config.json</code> (Linux) or <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS)</p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpClaudeDesktop">{
   "mcpServers": {
     "workoflow": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://workoflow-mcp.vcec.cloud/sse",
-        "--header",
-        "X-Prompt-Token: {{ userOrganisation.personalAccessToken }}"
-      ]
+      "type": "http",
+      "url": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
     }
   }
 }</code></pre>
-                                <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpClaudeDesktop')">
-                                    <i class="fas fa-copy"></i>
-                                </button>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpClaudeDesktop')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Claude Code #}
+                        <div class="mcp-client-pane" id="mcp-pane-claude-code">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-terminal"></i> Claude Code</label>
+                                <p class="mcp-hint">Add this to your Claude Code settings file:</p>
+                                <p class="mcp-path"><code>~/.claude/settings.json</code></p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpClaudeCode">{
+  "mcpServers": {
+    "workoflow": {
+      "type": "http",
+      "url": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
+    }
+  }
+}</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpClaudeCode')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Cursor #}
+                        <div class="mcp-client-pane" id="mcp-pane-cursor">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-mouse-pointer"></i> Cursor</label>
+                                <p class="mcp-hint">Add this to your project or global Cursor MCP config:</p>
+                                <p class="mcp-path"><code>.cursor/mcp.json</code> (project) or <code>~/.cursor/mcp.json</code> (global)</p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpCursor">{
+  "mcpServers": {
+    "workoflow": {
+      "url": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
+    }
+  }
+}</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpCursor')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# VS Code #}
+                        <div class="mcp-client-pane" id="mcp-pane-vscode">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-code"></i> VS Code</label>
+                                <p class="mcp-hint">Add this to your VS Code MCP settings:</p>
+                                <p class="mcp-path"><code>.vscode/mcp.json</code></p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpVscode">{
+  "servers": {
+    "workoflow": {
+      "type": "http",
+      "url": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
+    }
+  }
+}</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpVscode')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p class="mcp-config-hint">Note: VS Code uses "servers" instead of "mcpServers" as the root key.</p>
+                            </div>
+                        </div>
+
+                        {# Windsurf #}
+                        <div class="mcp-client-pane" id="mcp-pane-windsurf">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-wind"></i> Windsurf</label>
+                                <p class="mcp-hint">Add this to your Windsurf MCP config:</p>
+                                <p class="mcp-path"><code>~/.codeium/windsurf/mcp_config.json</code></p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpWindsurf">{
+  "mcpServers": {
+    "workoflow": {
+      "serverUrl": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
+    }
+  }
+}</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpWindsurf')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p class="mcp-config-hint">Note: Windsurf uses "serverUrl" instead of "url".</p>
+                            </div>
+                        </div>
+
+                        {# Gemini CLI #}
+                        <div class="mcp-client-pane" id="mcp-pane-gemini">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-gem"></i> Gemini CLI</label>
+                                <p class="mcp-hint">Add this to your Gemini CLI settings:</p>
+                                <p class="mcp-path"><code>~/.gemini/settings.json</code></p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpGemini">{
+  "mcpServers": {
+    "workoflow": {
+      "httpUrl": "https://workoflow-mcp.vcec.cloud/mcp",
+      "headers": {
+        "X-Prompt-Token": "{{ userOrganisation.personalAccessToken }}"
+      }
+    }
+  }
+}</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpGemini')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p class="mcp-config-hint">Note: Gemini CLI uses "httpUrl" instead of "url".</p>
+                            </div>
+                        </div>
+
+                        {# Codex #}
+                        <div class="mcp-client-pane" id="mcp-pane-codex">
+                            <div class="api-helper-item">
+                                <label><i class="fas fa-robot"></i> Codex</label>
+                                <p class="mcp-hint">Add this to your Codex config (TOML format):</p>
+                                <p class="mcp-path"><code>~/.codex/config.toml</code></p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpCodex">[mcp_servers.workoflow]
+url = "https://workoflow-mcp.vcec.cloud/mcp"
+http_headers = { "X-Prompt-Token" = "{{ userOrganisation.personalAccessToken }}" }</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpCodex')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p class="mcp-config-hint">Note: Codex uses TOML format with "http_headers" instead of "headers".</p>
                             </div>
                         </div>
 
@@ -154,6 +321,14 @@ function copySkillsCurl(btn, elementId) {
             btn.classList.remove('copied');
         }, 2000);
     });
+}
+
+// MCP client tab switching
+function switchMcpTab(tabKey) {
+    document.querySelectorAll('.mcp-client-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.mcp-client-pane').forEach(pane => pane.classList.remove('active'));
+    document.querySelector('[data-mcp-tab="' + tabKey + '"]').classList.add('active');
+    document.getElementById('mcp-pane-' + tabKey).classList.add('active');
 }
 
 // Modal close functions (needed for the modal close button)
