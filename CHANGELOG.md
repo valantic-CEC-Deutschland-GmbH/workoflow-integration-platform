@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Integration setup forms** — Fixed a crash when opening Jira/Confluence setup pages caused by a Symfony 8 compatibility issue
 
 ### Changed
+- **Repository cleanup** — Organized project structure by moving test scripts, documentation, and reference files into proper subdirectories for a cleaner root folder
 - **Symfony 8 upgrade** — Migrated the entire platform from Symfony 7.3 to Symfony 8.0
 - **PHP 8.5** — Updated runtime from PHP 8.4 to PHP 8.5
 - **Major dependency upgrades** — Upgraded Doctrine DBAL to v4, Doctrine Bundle to v3, Doctrine Migrations Bundle to v4, Predis to v3, PhpSpreadsheet to v5, PHPUnit to v13, and PHPStan phpdoc-parser to v2
