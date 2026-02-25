@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-02-25
 
 ### Added
+- **Code coverage reporting** — Test coverage is now tracked via Codecov with a badge displayed in the README
 - **Multi-client MCP configuration** — The Skills page now shows copy-paste configurations for 7 AI clients: Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, Gemini CLI, and Codex
 - **Automated test suite** — Integration tests, smoke tests, and API tests now run fully without external service credentials
 - **Smoke tests** — Critical pages (Skills, My Agent, Prompts, Release Notes, Health) are verified on every CI run
