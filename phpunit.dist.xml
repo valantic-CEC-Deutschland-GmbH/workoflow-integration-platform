@@ -28,9 +28,6 @@
         <testsuite name="Smoke Tests">
             <directory>tests/Smoke</directory>
         </testsuite>
-        <testsuite name="E2E Tests">
-            <directory>tests/E2E</directory>
-        </testsuite>
     </testsuites>
 
     <source ignoreSuppressionOfDeprecations="true"

@@ -50,7 +50,7 @@ Content-Type: application/json
 
 [Getting Started Guide](/CLAUDE.md#setup): Complete setup for development and production environments
 
-[API Examples](/API_EXAMPLES.md): cURL examples for authentication, tool discovery, and execution
+[API Examples](/docs/API_EXAMPLES.md): cURL examples for authentication, tool discovery, and execution
 
 ## Architecture Documentation
 
@@ -70,11 +70,11 @@ Content-Type: application/json
 
 [Trello Integration](/docs/TRELLO.md): 12 tools for board management, card operations, list handling, label management
 
-[SharePoint Integration](/sharepoint-setup.md): 6 tools for document search (KQL), file reading (PDF, Word, Excel, PowerPoint), downloads
+[SharePoint Integration](/docs/sharepoint-setup.md): 6 tools for document search (KQL), file reading (PDF, Word, Excel, PowerPoint), downloads
 
 [Channel System](/docs/CHANNEL.md): Multi-channel support for Slack, MS Teams, WhatsApp with user authentication
 
-**Confluence Integration**: 5 tools for CQL search, page management, content creation, comment handling (see API_EXAMPLES.md and CLAUDE.md)
+**Confluence Integration**: 5 tools for CQL search, page management, content creation, comment handling (see docs/API_EXAMPLES.md and CLAUDE.md)
 
 **SAP C4C Integration**: Lead management, opportunity tracking, account management for SAP Cloud for Customer (see CHANGELOG.md for features)
 
@@ -177,7 +177,7 @@ The API enforces these modes — tools outside the user's allowed categories are
 
 **Static Export**:
 
-[tools-export.xml](/tools-export.xml): Complete tool catalog export in XML format
+[tools-export.xml](/docs/reference/tools-export.xml): Complete tool catalog export in XML format
 
 Export your own tools:
 ```bash
@@ -246,7 +246,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 ### Example Workflows
 
-[API Examples](/API_EXAMPLES.md): Complete examples including:
+[API Examples](/docs/API_EXAMPLES.md): Complete examples including:
 1. Authentication and token generation
 2. Listing available tools
 3. Executing Jira search
@@ -297,7 +297,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 [Changelog](/CHANGELOG.md): User-facing changes, features, fixes, and improvements
 
-[Tool Export XML](/tools-export.xml): Complete tool catalog in XML format for offline reference
+[Tool Export XML](/docs/reference/tools-export.xml): Complete tool catalog in XML format for offline reference
 
 [Work on n8n Agents Prompt](/docs/work_on_n8n_agents_prompt.md): Development workflow for n8n agent integration
 
@@ -309,4 +309,4 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 **For Developers**: Start with the API Examples, use the tool discovery endpoint to explore available integrations, and reference the architecture documentation to understand the plugin system. The platform follows SOLID principles and uses modern Symfony patterns.
 
-**Need Help?**: Check the comprehensive documentation in /docs, review API_EXAMPLES.md for practical examples, or consult CLAUDE.md for development guidelines.
+**Need Help?**: Check the comprehensive documentation in /docs, review docs/API_EXAMPLES.md for practical examples, or consult CLAUDE.md for development guidelines.
