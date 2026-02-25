@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-25
+
+### Changed
+- **Symfony 8 upgrade** — Migrated the entire platform from Symfony 7.3 to Symfony 8.0
+- **PHP 8.5** — Updated runtime from PHP 8.4 to PHP 8.5
+- **Major dependency upgrades** — Upgraded Doctrine DBAL to v4, Doctrine Bundle to v3, Doctrine Migrations Bundle to v4, Predis to v3, PhpSpreadsheet to v5, PHPUnit to v13, and PHPStan phpdoc-parser to v2
+- **Database upgrade** — Updated MariaDB from 11.2 to 12
+- **Security updates** — firebase/php-jwt to v7 (CVE-2025-45769), PHPUnit to 13 (CVE-2026-24765)
+- **Infrastructure** — Updated Redis to 8 in both development and CI environments
+- **CI/CD pipeline** — Updated GitHub Actions to latest versions (checkout v6, cache v5, setup-node v6)
+
 ## 2026-02-24
 
 ### Changed

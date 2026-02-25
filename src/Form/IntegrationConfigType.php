@@ -30,9 +30,9 @@ class IntegrationConfigType extends AbstractType
                 'placeholder' => 'integration.instance_name_placeholder'
             ],
             'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'validation.name_required'
-                ])
+                new Assert\NotBlank(
+                    message: 'validation.name_required'
+                )
             ]
         ]);
 
@@ -56,24 +56,24 @@ class IntegrationConfigType extends AbstractType
             // For sensitive fields in edit mode, they're not required (keep existing)
             // For new configs or non-sensitive fields, apply required validation
             if ($field->isRequired() && (!$isEdit || !$isSensitiveField)) {
-                $constraints[] = new Assert\NotBlank([
-                    'message' => 'validation.field_required'
-                ]);
+                $constraints[] = new Assert\NotBlank(
+                    message: 'validation.field_required'
+                );
             }
 
             // Add email validation for email fields
             if ($field->getType() === 'email') {
-                $constraints[] = new Assert\Email([
-                    'message' => 'validation.email_invalid'
-                ]);
+                $constraints[] = new Assert\Email(
+                    message: 'validation.email_invalid'
+                );
             }
 
             // Add URL validation for URL fields
             if ($field->getType() === 'url') {
-                $constraints[] = new Assert\Url([
-                    'message' => 'validation.url_invalid',
-                    'requireTld' => true
-                ]);
+                $constraints[] = new Assert\Url(
+                    message: 'validation.url_invalid',
+                    requireTld: true
+                );
             }
 
             $fieldOptions = [

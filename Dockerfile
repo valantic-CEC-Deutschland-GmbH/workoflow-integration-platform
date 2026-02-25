@@ -1,5 +1,5 @@
 # Build stage
-FROM dunglas/frankenphp:php8.4 AS builder
+FROM dunglas/frankenphp:php8.5 AS builder
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -43,7 +43,7 @@ COPY . .
 RUN npm run build
 
 # Final stage
-FROM dunglas/frankenphp:php8.4
+FROM dunglas/frankenphp:php8.5
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y \

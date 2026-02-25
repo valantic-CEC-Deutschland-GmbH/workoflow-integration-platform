@@ -29,7 +29,7 @@ services:
       - 8.8.8.8
 
   mariadb:
-    image: mariadb:11.8
+    image: mariadb:12
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
