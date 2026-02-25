@@ -359,3 +359,4 @@ The following dependencies have available major version updates but were skipped
 | `phpstan/phpdoc-parser` | ^1.29 (1.33.x) | ^2 | Transitive PHPStan dependency; will be resolved when PHPStan updates its requirements |
 | `phpunit/phpunit` | ^11.4 (11.5.55) | ^13 | PHPUnit 13 removes deprecated test patterns; requires test suite review (current version already patched for CVE-2026-24765) |
 | `docker: mariadb` | 11.8 | 12.x | MariaDB 12 is a major version; requires database schema and query compatibility testing |
+| `docker: dunglas/frankenphp` | php8.4 | php8.5 | PHP 8.5 is a new major.minor version; requires Docker build testing and full application compatibility verification |
