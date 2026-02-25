@@ -6,7 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-02-25
 
+### Added
+- **Automated test suite** — Integration tests, smoke tests, and API tests now run fully without external service credentials
+- **Smoke tests** — Critical pages (Skills, My Agent, Prompts, Release Notes, Health) are verified on every CI run
+- **API endpoint tests** — Skills API and MCP API endpoints are now tested for authentication and responses
+
+### Fixed
+- **CI pipeline** — Tests now run reliably in GitHub Actions without requiring external secrets
+- **Integration setup forms** — Fixed a crash when opening Jira/Confluence setup pages caused by a Symfony 8 compatibility issue
+
 ### Changed
+- **Live E2E tests separated** — Tests that require real Jira credentials are now in a separate `live-e2e` group, run only on demand with `--group=live-e2e`
 - **Symfony 8 upgrade** — Migrated the entire platform from Symfony 7.3 to Symfony 8.0
 - **PHP 8.5** — Updated runtime from PHP 8.4 to PHP 8.5
 - **Major dependency upgrades** — Upgraded Doctrine DBAL to v4, Doctrine Bundle to v3, Doctrine Migrations Bundle to v4, Predis to v3, PhpSpreadsheet to v5, PHPUnit to v13, and PHPStan phpdoc-parser to v2
