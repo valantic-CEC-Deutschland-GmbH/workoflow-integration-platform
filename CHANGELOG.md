@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-25
+
+### Added
+- **Platform field in Prompt Vault** — Tag prompts with the AI platform they are designed for (ChatGPT, Claude, Copilot, Cursor, Gemini, and more). Filter prompts by platform in the UI and via API (`?platform=chatgpt`) to quickly find prompts for the tools you use
+- **Platform filter in Prompt API** — Use `?platform=chatgpt` to filter prompts by target AI platform via the API
+- **Platform column in CSV import** — The prompt import now supports a "platform" column to assign prompts to AI platforms during bulk import
+
 ## 2026-02-24
 
 ### Changed

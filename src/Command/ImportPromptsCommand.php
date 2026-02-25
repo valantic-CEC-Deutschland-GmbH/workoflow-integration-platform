@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
 use App\Integration\IntegrationRegistry;
 use App\Integration\PersonalizedSkillInterface;
 use App\Repository\OrganisationRepository;
@@ -151,6 +152,19 @@ class ImportPromptsCommand extends Command
                 }
             }
 
+            // Validate platform (only if non-empty)
+            $platformValue = !empty($promptData['platform']) ? $promptData['platform'] : null;
+            if ($platformValue !== null && PromptPlatform::tryFrom($platformValue) === null) {
+                $errors[] = sprintf(
+                    'Line %d: Invalid platform "%s". Valid: %s',
+                    $lineNumber,
+                    $promptData['platform'],
+                    implode(', ', array_column(PromptPlatform::cases(), 'value'))
+                );
+                $skipped++;
+                continue;
+            }
+
             // Check for existing prompt (upsert logic)
             $existingPrompt = $this->promptRepository->findByImportKeyAndOrganisation(
                 $promptData['import_key'],
@@ -164,6 +178,7 @@ class ImportPromptsCommand extends Command
                 $existingPrompt->setDescription($promptData['description'] ?: null);
                 $existingPrompt->setCategory($promptData['category'] ?: null);
                 $existingPrompt->setSkill($skillValue);
+                $existingPrompt->setPlatform($platformValue);
                 $updated++;
                 $io->text(sprintf('  [UPDATE] %s', $promptData['title']));
             } else {
@@ -175,6 +190,7 @@ class ImportPromptsCommand extends Command
                 $prompt->setDescription($promptData['description'] ?: null);
                 $prompt->setCategory($promptData['category'] ?: null);
                 $prompt->setSkill($skillValue);
+                $prompt->setPlatform($platformValue);
                 $prompt->setScope(Prompt::SCOPE_ORGANISATION);
                 $prompt->setOwner($owner);
                 $prompt->setOrganisation($organisation);
@@ -227,7 +243,7 @@ class ImportPromptsCommand extends Command
 
     /**
      * Parse CSV file and return array of prompt data
-     * @return array<int, array{import_key: string, title: string, content: string, description: string, category: string, skill: string}>
+     * @return array<int, array{import_key: string, title: string, content: string, description: string, category: string, skill: string, platform: string}>
      */
     private function parseCsv(string $filePath): array
     {
@@ -263,6 +279,7 @@ class ImportPromptsCommand extends Command
                 'description' => trim($row[$headerMap['description'] ?? $headerMap['desc'] ?? -1] ?? ''),
                 'category' => trim($row[$headerMap['category'] ?? -1] ?? ''),
                 'skill' => trim($row[$headerMap['skill'] ?? -1] ?? ''),
+                'platform' => trim($row[$headerMap['platform'] ?? -1] ?? ''),
             ];
         }
 

@@ -628,11 +628,16 @@ prompt:
   skill: Skill
   select_skill: Select a skill (optional)
   skill_help: Optionally link this prompt to a specific skill/integration.
+  platform: Platform
+  select_platform: Select a platform (optional)
+  platform_help: Specify which AI platform this prompt is designed for. This helps others find prompts for the tools they use.
   filter:
     all_categories: All Categories
     category: Category
     skill: Skill
     all_skills: All Skills
+    platform: Platform
+    all_platforms: All Platforms
     sort: Sort by
   sort:
     newest: Newest first
@@ -711,6 +716,7 @@ prompt:
     get_by_uuid: Get Specific Prompt by UUID
     filter_category: Filter by Category
     filter_skill: Filter by Skill
-    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer&skill=jira"
+    filter_platform: Filter by Platform
+    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: You need to generate an API token first to access prompts via API.
     generate_token: Generate Token in Profile

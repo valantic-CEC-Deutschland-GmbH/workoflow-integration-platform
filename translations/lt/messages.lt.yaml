@@ -628,11 +628,16 @@ prompt:
   skill: Įgūdis
   select_skill: Pasirinkite įgūdį (neprivaloma)
   skill_help: Neprivaloma susieti šį promptą su konkrečiu įgūdžiu/integracija.
+  platform: Platforma
+  select_platform: Pasirinkite platformą (neprivaloma)
+  platform_help: Nurodykite, kuriai AI platformai skirtas šis promptas. Tai padeda kitiems rasti promptus jų naudojamiems įrankiams.
   filter:
     all_categories: Visos kategorijos
     category: Kategorija
     skill: Įgūdis
     all_skills: Visi įgūdžiai
+    platform: Platforma
+    all_platforms: Visos platformos
     sort: Rūšiuoti pagal
   sort:
     newest: Naujausi pirmiausia
@@ -711,6 +716,7 @@ prompt:
     get_by_uuid: Gauti konkretų promptą pagal UUID
     filter_category: Filtruoti pagal kategoriją
     filter_skill: Filtruoti pagal įgūdį
-    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer&skill=jira"
+    filter_platform: Filtruoti pagal platformą
+    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: Pirmiausia turite sugeneruoti API raktą, kad galėtumėte pasiekti promptus per API.
     generate_token: Generuoti raktą profilyje

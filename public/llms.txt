@@ -183,6 +183,14 @@ Export your own tools:
 docker-compose exec frankenphp php bin/console app:export-tools --category=system
 ```
 
+## Prompt Vault
+
+The Prompt Vault is a shared library for managing, organizing, and discovering AI prompts. Users can create personal or team-shared prompts, tag them with categories, skills (integrations), and target AI platforms.
+
+**Platform Tagging**: Each prompt can be tagged with the AI platform it's designed for (e.g., ChatGPT, Claude Desktop, Claude Code, Copilot, Cursor, Gemini, GitHub Copilot, Workoflow, and more). Filter prompts by platform in the UI or via API using `?platform=chatgpt`.
+
+**API Access**: Prompts are accessible via REST API at `/api/prompts` with filtering by scope, category, skill, and platform. Authentication via `X-Prompt-Token` header or `Authorization: Bearer` token.
+
 ## AI Agent System
 
 [Multi-Agent Architecture](/docs/agents/system_prompts/README.md): Main orchestrator agent + specialized sub-agents for different integration types

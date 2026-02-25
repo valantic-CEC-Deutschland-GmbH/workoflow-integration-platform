@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Prompt;
 use App\Entity\User;
+use App\Enum\PromptPlatform;
 use App\Form\PromptCommentType;
 use App\Form\PromptType;
 use App\Integration\IntegrationRegistry;
@@ -49,6 +50,7 @@ class PromptController extends AbstractController
         $scope = $request->query->get('scope', Prompt::SCOPE_PERSONAL);
         $category = $request->query->get('category');
         $skill = $request->query->get('skill');
+        $platform = $request->query->get('platform');
         $sort = $request->query->get('sort', 'newest');
 
         // Treat empty string as null for filters
@@ -58,6 +60,9 @@ class PromptController extends AbstractController
         if ($skill === '') {
             $skill = null;
         }
+        if ($platform === '') {
+            $platform = null;
+        }
 
         // Validate sort option
         $sortOptions = PromptRepository::getSortOptions();
@@ -66,9 +71,9 @@ class PromptController extends AbstractController
         }
 
         if ($scope === Prompt::SCOPE_PERSONAL) {
-            $prompts = $this->promptRepository->findPersonalPrompts($user, $organisation, $category, $sort, $skill);
+            $prompts = $this->promptRepository->findPersonalPrompts($user, $organisation, $category, $sort, $skill, $platform);
         } else {
-            $prompts = $this->promptRepository->findOrganisationPrompts($organisation, $category, $sort, $skill);
+            $prompts = $this->promptRepository->findOrganisationPrompts($organisation, $category, $sort, $skill, $platform);
         }
 
         $counts = $this->promptRepository->countByScope($organisation, $user);
@@ -90,9 +95,12 @@ class PromptController extends AbstractController
             'activeScope' => $scope,
             'activeCategory' => $category,
             'activeSkill' => $skill,
+            'activePlatform' => $platform,
             'activeSort' => $sort,
             'categories' => $this->promptService->getCategories(),
             'skills' => $skills,
+            'platformCases' => PromptPlatform::cases(),
+            'platforms' => $this->buildPlatformsMap(),
             'sortOptions' => $sortOptions,
             'counts' => $counts,
             'organisation' => $organisation,
@@ -172,6 +180,12 @@ class PromptController extends AbstractController
             }
         }
 
+        // Build platforms map for badge display
+        $platforms = [];
+        foreach (PromptPlatform::cases() as $platformCase) {
+            $platforms[$platformCase->value] = $platformCase->label();
+        }
+
         return $this->render('prompt/show.html.twig', [
             'prompt' => $prompt,
             'commentForm' => $commentForm?->createView(),
@@ -180,6 +194,7 @@ class PromptController extends AbstractController
             'hasUpvoted' => $prompt->isOrganisation() ? $prompt->hasUserUpvoted($user) : false,
             'organisation' => $organisation,
             'skills' => $skills,
+            'platforms' => $platforms,
         ]);
     }
 
@@ -383,5 +398,18 @@ class PromptController extends AbstractController
         $this->addFlash('success', $this->translator->trans('prompt.restored.success'));
 
         return $this->redirectToRoute('app_prompt_show', ['uuid' => $uuid]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function buildPlatformsMap(): array
+    {
+        $platforms = [];
+        foreach (PromptPlatform::cases() as $case) {
+            $platforms[$case->value] = $case->label();
+        }
+
+        return $platforms;
     }
 }

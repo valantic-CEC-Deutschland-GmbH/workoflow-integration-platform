@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
 use App\Integration\IntegrationRegistry;
 use App\Integration\PersonalizedSkillInterface;
 use App\Repository\PromptRepository;
@@ -59,6 +60,7 @@ class PromptApiController extends AbstractController
         $scope = $request->query->get('scope');
         $category = $request->query->get('category');
         $skill = $request->query->get('skill');
+        $platform = $request->query->get('platform');
         $uuid = $request->query->get('uuid');
 
         // Validate scope parameter
@@ -93,13 +95,22 @@ class PromptApiController extends AbstractController
             }
         }
 
+        // Validate platform parameter
+        if ($platform !== null && PromptPlatform::tryFrom($platform) === null) {
+            return $this->json([
+                'error' => 'Invalid platform parameter',
+                'valid_values' => array_column(PromptPlatform::cases(), 'value'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $prompts = $this->promptRepository->findForApi(
             $user,
             $organisation,
             $scope,
             $category,
             $uuid,
-            $skill
+            $skill,
+            $platform
         );
 
         $this->auditLogService->logWithOrganisation(
@@ -110,6 +121,7 @@ class PromptApiController extends AbstractController
                 'scope' => $scope,
                 'category' => $category,
                 'skill' => $skill,
+                'platform' => $platform,
                 'uuid' => $uuid,
                 'result_count' => count($prompts),
             ]
@@ -122,6 +134,7 @@ class PromptApiController extends AbstractController
                 'scope' => $scope,
                 'category' => $category,
                 'skill' => $skill,
+                'platform' => $platform,
             ],
         ]);
     }
@@ -162,6 +175,7 @@ class PromptApiController extends AbstractController
                 'description' => $prompt->getDescription(),
                 'category' => $prompt->getCategory(),
                 'skill' => $prompt->getSkill(),
+                'platform' => $prompt->getPlatform(),
                 'scope' => $prompt->getScope(),
                 'owner' => [
                     'name' => $prompt->getOwner()?->getName(),
