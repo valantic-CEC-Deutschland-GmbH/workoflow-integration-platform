@@ -33,7 +33,7 @@ services:
       - 8.8.8.8
 
   mariadb:
-    image: mariadb:11.2
+    image: mariadb:12
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -48,7 +48,7 @@ services:
       - workoflow
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     restart: unless-stopped
     volumes:
       - redis_data:/data

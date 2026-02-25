@@ -1,20 +1,16 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-        server_version: '11.2'
+        server_version: '12.2'
         charset: utf8mb4
         default_table_options:
             charset: utf8mb4
-            collate: utf8mb4_unicode_ci
+            collation: utf8mb4_unicode_ci
 
     orm:
-        enable_native_lazy_objects: true
-        report_fields_where_declared: true
         validate_xml_mapping: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
-        controller_resolver:
-            auto_mapping: false
         mappings:
             App:
                 type: attribute

@@ -2,12 +2,12 @@
 
 > AI-first integration hub providing unified REST API access to 85+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron), and platform services. Built for AI agents, automation workflows, and conversational interfaces.
 
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-02-25
 **Version**: 1.2.0
-**Architecture**: Multi-tenant Symfony 7.2 platform with plugin-based integration system
+**Architecture**: Multi-tenant Symfony 8.0 platform with plugin-based integration system
 **Authentication**: OAuth2 (Google), Magic Links, Basic Auth + JWT for API
 **Tool Access Modes**: Read Only / Standard / Full — per-user control over which tool categories (Read, Write, Delete) AI agents can use
-**Tech Stack**: PHP 8.4, Symfony 7.2, FrankenPHP, MariaDB 11.2, Redis, MinIO S3
+**Tech Stack**: PHP 8.5, Symfony 8.0, FrankenPHP, MariaDB 12, Redis 8, MinIO S3
 
 ## Core Concepts
 

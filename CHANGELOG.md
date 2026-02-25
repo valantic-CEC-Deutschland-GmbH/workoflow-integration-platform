@@ -10,6 +10,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Platform field in Prompt Vault** — Tag prompts with the AI platform they are designed for (ChatGPT, Claude, Copilot, Cursor, Gemini, and more). Filter prompts by platform in the UI and via API (`?platform=chatgpt`) to quickly find prompts for the tools you use
 - **Platform filter in Prompt API** — Use `?platform=chatgpt` to filter prompts by target AI platform via the API
 - **Platform column in CSV import** — The prompt import now supports a "platform" column to assign prompts to AI platforms during bulk import
+- **Code coverage reporting** — Test coverage is now tracked via Codecov with a badge displayed in the README
+- **Multi-client MCP configuration** — The Skills page now shows copy-paste configurations for 7 AI clients: Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, Gemini CLI, and Codex
+- **Automated test suite** — Integration tests, smoke tests, and API tests now run fully without external service credentials
+- **Smoke tests** — Critical pages (Skills, My Agent, Prompts, Release Notes, Health) are verified on every CI run
+- **API endpoint tests** — Skills API and MCP API endpoints are now tested for authentication and responses
+
+### Fixed
+- **CI pipeline** — Tests now run reliably in GitHub Actions without requiring external secrets
+- **Integration setup forms** — Fixed a crash when opening Jira/Confluence setup pages caused by a Symfony 8 compatibility issue
+
+### Changed
+- **Live E2E tests separated** — Tests that require real Jira credentials are now in a separate `live-e2e` group, run only on demand with `--group=live-e2e`
+- **Symfony 8 upgrade** — Migrated the entire platform from Symfony 7.3 to Symfony 8.0
+- **PHP 8.5** — Updated runtime from PHP 8.4 to PHP 8.5
+- **Major dependency upgrades** — Upgraded Doctrine DBAL to v4, Doctrine Bundle to v3, Doctrine Migrations Bundle to v4, Predis to v3, PhpSpreadsheet to v5, PHPUnit to v13, and PHPStan phpdoc-parser to v2
+- **Database upgrade** — Updated MariaDB from 11.2 to 12
+- **Security updates** — firebase/php-jwt to v7 (CVE-2025-45769), PHPUnit to 13 (CVE-2026-24765)
+- **Infrastructure** — Updated Redis to 8 in both development and CI environments
+- **CI/CD pipeline** — Updated GitHub Actions to latest versions (checkout v6, cache v5, setup-node v6)
 
 ## 2026-02-24
 

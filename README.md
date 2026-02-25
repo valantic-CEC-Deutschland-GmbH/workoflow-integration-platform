@@ -2,6 +2,11 @@
   <img src="assets/logo_orig_large.png" alt="Workoflow Logo" width="360px">
 </p>
 
+<p align="center">
+  <a href="https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/actions/workflows/tests.yml"><img src="https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+  <a href="https://codecov.io/gh/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform"><img src="https://codecov.io/gh/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/branch/main/graph/badge.svg" alt="codecov"></a>
+</p>
+
 # Workoflow Integration Platform
 
 > AI-first enterprise integration hub for orchestrating tools and data across multiple channels

@@ -1,0 +1,26 @@
+{
+    "id": "12345",
+    "type": "page",
+    "status": "current",
+    "title": "Test Confluence Page",
+    "space": {
+        "key": "TEST",
+        "name": "Test Space"
+    },
+    "body": {
+        "storage": {
+            "value": "<p>This is test confluence page content.</p>",
+            "representation": "storage"
+        }
+    },
+    "version": {
+        "number": 1,
+        "when": "2025-01-01T10:00:00.000Z",
+        "by": {
+            "displayName": "Test User"
+        }
+    },
+    "_links": {
+        "webui": "/spaces/TEST/pages/12345/Test+Confluence+Page"
+    }
+}
