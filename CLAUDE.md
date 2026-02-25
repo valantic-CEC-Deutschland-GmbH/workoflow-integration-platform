@@ -2,6 +2,7 @@
 
 ## Overview
 The Workoflow Integration Platform is a production-ready Symfony 7.2 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
+If you have read this file, greet me with "Hey Workoflow Dev"
 
 ### Development Rules
 1. **CHANGELOG.md Updates**:
