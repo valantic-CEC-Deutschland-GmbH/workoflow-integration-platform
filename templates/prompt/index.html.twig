@@ -88,6 +88,17 @@
                                 </button>
                             </div>
                         </div>
+
+                        {# Filter by Platform #}
+                        <div class="api-helper-item">
+                            <label><i class="fas fa-desktop"></i> {{ 'prompt.api.filter_platform'|trans }}</label>
+                            <div class="curl-command-wrapper">
+                                <pre><code id="curlPlatform">curl -H "X-Prompt-Token: {{ userOrganisation.personalAccessToken }}" "{{ app.request.schemeAndHttpHost }}/api/prompts?platform=chatgpt"</code></pre>
+                                <button type="button" class="btn btn-copy btn-sm" onclick="copyCurl(this, 'curlPlatform')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="api-helper-footer">
@@ -111,13 +122,13 @@
         {# Scope Tabs with Actions #}
         <div class="prompts-tabs-row">
             <div class="prompts-tabs">
-                <a href="{{ path('app_prompts', {scope: 'personal', category: activeCategory, skill: activeSkill, sort: activeSort}) }}"
+                <a href="{{ path('app_prompts', {scope: 'personal', category: activeCategory, skill: activeSkill, platform: activePlatform, sort: activeSort}) }}"
                    class="tab-btn {% if activeScope == 'personal' %}active{% endif %}">
                     <i class="fas fa-user"></i>
                     {{ 'prompt.tab.personal'|trans }}
                     <span class="tab-count">{{ counts.personal }}</span>
                 </a>
-                <a href="{{ path('app_prompts', {scope: 'organisation', category: activeCategory, skill: activeSkill, sort: activeSort}) }}"
+                <a href="{{ path('app_prompts', {scope: 'organisation', category: activeCategory, skill: activeSkill, platform: activePlatform, sort: activeSort}) }}"
                    class="tab-btn {% if activeScope == 'organisation' %}active{% endif %}">
                     <i class="fas fa-users"></i>
                     {{ 'prompt.tab.organisation'|trans }}
@@ -158,6 +169,18 @@
                         {% for type, name in skills %}
                             <option value="{{ type }}" {% if activeSkill == type %}selected{% endif %}>
                                 {{ name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-desktop"></i> {{ 'prompt.filter.platform'|trans }}</label>
+                    <select name="platform" class="form-control filter-select" onchange="this.form.submit()">
+                        <option value="">{{ 'prompt.filter.all_platforms'|trans }}</option>
+                        {% for platform in platformCases %}
+                            <option value="{{ platform.value }}" {% if activePlatform == platform.value %}selected{% endif %}>
+                                {{ platform.label() }}
                             </option>
                         {% endfor %}
                     </select>

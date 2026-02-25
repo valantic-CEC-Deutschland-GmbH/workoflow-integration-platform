@@ -28,7 +28,8 @@ class PromptRepository extends ServiceEntityRepository
         ?string $scope = null,
         ?string $category = null,
         ?string $uuid = null,
-        ?string $skill = null
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -78,6 +79,12 @@ class PromptRepository extends ServiceEntityRepository
                 ->setParameter('skill', $skill);
         }
 
+        // Filter by platform
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
+        }
+
         return $qb->orderBy('p.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -92,7 +99,8 @@ class PromptRepository extends ServiceEntityRepository
         Organisation $organisation,
         ?string $category = null,
         string $sort = 'newest',
-        ?string $skill = null
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -113,6 +121,11 @@ class PromptRepository extends ServiceEntityRepository
                 ->setParameter('skill', $skill);
         }
 
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
+        }
+
         $this->applySorting($qb, $sort);
 
         return $qb->getQuery()->getResult();
@@ -126,7 +139,8 @@ class PromptRepository extends ServiceEntityRepository
         Organisation $organisation,
         ?string $category = null,
         string $sort = 'newest',
-        ?string $skill = null
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -143,6 +157,11 @@ class PromptRepository extends ServiceEntityRepository
         if ($skill !== null) {
             $qb->andWhere('p.skill = :skill')
                 ->setParameter('skill', $skill);
+        }
+
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
         }
 
         $this->applySorting($qb, $sort);

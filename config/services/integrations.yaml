@@ -90,3 +90,6 @@ services:
 
     App\Integration\UserIntegrations\MsTeamsIntegration:
         tags: ['app.integration']
+
+    App\Integration\UserIntegrations\RemoteMcpIntegration:
+        tags: ['app.integration']

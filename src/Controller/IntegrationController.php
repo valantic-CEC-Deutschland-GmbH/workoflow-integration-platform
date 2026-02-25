@@ -10,6 +10,7 @@ use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
 use App\Service\ConnectionStatusService;
 use App\Service\EncryptionService;
+use App\Service\Integration\RemoteMcpService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +32,7 @@ class IntegrationController extends AbstractController
         private ConnectionStatusService $connectionStatusService,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
+        private RemoteMcpService $remoteMcpService,
     ) {
     }
 
@@ -258,7 +260,7 @@ class IntegrationController extends AbstractController
 
                     // Prepare credentials for display - mask sensitive fields like api_token
                     foreach ($decryptedCredentials as $key => $value) {
-                        if ($key === 'api_token' || $key === 'password' || $key === 'client_secret') {
+                        if (in_array($key, ['api_token', 'password', 'client_secret', 'auth_token', 'api_key_value', 'basic_password'], true)) {
                             // Don't show the actual token, just indicate it exists
                             $existingCredentials[$key] = ''; // Leave empty, we'll show a placeholder
                             $existingCredentials[$key . '_exists'] = true;
@@ -340,7 +342,7 @@ class IntegrationController extends AbstractController
                 $value = $formData[$field->getName()] ?? null;
 
                 // For sensitive fields, only update if new value provided
-                if (in_array($field->getName(), ['api_token', 'password', 'client_secret'])) {
+                if (in_array($field->getName(), ['api_token', 'password', 'client_secret', 'auth_token', 'api_key_value', 'basic_password'], true)) {
                     if (!empty($value)) {
                         $credentials[$field->getName()] = $value;
                         $credentialsModified = true; // Mark as modified
@@ -824,6 +826,23 @@ class IntegrationController extends AbstractController
                 $msTeamsService = $property->getValue($integration);
 
                 $result = $msTeamsService->testConnectionDetailed($credentials);
+
+                if ($result['success'] && !$config->isConnected()) {
+                    $this->connectionStatusService->markReconnected($config);
+                }
+
+                return $this->json([
+                    'success' => $result['success'],
+                    'message' => $result['message'],
+                    'details' => $result['details'],
+                    'suggestion' => $result['suggestion'] ?? '',
+                    'tested_endpoints' => $result['tested_endpoints'],
+                ]);
+            }
+
+            // For Remote MCP, use detailed testing
+            if ($type === 'remote_mcp') {
+                $result = $this->remoteMcpService->testConnectionDetailed($credentials);
 
                 if ($result['success'] && !$config->isConnected()) {
                     $this->connectionStatusService->markReconnected($config);

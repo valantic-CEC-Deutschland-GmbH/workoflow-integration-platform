@@ -19,6 +19,9 @@
                 {% if prompt.skill and skills is defined and prompt.skill in skills|keys %}
                     <span class="prompt-skill-badge large"><i class="fas fa-puzzle-piece"></i> {{ skills[prompt.skill] }}</span>
                 {% endif %}
+                {% if prompt.platform and platforms is defined and prompt.platform in platforms|keys %}
+                    <span class="prompt-platform-badge large"><i class="fas fa-desktop"></i> {{ platforms[prompt.platform] }}</span>
+                {% endif %}
                 {% if prompt.scope == 'organisation' %}
                     <span class="prompt-scope-badge organisation large">
                         <i class="fas fa-users"></i> {{ 'prompt.scope_organisation'|trans }}

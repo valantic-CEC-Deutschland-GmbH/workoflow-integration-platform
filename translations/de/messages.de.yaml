@@ -377,6 +377,9 @@ integration:
       get_pipeline:
         name: Pipeline-Details abrufen
         description: Detaillierte Informationen zu einer bestimmten CI/CD-Pipeline abrufen. Liefert Pipeline-Status, Stages, Dauer, Commit-SHA, Benutzer der sie ausgelöst hat und detaillierte Job-Informationen. Verwenden Sie Pipeline-ID um vollständige Ausführungsdetails abzurufen.
+  remote_mcp_servers: Remote MCP Server
+  remote_mcp_description: Verbinden Sie sich mit MCP-Servern von Drittanbietern und leiten Sie deren Tools über Ihren Workoflow-Endpunkt weiter
+  add_remote_mcp: Remote MCP Server hinzufügen
   add_gitlab: GitLab-Instanz hinzufügen
   active: Aktiv
   credentials_not_editable: Anmeldedaten können aus Sicherheitsgründen nicht bearbeitet werden.
@@ -661,11 +664,16 @@ prompt:
   skill: Skill
   select_skill: Skill auswählen (optional)
   skill_help: Verknüpfen Sie diesen Prompt optional mit einem bestimmten Skill/Integration.
+  platform: Plattform
+  select_platform: Plattform auswählen (optional)
+  platform_help: Geben Sie an, für welche KI-Plattform dieser Prompt gedacht ist. So können andere Prompts für ihre genutzten Tools leichter finden.
   filter:
     all_categories: Alle Kategorien
     category: Kategorie
     skill: Skill
     all_skills: Alle Skills
+    platform: Plattform
+    all_platforms: Alle Plattformen
     sort: Sortieren nach
   sort:
     newest: Neueste zuerst
@@ -713,6 +721,7 @@ prompt:
     get_by_uuid: Bestimmten Prompt per UUID abrufen
     filter_category: Nach Kategorie filtern
     filter_skill: Nach Skill filtern
-    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer&skill=jira"
+    filter_platform: Nach Plattform filtern
+    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: Sie müssen zuerst einen API-Token generieren, um Prompts per API abzurufen.
     generate_token: Token im Profil generieren

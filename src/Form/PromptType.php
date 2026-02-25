@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
 use App\Integration\IntegrationRegistry;
 use App\Integration\PersonalizedSkillInterface;
 use Symfony\Component\Form\AbstractType;
@@ -70,6 +71,15 @@ class PromptType extends AbstractType
                 'required' => false,
                 'choices' => $this->buildSkillChoices(),
                 'placeholder' => 'prompt.select_skill',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+            ])
+            ->add('platform', ChoiceType::class, [
+                'label' => 'prompt.platform',
+                'required' => false,
+                'choices' => PromptPlatform::choices(),
+                'placeholder' => 'prompt.select_platform',
                 'attr' => [
                     'class' => 'form-control',
                 ],
