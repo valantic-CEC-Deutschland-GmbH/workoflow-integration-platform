@@ -1,4 +1,4 @@
-import_key,title,content,description,category,skill
+import_key,title,content,description,category,skill,platform
 jira_sprint_analysis_pm,Sprint Analysis Report,"Analyze the current Jira sprint and provide a comprehensive status report:
 
 1. Get the active sprint from the board using jira_get_sprints_from_board
@@ -12,7 +12,7 @@ Please provide:
 - Team workload distribution by assignee
 - Recommendations for sprint success
 
-Board URL: [PASTE_BOARD_URL]",Comprehensive sprint health analysis for status reporting,project_manager,jira
+Board URL: [PASTE_BOARD_URL]",Comprehensive sprint health analysis for status reporting,project_manager,jira,workoflow
 jira_daily_standup_sm,Daily Standup Preparation,"Prepare daily standup information from Jira:
 
 1. Search for my assigned issues in the current sprint
@@ -30,7 +30,7 @@ Format the output as:
 **BLOCKERS:**
 - [List any blockers or help needed]
 
-Board URL: [PASTE_BOARD_URL]",Generate standup notes from Jira sprint data,scrum_master,jira
+Board URL: [PASTE_BOARD_URL]",Generate standup notes from Jira sprint data,scrum_master,jira,workoflow
 jira_ticket_review_qa,Ticket Quality Assessment,"Review this Jira ticket for completeness and testability:
 
 1. Use jira_get_issue to fetch full ticket details
@@ -43,7 +43,7 @@ jira_ticket_review_qa,Ticket Quality Assessment,"Review this Jira ticket for com
    - Test scenarios suggested
 4. Suggest improvements for better testability
 
-Ticket URL: [PASTE_TICKET_URL]",Assess Jira ticket quality for QA refinement preparation,qa_engineer,jira
+Ticket URL: [PASTE_TICKET_URL]",Assess Jira ticket quality for QA refinement preparation,qa_engineer,jira,workoflow
 jira_code_review_checklist_dev,Code Review Checklist Generator,"Generate a code review checklist based on this Jira ticket:
 
 1. Use jira_get_issue to fetch the full ticket description and acceptance criteria
@@ -56,7 +56,7 @@ jira_code_review_checklist_dev,Code Review Checklist Generator,"Generate a code 
    - Edge cases to verify
    - API contract compliance (if applicable)
 
-Ticket URL: [PASTE_TICKET_URL]",Generate comprehensive code review checklist from ticket requirements,developer,jira
+Ticket URL: [PASTE_TICKET_URL]",Generate comprehensive code review checklist from ticket requirements,developer,jira,workoflow
 jira_estimation_helper_tl,Development Estimation Assistant,"Help estimate development effort for this Jira ticket:
 
 1. Use jira_get_issue to analyze the ticket scope
@@ -69,7 +69,7 @@ jira_estimation_helper_tl,Development Estimation Assistant,"Help estimate develo
 3. Consider complexity factors and provide story point recommendation
 4. Identify potential risks that could affect the estimate
 
-Ticket URL: [PASTE_TICKET_URL]",Assist with story point estimation based on ticket analysis,tech_lead,jira
+Ticket URL: [PASTE_TICKET_URL]",Assist with story point estimation based on ticket analysis,tech_lead,jira,workoflow
 jira_sprint_goal_summary_po,Sprint Goals Summary,"Summarize the current sprint goals and progress:
 
 1. Get sprint details using jira_get_sprints_from_board
@@ -78,7 +78,7 @@ jira_sprint_goal_summary_po,Sprint Goals Summary,"Summarize the current sprint g
 4. Identify what's still needed to meet the sprint goal
 5. Prepare stakeholder communication summary
 
-Board URL: [PASTE_BOARD_URL]",Create sprint goal summary for stakeholder communication,product_owner,jira
+Board URL: [PASTE_BOARD_URL]",Create sprint goal summary for stakeholder communication,product_owner,jira,workoflow
 jira_bug_triage_qa,Bug Triage Assistant,"Help triage and prioritize this bug report:
 
 1. Use jira_get_issue to fetch bug details
@@ -90,7 +90,7 @@ jira_bug_triage_qa,Bug Triage Assistant,"Help triage and prioritize this bug rep
 3. Suggest priority level (P1-P4)
 4. Recommend next steps and potential assignee
 
-Bug Ticket: [PASTE_TICKET_URL]",Systematic bug triage and prioritization,qa_engineer,jira
+Bug Ticket: [PASTE_TICKET_URL]",Systematic bug triage and prioritization,qa_engineer,jira,workoflow
 jira_sprint_retrospective_sm,Sprint Retrospective Data,"Gather data for sprint retrospective:
 
 1. Get completed sprint issues using jira_get_sprint_issues
@@ -104,7 +104,7 @@ jira_sprint_retrospective_sm,Sprint Retrospective Data,"Gather data for sprint r
    - What could improve (delays, blockers)
    - Action items from data
 
-Board URL: [PASTE_BOARD_URL]",Generate retrospective insights from sprint data,scrum_master,jira
+Board URL: [PASTE_BOARD_URL]",Generate retrospective insights from sprint data,scrum_master,jira,workoflow
 jira_release_scope_pm,Release Scope Documentation,"Document the scope of an upcoming release:
 
 1. Search for all issues with the target fixVersion
@@ -117,7 +117,7 @@ jira_release_scope_pm,Release Scope Documentation,"Document the scope of an upco
 4. Format for stakeholder review
 
 Project Key: [PROJECT_KEY]
-Fix Version: [VERSION]",Create release scope documentation from Jira issues,project_manager,jira
+Fix Version: [VERSION]",Create release scope documentation from Jira issues,project_manager,jira,workoflow
 jira_workload_analysis_pm,Team Workload Distribution,"Analyze team workload distribution:
 
 1. Get all issues in current sprint using jira_get_sprint_issues
@@ -131,7 +131,7 @@ jira_workload_analysis_pm,Team Workload Distribution,"Analyze team workload dist
    - Potential bottlenecks
 4. Suggest workload rebalancing if needed
 
-Board URL: [PASTE_BOARD_URL]",Analyze and balance team workload across sprint,project_manager,jira
+Board URL: [PASTE_BOARD_URL]",Analyze and balance team workload across sprint,project_manager,jira,workoflow
 confluence_release_notes_pm,Release Notes Generator,"Generate release notes from completed work:
 
 1. Search Jira for completed issues in this release version
@@ -150,7 +150,7 @@ confluence_release_notes_pm,Release Notes Generator,"Generate release notes from
 
 Project: [PROJECT_KEY]
 Version: [VERSION]
-Space Key: [CONFLUENCE_SPACE]",Create and publish release notes to Confluence,project_manager,confluence
+Space Key: [CONFLUENCE_SPACE]",Create and publish release notes to Confluence,project_manager,confluence,workoflow
 confluence_meeting_notes_ba,Meeting Notes Template,"Create structured meeting notes in Confluence:
 
 1. Use confluence_create_page with this structure:
@@ -165,7 +165,7 @@ confluence_meeting_notes_ba,Meeting Notes Template,"Create structured meeting no
 3. Tag relevant stakeholders
 
 Space Key: [CONFLUENCE_SPACE]
-Meeting Topic: [TOPIC]",Create standardized meeting documentation in Confluence,business_analyst,confluence
+Meeting Topic: [TOPIC]",Create standardized meeting documentation in Confluence,business_analyst,confluence,workoflow
 confluence_project_handover_pm,Project Handover Documentation,"Create a comprehensive project handover document:
 
 1. Gather information from Jira board and existing Confluence pages
@@ -181,7 +181,7 @@ confluence_project_handover_pm,Project Handover Documentation,"Create a comprehe
 3. Create or update Confluence page with handover guide
 
 Project: [PROJECT_NAME]
-Space Key: [CONFLUENCE_SPACE]",Generate comprehensive project handover documentation,project_manager,confluence
+Space Key: [CONFLUENCE_SPACE]",Generate comprehensive project handover documentation,project_manager,confluence,workoflow
 confluence_architecture_decision_sa,Architecture Decision Record,"Create an Architecture Decision Record (ADR):
 
 1. Use confluence_create_page with ADR template:
@@ -195,7 +195,7 @@ confluence_architecture_decision_sa,Architecture Decision Record,"Create an Arch
 2. Link to related ADRs if this supersedes previous decisions
 
 Space Key: [CONFLUENCE_SPACE]
-Decision Topic: [TOPIC]",Document architecture decisions in standardized ADR format,solution_architect,confluence
+Decision Topic: [TOPIC]",Document architecture decisions in standardized ADR format,solution_architect,confluence,workoflow
 confluence_knowledge_search_ba,Knowledge Base Search,"Search the Confluence knowledge base:
 
 1. Use confluence_search with relevant keywords
@@ -208,7 +208,7 @@ confluence_knowledge_search_ba,Knowledge Base Search,"Search the Confluence know
 4. Suggest related topics to explore
 
 Search Topic: [TOPIC]
-Space Key (optional): [SPACE]",Search and summarize relevant Confluence documentation,business_analyst,confluence
+Space Key (optional): [SPACE]",Search and summarize relevant Confluence documentation,business_analyst,confluence,workoflow
 gitlab_mr_code_review_dev,Merge Request Code Review,"Perform a comprehensive code review of this merge request:
 
 1. Get MR details using gitlab_get_merge_request
@@ -223,7 +223,7 @@ gitlab_mr_code_review_dev,Merge Request Code Review,"Perform a comprehensive cod
 4. Provide constructive feedback with specific line references
 5. Summarize: Approve, Request Changes, or Comment
 
-MR URL: [PASTE_MR_URL]",Thorough code review workflow for merge requests,developer,gitlab
+MR URL: [PASTE_MR_URL]",Thorough code review workflow for merge requests,developer,gitlab,workoflow
 gitlab_pipeline_debug_devops,Pipeline Failure Analysis,"Debug this failing GitLab pipeline:
 
 1. Get pipeline status using gitlab_get_pipeline
@@ -237,7 +237,7 @@ gitlab_pipeline_debug_devops,Pipeline Failure Analysis,"Debug this failing GitLa
 5. Suggest specific fixes and next steps
 6. Recommend if gitlab_retry_job would help
 
-Pipeline URL: [PASTE_PIPELINE_URL]",Diagnose and resolve CI/CD pipeline failures,devops,gitlab
+Pipeline URL: [PASTE_PIPELINE_URL]",Diagnose and resolve CI/CD pipeline failures,devops,gitlab,workoflow
 gitlab_open_mrs_review_tl,Open Merge Requests Overview,"Review all open merge requests for the team:
 
 1. List all open MRs in the repository
@@ -253,7 +253,7 @@ gitlab_open_mrs_review_tl,Open Merge Requests Overview,"Review all open merge re
    - MRs with failing pipelines
 4. Suggest prioritization for review
 
-Repository: [REPO_PATH]",Overview of open merge requests requiring attention,tech_lead,gitlab
+Repository: [REPO_PATH]",Overview of open merge requests requiring attention,tech_lead,gitlab,workoflow
 gitlab_security_review_sec,Security-Focused Code Review,"Perform a security-focused review of this merge request:
 
 1. Get MR changes using gitlab_get_merge_request_changes
@@ -268,7 +268,7 @@ gitlab_security_review_sec,Security-Focused Code Review,"Perform a security-focu
 3. Rate severity of any findings (Critical, High, Medium, Low)
 4. Provide remediation suggestions for each finding
 
-MR URL: [PASTE_MR_URL]",Security audit of merge request changes,security_engineer,gitlab
+MR URL: [PASTE_MR_URL]",Security audit of merge request changes,security_engineer,gitlab,workoflow
 gitlab_release_changelog_pm,Release Changelog Generation,"Generate a changelog from merged MRs:
 
 1. List all merged MRs between two tags/branches
@@ -283,7 +283,7 @@ gitlab_release_changelog_pm,Release Changelog Generation,"Generate a changelog f
 
 Repository: [REPO_PATH]
 From: [TAG_OR_BRANCH]
-To: [TAG_OR_BRANCH]",Generate changelog from merged merge requests,project_manager,gitlab
+To: [TAG_OR_BRANCH]",Generate changelog from merged merge requests,project_manager,gitlab,workoflow
 c4c_lead_qualification_ba,Lead Qualification Workflow,"Qualify a new sales lead:
 
 1. Use c4c_get_lead to fetch lead details
@@ -296,7 +296,7 @@ c4c_lead_qualification_ba,Lead Qualification Workflow,"Qualify a new sales lead:
 4. Use c4c_update_lead to set qualification status
 5. If qualified, recommend creating opportunity with c4c_create_opportunity
 
-Lead ID: [LEAD_ID]",Structured BANT lead qualification process,business_analyst,sap_c4c
+Lead ID: [LEAD_ID]",Structured BANT lead qualification process,business_analyst,sap_c4c,workoflow
 c4c_pipeline_review_pm,Sales Pipeline Analysis,"Review the current sales pipeline:
 
 1. Use c4c_search_opportunities to get all open opportunities
@@ -316,7 +316,7 @@ c4c_pipeline_review_pm,Sales Pipeline Analysis,"Review the current sales pipelin
    - High-value opportunities needing attention
    - Pipeline coverage vs target
 
-Provide executive summary with key metrics.",Sales pipeline analysis and forecasting,project_manager,sap_c4c
+Provide executive summary with key metrics.",Sales pipeline analysis and forecasting,project_manager,sap_c4c,workoflow
 c4c_account_research_ba,Account Research Summary,"Research and summarize an account:
 
 1. Use c4c_get_account to fetch account details
@@ -331,7 +331,7 @@ c4c_account_research_ba,Account Research Summary,"Research and summarize an acco
    - Revenue potential
 5. Identify upsell/cross-sell opportunities
 
-Account ID: [ACCOUNT_ID]",Comprehensive account research for sales preparation,business_analyst,sap_c4c
+Account ID: [ACCOUNT_ID]",Comprehensive account research for sales preparation,business_analyst,sap_c4c,workoflow
 c4c_contact_management_ba,Contact Update Workflow,"Manage and update contact information:
 
 1. Use c4c_get_contact to review current contact details
@@ -344,7 +344,7 @@ c4c_contact_management_ba,Contact Update Workflow,"Manage and update contact inf
 4. Log activity for audit trail
 
 Contact ID: [CONTACT_ID]
-Updates: [DESCRIBE_UPDATES]",Maintain accurate contact records in CRM,business_analyst,sap_c4c
+Updates: [DESCRIBE_UPDATES]",Maintain accurate contact records in CRM,business_analyst,sap_c4c,workoflow
 projektron_weekly_timesheet_pm,Weekly Time Report,"Generate weekly time tracking summary:
 
 1. Use projektron_get_worklog for the current week (Monday to Sunday)
@@ -358,7 +358,7 @@ projektron_weekly_timesheet_pm,Weekly Time Report,"Generate weekly time tracking
    - Overtime or undertime
 4. Format as a clean weekly report
 
-Date Range: [START_DATE] to [END_DATE]",Review and validate weekly time tracking entries,project_manager,projektron
+Date Range: [START_DATE] to [END_DATE]",Review and validate weekly time tracking entries,project_manager,projektron,workoflow
 projektron_vacation_planning_sm,Team Availability Check,"Check team availability for planning:
 
 1. Use projektron_get_absences for the specified period
@@ -370,7 +370,7 @@ projektron_vacation_planning_sm,Team Availability Check,"Check team availability
 4. Suggest backup assignments for key responsibilities
 
 Team Members: [LIST_MEMBERS]
-Date Range: [START_DATE] to [END_DATE]",Plan around team absences and vacation schedules,scrum_master,projektron
+Date Range: [START_DATE] to [END_DATE]",Plan around team absences and vacation schedules,scrum_master,projektron,workoflow
 projektron_time_booking_pm,Time Booking Assistant,"Help book time to the correct tasks:
 
 1. Use projektron_get_all_tasks to list available bookable tasks
@@ -383,7 +383,7 @@ projektron_time_booking_pm,Time Booking Assistant,"Help book time to the correct
 
 Date: [DATE]
 Hours: [HOURS]
-Activity Description: [WHAT_YOU_WORKED_ON]",Assist with booking time to correct project tasks,project_manager,projektron
+Activity Description: [WHAT_YOU_WORKED_ON]",Assist with booking time to correct project tasks,project_manager,projektron,workoflow
 sharepoint_document_search_ba,SharePoint Document Search,"Search for documents in SharePoint:
 
 1. Use sharepoint_search with relevant keywords
@@ -398,7 +398,7 @@ sharepoint_document_search_ba,SharePoint Document Search,"Search for documents i
 4. Provide direct links to relevant documents
 
 Search Query: [KEYWORDS]
-Site (optional): [SITE_NAME]",Search and retrieve documents from SharePoint,business_analyst,sharepoint
+Site (optional): [SITE_NAME]",Search and retrieve documents from SharePoint,business_analyst,sharepoint,workoflow
 sharepoint_knowledge_query_ba,Knowledge Base Query,"Query the SharePoint knowledge base:
 
 1. Search for relevant content using keywords
@@ -410,7 +410,7 @@ sharepoint_knowledge_query_ba,Knowledge Base Query,"Query the SharePoint knowled
    - Gaps in available documentation
 4. Suggest related topics to explore
 
-Topic: [TOPIC]",Extract knowledge from SharePoint document repository,business_analyst,sharepoint
+Topic: [TOPIC]",Extract knowledge from SharePoint document repository,business_analyst,sharepoint,workoflow
 system_pdf_report_pm,Generate PDF Status Report,"Create a professional PDF status report:
 
 1. Gather relevant data from connected integrations (Jira, etc.)
@@ -425,7 +425,7 @@ system_pdf_report_pm,Generate PDF Status Report,"Create a professional PDF statu
 5. Return the download link for distribution
 
 Report Title: [TITLE]
-Data Sources: [DESCRIBE_DATA_NEEDED]",Generate downloadable PDF project reports,project_manager,
+Data Sources: [DESCRIBE_DATA_NEEDED]",Generate downloadable PDF project reports,project_manager,,workoflow
 system_pptx_presentation_pm,Generate PowerPoint Presentation,"Create a PowerPoint presentation:
 
 1. Define the presentation structure:
@@ -440,7 +440,7 @@ system_pptx_presentation_pm,Generate PowerPoint Presentation,"Create a PowerPoin
 3. Return the download link
 
 Presentation Topic: [TOPIC]
-Key Points: [LIST_KEY_POINTS]",Create professional PowerPoint presentations,project_manager,
+Key Points: [LIST_KEY_POINTS]",Create professional PowerPoint presentations,project_manager,,workoflow
 system_web_research_ba,Web Research Assistant,"Conduct web research on a topic:
 
 1. Use web_search to find relevant information
@@ -453,7 +453,7 @@ system_web_research_ba,Web Research Assistant,"Conduct web research on a topic:
 4. Provide actionable recommendations based on findings
 
 Research Topic: [TOPIC]
-Focus Areas: [SPECIFIC_QUESTIONS]",Research and synthesize web information,business_analyst,
+Focus Areas: [SPECIFIC_QUESTIONS]",Research and synthesize web information,business_analyst,,workoflow
 system_employee_skills_pm,Team Skills Matrix,"Build a team skills inventory:
 
 1. Use employee_query to find team members
@@ -468,7 +468,7 @@ system_employee_skills_pm,Team Skills Matrix,"Build a team skills inventory:
    - Training needs/gaps
 4. Identify areas needing additional resources
 
-Team/Department: [TEAM_NAME]",Map team competencies and identify skill gaps,project_manager,
+Team/Department: [TEAM_NAME]",Map team competencies and identify skill gaps,project_manager,,workoflow
 system_employee_search_pm,Find Expert Colleague,"Find a colleague with specific expertise:
 
 1. Use employee_query to search for skills/experience
@@ -484,7 +484,7 @@ system_employee_search_pm,Find Expert Colleague,"Find a colleague with specific 
 4. Suggest best matches for the requirement
 
 Required Skills: [SKILLS]
-Project Type: [PROJECT_CONTEXT]",Find team members with specific skills or experience,project_manager,
+Project Type: [PROJECT_CONTEXT]",Find team members with specific skills or experience,project_manager,,workoflow
 system_company_events_pm,Upcoming Company Events,"Check upcoming company events:
 
 1. Use fetch_valantic_events to retrieve event calendar
@@ -498,7 +498,7 @@ system_company_events_pm,Upcoming Company Events,"Check upcoming company events:
    - Registration requirements
    - Relevance to current projects
 
-Date Range: [START_DATE] to [END_DATE]",View and filter upcoming company events,project_manager,
+Date Range: [START_DATE] to [END_DATE]",View and filter upcoming company events,project_manager,,workoflow
 system_competitor_research_ba,Competitor Analysis,"Research competitor information:
 
 1. Use web_search to gather competitor intelligence
@@ -512,7 +512,7 @@ system_competitor_research_ba,Competitor Analysis,"Research competitor informati
 5. Format as executive summary
 
 Competitor: [COMPANY_NAME]
-Focus Areas: [SPECIFIC_ASPECTS]",Gather and analyze competitor intelligence,business_analyst,
+Focus Areas: [SPECIFIC_ASPECTS]",Gather and analyze competitor intelligence,business_analyst,,workoflow
 system_file_summary_ba,Document Summary,"Summarize an uploaded document:
 
 1. Read the uploaded file content
@@ -524,7 +524,7 @@ system_file_summary_ba,Document Summary,"Summarize an uploaded document:
 3. Provide concise summary (1-2 paragraphs)
 4. Highlight anything requiring attention
 
-File: [UPLOAD_FILE]",Extract and summarize key information from documents,business_analyst,
+File: [UPLOAD_FILE]",Extract and summarize key information from documents,business_analyst,,workoflow
 devops_deployment_checklist,Deployment Checklist Generator,"Generate a deployment checklist:
 
 1. Based on the changes in this release, create checklist for:
@@ -542,7 +542,7 @@ devops_deployment_checklist,Deployment Checklist Generator,"Generate a deploymen
 3. Assign responsibilities for each step
 
 Release Version: [VERSION]
-Environment: [ENV]",Create comprehensive deployment checklist,devops,
+Environment: [ENV]",Create comprehensive deployment checklist,devops,,workoflow
 qa_test_case_generator,Test Case Generator,"Generate test cases from requirements:
 
 1. Analyze the Jira ticket acceptance criteria
@@ -560,7 +560,7 @@ qa_test_case_generator,Test Case Generator,"Generate test cases from requirement
    - Expected results
 4. Prioritize by risk level
 
-Ticket URL: [PASTE_TICKET_URL]",Generate comprehensive test cases from requirements,qa_engineer,
+Ticket URL: [PASTE_TICKET_URL]",Generate comprehensive test cases from requirements,qa_engineer,,workoflow
 support_issue_diagnosis,Customer Issue Diagnosis,"Help diagnose a customer issue:
 
 1. Gather issue details:
@@ -577,7 +577,7 @@ support_issue_diagnosis,Customer Issue Diagnosis,"Help diagnose a customer issue
 4. Recommend troubleshooting steps
 5. Suggest escalation path if needed
 
-Issue Description: [DESCRIBE_ISSUE]",Systematic customer issue diagnosis and resolution,support_engineer,
+Issue Description: [DESCRIBE_ISSUE]",Systematic customer issue diagnosis and resolution,support_engineer,,workoflow
 data_pipeline_documentation,Data Pipeline Documentation,"Document a data pipeline:
 
 1. Describe the pipeline components:
@@ -593,7 +593,7 @@ data_pipeline_documentation,Data Pipeline Documentation,"Document a data pipelin
    - Monitoring and alerts
 3. Format for technical reference
 
-Pipeline Name: [PIPELINE_NAME]",Create technical documentation for data pipelines,data_engineer,
+Pipeline Name: [PIPELINE_NAME]",Create technical documentation for data pipelines,data_engineer,,workoflow
 designer_brand_colors,Extract Brand Colors,"Extract brand colors from a website:
 
 1. Use web_search or fetch the website
@@ -605,7 +605,7 @@ designer_brand_colors,Extract Brand Colors,"Extract brand colors from a website:
 3. Create a color palette summary
 4. Suggest complementary colors for designs
 
-Website URL: [URL]",Extract and document brand color palette from website,designer,
+Website URL: [URL]",Extract and document brand color palette from website,designer,,workoflow
 pm_status_update,Weekly Status Update,"Generate weekly status update:
 
 1. Gather data from Jira, Confluence, and other sources
@@ -619,7 +619,7 @@ pm_status_update,Weekly Status Update,"Generate weekly status update:
 4. Keep concise (1 page max)
 
 Project: [PROJECT_NAME]
-Week Ending: [DATE]",Create weekly project status update for stakeholders,project_manager,
+Week Ending: [DATE]",Create weekly project status update for stakeholders,project_manager,,workoflow
 pm_risk_register,Risk Register Update,"Update the project risk register:
 
 1. Review current risks from Jira/Confluence
@@ -633,7 +633,7 @@ pm_risk_register,Risk Register Update,"Update the project risk register:
 3. Identify new risks from recent events
 4. Recommend risk response actions
 
-Project: [PROJECT_NAME]",Maintain and update project risk register,project_manager,
+Project: [PROJECT_NAME]",Maintain and update project risk register,project_manager,,workoflow
 ba_requirements_analysis,Requirements Analysis,"Analyze and refine requirements:
 
 1. Review the provided requirements document/ticket
@@ -646,7 +646,7 @@ ba_requirements_analysis,Requirements Analysis,"Analyze and refine requirements:
 3. Identify gaps and questions
 4. Suggest improvements and clarifications
 
-Requirements Source: [TICKET_OR_DOC_LINK]",Analyze requirements for completeness and clarity,business_analyst,
+Requirements Source: [TICKET_OR_DOC_LINK]",Analyze requirements for completeness and clarity,business_analyst,,workoflow
 sa_system_integration,Integration Design Review,"Review system integration design:
 
 1. Analyze the proposed integration:
@@ -661,4 +661,4 @@ sa_system_integration,Integration Design Review,"Review system integration desig
    - Monitoring approach
 3. Identify risks and recommend improvements
 
-Integration Description: [DESCRIBE_INTEGRATION]",Review and improve system integration designs,solution_architect,
+Integration Description: [DESCRIBE_INTEGRATION]",Review and improve system integration designs,solution_architect,,workoflow
