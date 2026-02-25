@@ -14,6 +14,7 @@
 The platform follows a **Skills-based architecture** where integrations are treated as AI agent "skills":
 
 - **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron))
+- **Remote MCP Servers**: Connect any vendor-provided MCP server (e.g., Atlassian, GitHub, Slack). Tools are discovered dynamically via MCP protocol and proxied through the Workoflow endpoint
 - **Platform Skills**: Built-in system tools requiring no external auth (PDF generation, file sharing, web search, employee lookup)
 
 ### Dynamic Tool Discovery
@@ -25,7 +26,7 @@ GET /api/integrations/{org-uuid}/?workflow_user_id={user-id}&tool_type={type}
 Authorization: Basic {base64(workoflow:workoflow)}
 ```
 
-Tool types: `jira`, `confluence`, `sharepoint`, `outlook_mail`, `outlook_calendar`, `msteams`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `system`
+Tool types: `jira`, `confluence`, `sharepoint`, `outlook_mail`, `outlook_calendar`, `msteams`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `remote_mcp`, `system`
 
 ### Tool Execution
 

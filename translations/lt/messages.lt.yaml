@@ -377,6 +377,9 @@ integration:
       get_pipeline:
         name: Gauti vamzdyno detales
         description: Gauti išsamią informaciją apie konkretų CI/CD vamzdyną. Grąžina vamzdyno būseną, etapus, trukmę, commit'o SHA, vartotoją, kuris jį paleido, ir išsamią darbų informaciją. Naudokite vamzdyno ID pilnoms vykdymo detalėms gauti.
+  remote_mcp_servers: Nuotoliniai MCP serveriai
+  remote_mcp_description: Prisijunkite prie trečiųjų šalių MCP serverių ir persiųskite jų įrankius per savo Workoflow galutinį tašką
+  add_remote_mcp: Pridėti nuotolinį MCP serverį
   add_gitlab: Pridėti GitLab egzempliorių
   active: Aktyvus
   credentials_not_editable: Prisijungimo duomenys negali būti redaguojami dėl saugumo priežasčių.

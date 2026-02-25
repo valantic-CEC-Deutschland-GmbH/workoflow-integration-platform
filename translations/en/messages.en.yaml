@@ -377,6 +377,9 @@ integration:
       get_pipeline:
         name: Get Pipeline Details
         description: Get detailed information about a specific CI/CD pipeline. Returns pipeline status, stages, duration, commit SHA, user who triggered it, and detailed job information. Use pipeline ID to retrieve full execution details.
+  remote_mcp_servers: Remote MCP Servers
+  remote_mcp_description: Connect to vendor-provided MCP servers and proxy their tools through your Workoflow endpoint
+  add_remote_mcp: Add Remote MCP Server
   add_gitlab: Add GitLab Instance
   active: Active
   credentials_not_editable: Credentials cannot be edited for security reasons.

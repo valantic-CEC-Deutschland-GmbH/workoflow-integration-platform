@@ -377,6 +377,9 @@ integration:
       get_pipeline:
         name: Obțineți detaliile pipeline-ului
         description: Obțineți informații detaliate despre un pipeline CI/CD specific. Returnează starea pipeline-ului, etapele, durata, SHA-ul commit-ului, utilizatorul care l-a declanșat și informații detaliate despre joburi. Utilizați ID-ul pipeline-ului pentru detalii complete de execuție.
+  remote_mcp_servers: Servere MCP la distanță
+  remote_mcp_description: Conectați-vă la servere MCP furnizate de terți și redirecționați instrumentele lor prin endpoint-ul Workoflow
+  add_remote_mcp: Adăugați server MCP la distanță
   add_gitlab: Adăugați instanță GitLab
   active: Activ
   credentials_not_editable: Acreditările nu pot fi editate din motive de securitate.
