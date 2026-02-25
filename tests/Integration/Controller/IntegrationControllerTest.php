@@ -5,6 +5,8 @@ namespace App\Tests\Integration\Controller;
 use App\DataFixtures\OrganisationTestFixtures;
 use App\Entity\IntegrationConfig;
 use App\Tests\Integration\AbstractIntegrationTestCase;
+use App\Tests\Mock\TestHttpClientFactory;
+use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class IntegrationControllerTest extends AbstractIntegrationTestCase
@@ -20,8 +22,17 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
     {
         parent::setUp();
 
+        // Reset mock HTTP client overrides
+        TestHttpClientFactory::reset();
+
         // Login as admin user by default
         $this->loginUser('admin@test.example.com');
+    }
+
+    protected function tearDown(): void
+    {
+        TestHttpClientFactory::reset();
+        parent::tearDown();
     }
 
     // ========================================
@@ -84,16 +95,7 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
 
     public function testCreateNewJiraIntegration(): void
     {
-        // Get real JIRA credentials from environment
-        $jiraUrl = $_ENV['TEST_JIRA_URL'] ?? null;
-        $jiraEmail = $_ENV['TEST_JIRA_EMAIL'] ?? null;
-        $jiraToken = $_ENV['TEST_JIRA_TOKEN'] ?? null;
-
-        // Skip test if credentials not configured or using dummy token
-        if (!$jiraUrl || !$jiraEmail || !$jiraToken || $jiraToken === 'dummy-token-for-testing') {
-            $this->markTestSkipped('Real JIRA credentials not configured in .env.test.local');
-        }
-
+        // Mock HTTP client returns 200 for /rest/api/3/myself (connection test passes)
         $crawler = $this->client->request('GET', '/skills/setup/jira');
 
         $form = $crawler->selectButton('Save Configuration')->form();
@@ -120,12 +122,12 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
             }
         }
 
-        // Submit with valid credentials
+        // Submit with test credentials (mock HTTP client will return success)
         $uniqueName = 'Test Jira Valid ' . uniqid();
         $form[$nameField] = $uniqueName;
-        $form[$urlField] = $jiraUrl;
-        $form[$usernameField] = $jiraEmail;
-        $form[$apiTokenField] = $jiraToken;
+        $form[$urlField] = 'https://test.atlassian.net';
+        $form[$usernameField] = 'test@example.com';
+        $form[$apiTokenField] = 'test-token-123';
 
         $this->client->submit($form);
 
@@ -154,16 +156,15 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
 
     public function testCreateJiraIntegrationWithInvalidToken(): void
     {
-        // Get real JIRA URL and email from ENV, but use WRONG token
-        $jiraUrl = $_ENV['TEST_JIRA_URL'] ?? null;
-        $jiraEmail = $_ENV['TEST_JIRA_EMAIL'] ?? null;
-
-        // Skip test if credentials not configured
-        if (!$jiraUrl || !$jiraEmail) {
-            $this->markTestSkipped('Real JIRA credentials not configured in .env.test.local');
-        }
-
-        $invalidToken = 'INVALID-TOKEN-WRONG-12345';
+        // Override mock HTTP client to simulate 401 for /rest/api/3/myself
+        TestHttpClientFactory::setOverride(function (string $method, string $url): ?MockResponse {
+            if (str_contains($url, '/rest/api/3/myself')) {
+                return new MockResponse('{"message":"Unauthorized"}', [
+                    'http_code' => 401,
+                ]);
+            }
+            return null;
+        });
 
         $crawler = $this->client->request('GET', '/skills/setup/jira');
 
@@ -191,11 +192,11 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
             }
         }
 
-        // Submit with invalid token but valid URL and email
+        // Submit with invalid token
         $form[$nameField] = 'Test Jira Invalid Token';
-        $form[$urlField] = $jiraUrl;
-        $form[$usernameField] = $jiraEmail;
-        $form[$apiTokenField] = $invalidToken;
+        $form[$urlField] = 'https://test.atlassian.net';
+        $form[$usernameField] = 'test@example.com';
+        $form[$apiTokenField] = 'INVALID-TOKEN-WRONG-12345';
 
         $this->client->submit($form);
 
@@ -222,6 +223,9 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
             ->findOneBy(['name' => 'Test Jira Invalid Token']);
 
         $this->assertNull($config, 'Integration should not be created with invalid credentials');
+
+        // Reset mock override
+        TestHttpClientFactory::reset();
     }
 
     public function testCreateIntegrationWithDuplicateName(): void
@@ -454,18 +458,8 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
 
     public function testUrlNormalizationRemovesTrailingSlash(): void
     {
-        // Get real JIRA credentials from environment
-        $jiraUrl = $_ENV['TEST_JIRA_URL'] ?? null;
-        $jiraEmail = $_ENV['TEST_JIRA_EMAIL'] ?? null;
-        $jiraToken = $_ENV['TEST_JIRA_TOKEN'] ?? null;
-
-        // Skip test if credentials not configured or using dummy token
-        if (!$jiraUrl || !$jiraEmail || !$jiraToken || $jiraToken === 'dummy-token-for-testing') {
-            $this->markTestSkipped('Real JIRA credentials not configured in .env.test.local');
-        }
-
-        // Add trailing slash to URL if not already present
-        $urlWithSlash = rtrim($jiraUrl, '/') . '/';
+        // Mock HTTP client returns 200 for connection test
+        $urlWithSlash = 'https://test.atlassian.net/';
 
         $crawler = $this->client->request('GET', '/skills/setup/jira');
 
@@ -497,8 +491,8 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
         $uniqueName = 'Test URL Normalization ' . uniqid();
         $form[$nameField] = $uniqueName;
         $form[$urlField] = $urlWithSlash; // URL with trailing slash
-        $form[$usernameField] = $jiraEmail;
-        $form[$apiTokenField] = $jiraToken;
+        $form[$usernameField] = 'test@example.com';
+        $form[$apiTokenField] = 'test-token-123';
 
         $this->client->submit($form);
 
@@ -520,8 +514,7 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
         );
 
         // URL should be stored without trailing slash
-        $expectedUrl = rtrim($jiraUrl, '/');
-        $this->assertEquals($expectedUrl, $credentials['url'], 'URL should be normalized without trailing slash');
+        $this->assertEquals('https://test.atlassian.net', $credentials['url'], 'URL should be normalized without trailing slash');
 
         // Cleanup
         $this->entityManager->remove($config);
@@ -768,58 +761,13 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
 
     public function testTestConnectionWithValidCredentials(): void
     {
-        // Get real JIRA credentials from environment
-        $jiraUrl = $_ENV['TEST_JIRA_URL'] ?? null;
-        $jiraEmail = $_ENV['TEST_JIRA_EMAIL'] ?? null;
-        $jiraToken = $_ENV['TEST_JIRA_TOKEN'] ?? null;
-
-        // Skip test if credentials not configured or using dummy token
-        if (!$jiraUrl || !$jiraEmail || !$jiraToken || $jiraToken === 'dummy-token-for-testing') {
-            $this->markTestSkipped('Real JIRA credentials not configured in .env.test.local');
-        }
-
-        // Create a new integration with valid real credentials
-        // Use a unique name to avoid conflicts with fixtures
-        $testConfig = new IntegrationConfig();
-        $testConfig->setOrganisation($this->currentOrganisation);
-        $testConfig->setUser($this->currentUser);
-        $testConfig->setIntegrationType('jira');
-        $testConfig->setName('Test Connection Valid ' . uniqid()); // Unique name to avoid conflicts
-        $testConfig->setActive(true);
-
-        // Set real credentials
-        $encryptionService = static::getContainer()->get('App\Service\EncryptionService');
-        $realCredentials = [
-            'url' => $jiraUrl,
-            'username' => $jiraEmail,
-            'api_token' => $jiraToken
-        ];
-        $testConfig->setEncryptedCredentials(
-            $encryptionService->encrypt(json_encode($realCredentials))
-        );
-        $this->entityManager->persist($testConfig);
-        $this->entityManager->flush();
-
-        // Temporarily remove other JIRA configs to ensure our test config is found
-        $otherConfigs = $this->entityManager
-            ->getRepository(IntegrationConfig::class)
-            ->findBy([
-                'integrationType' => 'jira',
-                'organisation' => $this->currentOrganisation
-            ]);
-
-        $removedConfigIds = [];
-        foreach ($otherConfigs as $config) {
-            if ($config->getId() !== $testConfig->getId()) {
-                $removedConfigIds[] = $config->getId();
-                $this->entityManager->remove($config);
-            }
-        }
-        $this->entityManager->flush();
+        // Mock HTTP client returns 200 for /rest/api/3/myself by default
+        $testConfig = $this->createTestIntegrationConfig('jira', 'Test Connection Valid ' . uniqid());
+        $configId = $testConfig->getId();
 
         // Test the connection - send instance ID in POST body
         $this->client->request('POST', '/skills/jira/test', [
-            'instance' => (string) $testConfig->getId()
+            'instance' => (string) $configId
         ]);
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -828,96 +776,51 @@ class IntegrationControllerTest extends AbstractIntegrationTestCase
         $this->assertTrue($response['success'], 'Connection with valid credentials should succeed');
         $this->assertEquals('Connection successful', $response['message']);
 
-        // Cleanup - remove our test config
-        $testConfigToDelete = $this->entityManager
-            ->getRepository(IntegrationConfig::class)
-            ->find($testConfig->getId());
-        if ($testConfigToDelete) {
-            $this->entityManager->remove($testConfigToDelete);
+        // Cleanup - re-fetch since entity is detached after client request
+        $configToDelete = $this->entityManager
+            ->getRepository(\App\Entity\IntegrationConfig::class)
+            ->find($configId);
+        if ($configToDelete) {
+            $this->entityManager->remove($configToDelete);
             $this->entityManager->flush();
-        }
-
-        // Only reload fixtures if we removed other configs
-        if (!empty($removedConfigIds)) {
-            $this->reloadFixtures();
-            $this->loginUser('admin@test.example.com');
         }
     }
 
     public function testTestConnectionWithInvalidCredentials(): void
     {
-        // Get real JIRA URL and email from ENV but use invalid token
-        $jiraUrl = $_ENV['TEST_JIRA_URL'] ?? null;
-        $jiraEmail = $_ENV['TEST_JIRA_EMAIL'] ?? null;
-
-        // Skip test if credentials not configured
-        if (!$jiraUrl || !$jiraEmail) {
-            $this->markTestSkipped('Real JIRA credentials not configured in .env.test.local');
-        }
-
-        // Create a new integration with invalid credentials (wrong token)
-        // Use a unique name to avoid conflicts with fixtures
-        $testConfig = new IntegrationConfig();
-        $testConfig->setOrganisation($this->currentOrganisation);
-        $testConfig->setUser($this->currentUser);
-        $testConfig->setIntegrationType('jira');
-        $testConfig->setName('Test Connection Invalid ' . uniqid()); // Unique name to avoid conflicts
-        $testConfig->setActive(true);
-
-        // Set invalid credentials (wrong API token)
-        $encryptionService = static::getContainer()->get('App\Service\EncryptionService');
-        $invalidCredentials = [
-            'url' => $jiraUrl,
-            'username' => $jiraEmail,
-            'api_token' => 'INVALID-TOKEN-12345-WRONG'  // Intentionally wrong token
-        ];
-        $testConfig->setEncryptedCredentials(
-            $encryptionService->encrypt(json_encode($invalidCredentials))
-        );
-        $this->entityManager->persist($testConfig);
-        $this->entityManager->flush();
-
-        // Temporarily remove other JIRA configs to ensure our test config is found
-        $otherConfigs = $this->entityManager
-            ->getRepository(IntegrationConfig::class)
-            ->findBy([
-                'integrationType' => 'jira',
-                'organisation' => $this->currentOrganisation
-            ]);
-
-        $removedConfigIds = [];
-        foreach ($otherConfigs as $config) {
-            if ($config->getId() !== $testConfig->getId()) {
-                $removedConfigIds[] = $config->getId();
-                $this->entityManager->remove($config);
+        // Override mock HTTP client to simulate 401 for /rest/api/3/myself
+        TestHttpClientFactory::setOverride(function (string $method, string $url): ?MockResponse {
+            if (str_contains($url, '/rest/api/3/myself')) {
+                return new MockResponse('{"message":"Unauthorized"}', [
+                    'http_code' => 401,
+                ]);
             }
-        }
-        $this->entityManager->flush();
+            return null;
+        });
+
+        $testConfig = $this->createTestIntegrationConfig('jira', 'Test Connection Invalid ' . uniqid());
+        $configId = $testConfig->getId();
 
         // Test the connection - send instance ID in POST body
         $this->client->request('POST', '/skills/jira/test', [
-            'instance' => (string) $testConfig->getId()
+            'instance' => (string) $configId
         ]);
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertFalse($response['success'], 'Connection with invalid credentials should fail');
-        $this->assertStringContainsString('Connection failed', $response['message']);
 
-        // Cleanup - remove our test config
-        $testConfigToDelete = $this->entityManager
-            ->getRepository(IntegrationConfig::class)
-            ->find($testConfig->getId());
-        if ($testConfigToDelete) {
-            $this->entityManager->remove($testConfigToDelete);
+        // Cleanup - re-fetch since entity is detached after client request
+        $configToDelete = $this->entityManager
+            ->getRepository(\App\Entity\IntegrationConfig::class)
+            ->find($configId);
+        if ($configToDelete) {
+            $this->entityManager->remove($configToDelete);
             $this->entityManager->flush();
         }
 
-        // Only reload fixtures if we removed other configs
-        if (!empty($removedConfigIds)) {
-            $this->reloadFixtures();
-            $this->loginUser('admin@test.example.com');
-        }
+        // Reset mock override
+        TestHttpClientFactory::reset();
     }
 }

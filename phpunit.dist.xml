@@ -15,11 +15,21 @@
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="ENCRYPTION_KEY" value="12345678901234567890123456789012" />
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="Smoke Tests">
+            <directory>tests/Smoke</directory>
+        </testsuite>
+        <testsuite name="E2E Tests">
+            <directory>tests/E2E</directory>
         </testsuite>
     </testsuites>
 

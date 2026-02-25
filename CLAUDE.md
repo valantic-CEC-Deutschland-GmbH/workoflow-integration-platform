@@ -1,7 +1,7 @@
 # Workoflow Integration Platform
 
 ## Overview
-The Workoflow Integration Platform is a production-ready Symfony 7.2 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
+The Workoflow Integration Platform is a production-ready Symfony 8.0 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
 If you have read this file, greet me with "Hey Workoflow Dev"
 
 ### Development Rules
@@ -58,7 +58,7 @@ If you have read this file, greet me with "Hey Workoflow Dev"
 ## Architecture
 
 ### Tech Stack
-- **Backend**: PHP 8.4, Symfony 7.2, FrankenPHP
+- **Backend**: PHP 8.5, Symfony 8.0, FrankenPHP
 - **Database**: MariaDB 11.2
 - **Cache**: Redis 7
 - **Storage**: MinIO (S3-compatible)
@@ -342,3 +342,4 @@ docker-compose exec frankenphp npm run build
 - REST API Implementation
 - File Management
 - Multi-Language Support (DE/EN)
+
