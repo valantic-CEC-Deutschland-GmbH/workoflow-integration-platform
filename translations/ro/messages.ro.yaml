@@ -19,6 +19,63 @@ nav:
   workspace: Spațiu de lucru
   settings: Setări
   prompt_vault: Prompt Vault
+  scheduled_tasks: Sarcini programate
+
+scheduled_task:
+  page_title: Sarcini programate
+  explanation: Automatizați solicitările recurente trimise agentului AI. Creați sarcini cu un prompt, frecvență și configurare opțională a orei. Sarcinile sunt executate automat prin webhook-ul configurat al organizației.
+  no_webhook_warning: "Organizația dvs. nu are configurat un URL webhook. Sarcinile programate necesită un webhook pentru a trimite solicitări agentului AI."
+  configure_webhook: Configurați în Setări chiriaș
+  create: Creați sarcină programată
+  name: Nume
+  description: Descriere
+  prompt: Prompt
+  frequency: Frecvență
+  next_execution: Următoarea execuție
+  status: Status
+  actions: Acțiuni
+  active: Activ
+  inactive: Inactiv
+  activate: Activare
+  deactivate: Dezactivare
+  active_label: Activ (sarcina va fi executată conform programului)
+  test: Test
+  run_now: Rulează acum
+  edit: Editare
+  delete: Ștergere
+  view: Vizualizare
+  no_tasks: Nu există încă sarcini programate. Creați prima sarcină pentru a automatiza solicitările recurente.
+  execution_history: Istoric execuții
+  task_name: Numele sarcinii
+  trigger: Declanșator
+  exec_status: Status
+  executed_at: Executat la
+  duration: Durată
+  output: Ieșire
+  name_placeholder: "ex. Rezumat zilnic sprint"
+  description_placeholder: "Descriere scurtă opțională"
+  prompt_placeholder: "Introduceți promptul care va fi trimis agentului AI..."
+  prompt_help: Acest prompt va fi trimis agentului AI prin webhook-ul configurat.
+  execution_time: Ora execuției
+  execution_time_help: Ora din zi la care sarcina ar trebui să ruleze (format 24h).
+  weekday: Ziua săptămânii
+  weekday_monday: Luni
+  weekday_tuesday: Marți
+  weekday_wednesday: Miercuri
+  weekday_thursday: Joi
+  weekday_friday: Vineri
+  weekday_saturday: Sâmbătă
+  weekday_sunday: Duminică
+  freq_manual: Manual
+  freq_hourly: Orar
+  freq_daily: Zilnic
+  freq_weekdays: Zile lucrătoare
+  freq_weekly: Săptămânal
+  created.success: Sarcină programată creată cu succes.
+  updated.success: Sarcină programată actualizată cu succes.
+  deleted.success: Sarcină programată ștearsă cu succes.
+  no_tasks_description: Creați prima sarcină programată pentru a automatiza fluxurile de lucru recurente.
+  form_description: Definiți o sarcină recurentă care va fi executată prin webhook conform programului.
 
 home:
   title: Bine ați venit la Workoflow

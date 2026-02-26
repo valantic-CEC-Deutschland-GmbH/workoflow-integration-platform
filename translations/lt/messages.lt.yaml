@@ -19,6 +19,63 @@ nav:
   workspace: Darbo sritis
   settings: Nustatymai
   prompt_vault: Prompt Vault
+  scheduled_tasks: Suplanuotos užduotys
+
+scheduled_task:
+  page_title: Suplanuotos užduotys
+  explanation: Automatizuokite pasikartojančias užklausas siunčiamas AI agentui. Sukurkite užduotis su užklausa, dažnumu ir pasirinktiniu laiko nustatymu. Užduotys vykdomos automatiškai per organizacijos sukonfigūruotą webhook.
+  no_webhook_warning: "Jūsų organizacija neturi sukonfigūruoto webhook URL. Suplanuotoms užduotims reikia webhook, kad būtų galima siųsti užklausas AI agentui."
+  configure_webhook: Konfigūruoti nuomininko nustatymuose
+  create: Sukurti suplanuotą užduotį
+  name: Pavadinimas
+  description: Aprašymas
+  prompt: Užklausa
+  frequency: Dažnumas
+  next_execution: Kitas vykdymas
+  status: Būsena
+  actions: Veiksmai
+  active: Aktyvus
+  inactive: Neaktyvus
+  activate: Aktyvuoti
+  deactivate: Deaktyvuoti
+  active_label: Aktyvus (užduotis bus vykdoma pagal tvarkaraštį)
+  test: Testas
+  run_now: Vykdyti dabar
+  edit: Redaguoti
+  delete: Ištrinti
+  view: Peržiūrėti
+  no_tasks: Dar nėra suplanuotų užduočių. Sukurkite pirmą užduotį, kad automatizuotumėte pasikartojančias užklausas.
+  execution_history: Vykdymo istorija
+  task_name: Užduoties pavadinimas
+  trigger: Paleidiklis
+  exec_status: Būsena
+  executed_at: Įvykdyta
+  duration: Trukmė
+  output: Išvestis
+  name_placeholder: "pvz., Dienos sprinto santrauka"
+  description_placeholder: "Pasirenkamas trumpas aprašymas"
+  prompt_placeholder: "Įveskite užklausą, kuri bus siunčiama AI agentui..."
+  prompt_help: Ši užklausa bus siunčiama AI agentui per sukonfigūruotą webhook.
+  execution_time: Vykdymo laikas
+  execution_time_help: Dienos laikas, kada užduotis turėtų būti vykdoma (24 val. formatas).
+  weekday: Savaitės diena
+  weekday_monday: Pirmadienis
+  weekday_tuesday: Antradienis
+  weekday_wednesday: Trečiadienis
+  weekday_thursday: Ketvirtadienis
+  weekday_friday: Penktadienis
+  weekday_saturday: Šeštadienis
+  weekday_sunday: Sekmadienis
+  freq_manual: Rankinis
+  freq_hourly: Kas valandą
+  freq_daily: Kasdien
+  freq_weekdays: Darbo dienomis
+  freq_weekly: Kas savaitę
+  created.success: Suplanuota užduotis sėkmingai sukurta.
+  updated.success: Suplanuota užduotis sėkmingai atnaujinta.
+  deleted.success: Suplanuota užduotis sėkmingai ištrinta.
+  no_tasks_description: Sukurkite pirmą suplanuotą užduotį, kad automatizuotumėte pasikartojančius darbo procesus.
+  form_description: Apibrėžkite pasikartojančią užduotį, kuri bus vykdoma per webhook pagal tvarkaraštį.
 
 home:
   title: Sveiki atvykę į Workoflow

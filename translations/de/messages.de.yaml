@@ -19,6 +19,63 @@ nav:
   workspace: Arbeitsbereich
   settings: Einstellungen
   prompt_vault: Prompt Vault
+  scheduled_tasks: Geplante Aufgaben
+
+scheduled_task:
+  page_title: Geplante Aufgaben
+  explanation: Automatisieren Sie wiederkehrende Prompts an Ihren KI-Agenten. Erstellen Sie Aufgaben mit einem Prompt, einer Häufigkeit und optionaler Zeitkonfiguration. Aufgaben werden automatisch über den konfigurierten Webhook Ihrer Organisation ausgeführt.
+  no_webhook_warning: "Für Ihre Organisation ist keine Webhook-URL konfiguriert. Geplante Aufgaben benötigen einen Webhook, um Prompts an Ihren KI-Agenten zu senden."
+  configure_webhook: In Mandanteneinstellungen konfigurieren
+  create: Geplante Aufgabe erstellen
+  name: Name
+  description: Beschreibung
+  prompt: Prompt
+  frequency: Häufigkeit
+  next_execution: Nächste Ausführung
+  status: Status
+  actions: Aktionen
+  active: Aktiv
+  inactive: Inaktiv
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  active_label: Aktiv (Aufgabe wird planmäßig ausgeführt)
+  test: Testen
+  run_now: Jetzt ausführen
+  edit: Bearbeiten
+  delete: Löschen
+  view: Anzeigen
+  no_tasks: Noch keine geplanten Aufgaben. Erstellen Sie Ihre erste Aufgabe, um wiederkehrende Prompts zu automatisieren.
+  execution_history: Ausführungsverlauf
+  task_name: Aufgabenname
+  trigger: Auslöser
+  exec_status: Status
+  executed_at: Ausgeführt am
+  duration: Dauer
+  output: Ausgabe
+  name_placeholder: "z.B. Tägliche Sprint-Zusammenfassung"
+  description_placeholder: "Optionale kurze Beschreibung"
+  prompt_placeholder: "Geben Sie den Prompt ein, der an Ihren KI-Agenten gesendet werden soll..."
+  prompt_help: Dieser Prompt wird über den konfigurierten Webhook an Ihren KI-Agenten gesendet.
+  execution_time: Ausführungszeit
+  execution_time_help: Tageszeit, zu der die Aufgabe ausgeführt werden soll (24h-Format).
+  weekday: Wochentag
+  weekday_monday: Montag
+  weekday_tuesday: Dienstag
+  weekday_wednesday: Mittwoch
+  weekday_thursday: Donnerstag
+  weekday_friday: Freitag
+  weekday_saturday: Samstag
+  weekday_sunday: Sonntag
+  freq_manual: Manuell
+  freq_hourly: Stündlich
+  freq_daily: Täglich
+  freq_weekdays: Werktags
+  freq_weekly: Wöchentlich
+  created.success: Geplante Aufgabe erfolgreich erstellt.
+  updated.success: Geplante Aufgabe erfolgreich aktualisiert.
+  deleted.success: Geplante Aufgabe erfolgreich gelöscht.
+  no_tasks_description: Erstellen Sie Ihre erste geplante Aufgabe, um wiederkehrende Workflows zu automatisieren.
+  form_description: Definieren Sie eine wiederkehrende Aufgabe, die planmäßig per Webhook ausgeführt wird.
 
 home:
   title: Willkommen bei Workoflow

@@ -84,6 +84,7 @@
         "symfony/yaml": "8.0.*",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/string-extra": "^3.23",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {

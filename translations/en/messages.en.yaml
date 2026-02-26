@@ -19,6 +19,63 @@ nav:
   workspace: Workspace
   settings: Settings
   prompt_vault: Prompt Vault
+  scheduled_tasks: Scheduled Tasks
+
+scheduled_task:
+  page_title: Scheduled Tasks
+  explanation: Automate recurring prompts sent to your AI agent. Create tasks with a prompt, frequency, and optional time configuration. Tasks are executed automatically via your organisation's configured webhook.
+  no_webhook_warning: "Your organisation has no webhook URL configured. Scheduled tasks require a webhook to send prompts to your AI agent."
+  configure_webhook: Configure in Tenant Settings
+  create: Create Scheduled Task
+  name: Name
+  description: Description
+  prompt: Prompt
+  frequency: Frequency
+  next_execution: Next Execution
+  status: Status
+  actions: Actions
+  active: Active
+  inactive: Inactive
+  activate: Activate
+  deactivate: Deactivate
+  active_label: Active (task will be executed on schedule)
+  test: Test
+  run_now: Run Now
+  edit: Edit
+  delete: Delete
+  view: View
+  no_tasks: No scheduled tasks yet. Create your first task to automate recurring prompts.
+  execution_history: Execution History
+  task_name: Task Name
+  trigger: Trigger
+  exec_status: Status
+  executed_at: Executed At
+  duration: Duration
+  output: Output
+  name_placeholder: "e.g., Daily Sprint Summary"
+  description_placeholder: "Optional short description"
+  prompt_placeholder: "Enter the prompt to send to your AI agent..."
+  prompt_help: This prompt will be sent to your AI agent via the configured webhook.
+  execution_time: Execution Time
+  execution_time_help: Time of day when the task should run (24h format).
+  weekday: Day of Week
+  weekday_monday: Monday
+  weekday_tuesday: Tuesday
+  weekday_wednesday: Wednesday
+  weekday_thursday: Thursday
+  weekday_friday: Friday
+  weekday_saturday: Saturday
+  weekday_sunday: Sunday
+  freq_manual: Manual
+  freq_hourly: Hourly
+  freq_daily: Daily
+  freq_weekdays: Weekdays
+  freq_weekly: Weekly
+  created.success: Scheduled task created successfully.
+  updated.success: Scheduled task updated successfully.
+  deleted.success: Scheduled task deleted successfully.
+  no_tasks_description: Create your first scheduled task to automate recurring workflows.
+  form_description: Define a recurring task that will be executed via webhook on a schedule.
 
 home:
   title: Welcome to Workoflow

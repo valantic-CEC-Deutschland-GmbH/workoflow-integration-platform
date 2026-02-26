@@ -53,6 +53,27 @@ services:
     networks:
       - workoflow
 
+  scheduled-worker:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: php bin/console app:scheduled-task:worker
+    volumes:
+      - ./:/app
+    environment:
+      - APP_RUNTIME=Runtime\FrankenPhpSymfony\Runtime
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - workoflow
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
   minio:
     image: minio/minio:latest
     restart: unless-stopped
