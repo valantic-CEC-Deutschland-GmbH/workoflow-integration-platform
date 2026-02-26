@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - **Scheduled Tasks dark theme** — Scheduled tasks pages now match the platform's dark theme with card-wrapped headers, dark table styling, color-coded badges, proper form inputs, and responsive mobile layout
 
+### Fixed
+- **Scheduled task buttons now work** — Test, Run Now, toggle active/inactive, delete, and view output buttons on the Scheduled Tasks page are now functional
+- **Frequency fields displayed inline** — Time and weekday selectors now appear side-by-side with the frequency dropdown for a cleaner form layout
+
 ## 2026-02-25
 
 ### Added

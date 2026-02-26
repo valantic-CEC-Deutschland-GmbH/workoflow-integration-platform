@@ -7368,6 +7368,21 @@ select.form-control {
     padding-top: var(--space-lg);
     border-top: 1px solid var(--border-color);
   }
+
+  .frequency-row {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+  }
+
+  .frequency-row-field {
+    flex: 1;
+    min-width: 0;
+
+    .form-control {
+      width: 100%;
+    }
+  }
 }
 
 // Scheduled tasks empty state
@@ -7410,6 +7425,11 @@ select.form-control {
 
     .scheduled-task-form-card {
       padding: var(--space-lg);
+    }
+
+    .frequency-row {
+      flex-direction: column;
+      gap: var(--space-sm);
     }
 
     .data-table {
