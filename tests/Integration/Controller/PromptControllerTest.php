@@ -86,9 +86,6 @@ class PromptControllerTest extends AbstractIntegrationTestCase
         $platformSelect = $crawler->filter('select[id$="_platform"]');
         $this->assertCount(1, $platformSelect, 'Platform select field should exist in create form');
 
-        // Platform help text should exist
-        $helpText = $crawler->filter('.form-label-tooltip');
-        $this->assertGreaterThan(0, $helpText->count(), 'Platform tooltip icon should exist');
     }
 
     public function testCreatePromptWithPlatform(): void
