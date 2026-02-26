@@ -142,6 +142,9 @@
                                     </td>
                                     <td data-label="{{ 'scheduled_task.exec_status'|trans }}">
                                         <span class="badge badge-status badge-{{ execution.status }}">
+                                            {% if execution.status == 'pending' %}
+                                                <i class="fas fa-spinner fa-spin"></i>
+                                            {% endif %}
                                             {{ execution.status }}
                                         </span>
                                     </td>
@@ -154,9 +157,12 @@
                                         {% endif %}
                                     </td>
                                     <td data-label="{{ 'scheduled_task.output'|trans }}">
-                                        {% if execution.output or execution.errorMessage %}
+                                        {% if execution.status == 'pending' %}
+                                            <span class="text-muted"><i class="fas fa-spinner fa-spin"></i></span>
+                                        {% elseif execution.output or execution.errorMessage %}
                                             <button type="button" class="btn btn-sm btn-outline"
                                                     data-action="click->scheduled-task#viewOutput"
+                                                    data-execution-id="{{ execution.id }}"
                                                     data-output="{{ (execution.output ?? execution.errorMessage)|e('html_attr') }}"
                                                     data-exec-status="{{ execution.status }}"
                                                     data-task-name="{{ execution.scheduledTask.name }}">

@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Message\ExecuteScheduledTaskMessage;
 use App\Repository\ScheduledTaskRepository;
 use App\Service\ScheduledTask\ScheduledTaskExecutor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,10 +13,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
     name: 'app:scheduled-task:worker',
-    description: 'Persistent worker that executes due scheduled tasks',
+    description: 'Persistent worker that dispatches due scheduled tasks to the message queue',
 )]
 class ScheduledTaskWorkerCommand extends Command
 {
@@ -26,6 +28,7 @@ class ScheduledTaskWorkerCommand extends Command
         private ScheduledTaskExecutor $executor,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
+        private MessageBusInterface $messageBus,
     ) {
         parent::__construct();
     }
@@ -79,19 +82,26 @@ class ScheduledTaskWorkerCommand extends Command
                         break;
                     }
 
-                    $io->info(sprintf('Executing task "%s" (UUID: %s)', $task->getName(), $task->getUuid()));
+                    $io->info(sprintf('Dispatching task "%s" (UUID: %s)', $task->getName(), $task->getUuid()));
 
                     try {
-                        $execution = $this->executor->execute($task, 'scheduled');
-                        $io->info(sprintf(
-                            'Task "%s" executed: %s (HTTP %s, %dms)',
-                            $task->getName(),
-                            $execution->getStatus(),
-                            $execution->getHttpStatusCode() ?? 'N/A',
-                            $execution->getDuration() ?? 0,
+                        $execution = $this->executor->createPendingExecution($task, 'scheduled');
+
+                        // Update next execution time immediately so it won't be picked up again
+                        $task->setLastExecutionAt(new \DateTime());
+                        $task->computeNextExecutionAt();
+
+                        $this->entityManager->flush();
+
+                        $this->messageBus->dispatch(new ExecuteScheduledTaskMessage(
+                            $task->getId(),
+                            $execution->getId(),
+                            'scheduled',
                         ));
+
+                        $io->info(sprintf('Task "%s" dispatched (execution #%d)', $task->getName(), $execution->getId()));
                     } catch (\Throwable $e) {
-                        $this->logger->error('Failed to execute scheduled task', [
+                        $this->logger->error('Failed to dispatch scheduled task', [
                             'task_uuid' => $task->getUuid(),
                             'error' => $e->getMessage(),
                         ]);

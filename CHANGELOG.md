@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - **Scheduled Tasks** — Automate recurring prompts on hourly, daily, weekday, or weekly schedules. Tasks send prompts to your AI agent via the organisation's configured webhook, with full execution history tracking and response viewing
 - **Scheduled task worker** — A persistent background worker automatically executes due tasks on schedule. Can also be triggered manually with "Run Now" or "Test" buttons
+- **Async task execution** — "Run Now" and "Test" buttons now return instantly and show a live progress indicator while the task runs in the background, eliminating timeout errors for long-running tasks
+- **Formatted response output** — Task execution results are now displayed as formatted text with clickable links, bold, and lists instead of raw JSON
 - **Tenant type selection** — Choose between "MS Teams" or "Web" when creating a new tenant. The tenant type is displayed read-only on the tenant settings page and included in the tenant settings API response
 - **Webhook auth header** — Configure an authentication header for your webhook endpoint in tenant settings. The header is stored encrypted and returned in the tenant settings API for authenticated webhook forwarding
 

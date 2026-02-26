@@ -14,3 +14,15 @@ services:
     App\Service\ScheduledTask\ScheduledTaskExecutor:
         arguments:
             $payloadBuilders: !tagged_iterator 'app.webhook_payload_builder'
+
+    # Response renderers
+    App\Service\ScheduledTask\MsTeamsResponseRenderer:
+        tags: ['app.response_renderer']
+
+    App\Service\ScheduledTask\WebResponseRenderer:
+        tags: ['app.response_renderer']
+
+    # Response renderer registry
+    App\Service\ScheduledTask\ResponseRendererRegistry:
+        arguments:
+            $renderers: !tagged_iterator 'app.response_renderer'

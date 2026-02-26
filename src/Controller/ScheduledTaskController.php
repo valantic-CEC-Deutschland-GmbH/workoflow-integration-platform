@@ -6,15 +6,18 @@ use App\Entity\ScheduledTask;
 use App\Entity\ScheduledTaskExecution;
 use App\Entity\User;
 use App\Enum\TaskFrequency;
+use App\Message\ExecuteScheduledTaskMessage;
 use App\Repository\ScheduledTaskExecutionRepository;
 use App\Repository\ScheduledTaskRepository;
 use App\Service\AuditLogService;
+use App\Service\ScheduledTask\ResponseRendererRegistry;
 use App\Service\ScheduledTask\ScheduledTaskExecutor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -30,6 +33,8 @@ class ScheduledTaskController extends AbstractController
         private AuditLogService $auditLogService,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
+        private MessageBusInterface $messageBus,
+        private ResponseRendererRegistry $responseRendererRegistry,
     ) {
     }
 
@@ -240,16 +245,20 @@ class ScheduledTaskController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Task not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $execution = $this->executor->execute($task, 'test');
+        $execution = $this->executor->createPendingExecution($task, 'test');
+        $this->entityManager->flush();
+
+        $this->messageBus->dispatch(new ExecuteScheduledTaskMessage(
+            $task->getId(),
+            $execution->getId(),
+            'test',
+        ));
 
         return new JsonResponse([
-            'success' => $execution->getStatus() === 'success',
-            'status' => $execution->getStatus(),
-            'output' => $execution->getOutput(),
-            'errorMessage' => $execution->getErrorMessage(),
-            'httpStatusCode' => $execution->getHttpStatusCode(),
-            'duration' => $execution->getDuration(),
-        ]);
+            'success' => true,
+            'status' => 'pending',
+            'executionId' => $execution->getId(),
+        ], Response::HTTP_ACCEPTED);
     }
 
     #[Route('/{uuid}/run', name: 'app_scheduled_task_run', methods: ['POST'])]
@@ -270,15 +279,75 @@ class ScheduledTaskController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Task not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $execution = $this->executor->execute($task, 'manual');
+        $execution = $this->executor->createPendingExecution($task, 'manual');
+        $this->entityManager->flush();
+
+        $this->messageBus->dispatch(new ExecuteScheduledTaskMessage(
+            $task->getId(),
+            $execution->getId(),
+            'manual',
+        ));
 
         return new JsonResponse([
-            'success' => $execution->getStatus() === 'success',
+            'success' => true,
+            'status' => 'pending',
+            'executionId' => $execution->getId(),
+        ], Response::HTTP_ACCEPTED);
+    }
+
+    #[Route('/execution/{id}/status', name: 'app_scheduled_task_execution_status', methods: ['GET'])]
+    public function executionStatus(int $id, Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $sessionOrgId = $request->getSession()->get('current_organisation_id');
+        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        if (!$organisation) {
+            return new JsonResponse(['error' => 'No organisation'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
+
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+            return new JsonResponse(['error' => 'Execution not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse([
             'status' => $execution->getStatus(),
             'output' => $execution->getOutput(),
             'errorMessage' => $execution->getErrorMessage(),
             'httpStatusCode' => $execution->getHttpStatusCode(),
             'duration' => $execution->getDuration(),
+        ]);
+    }
+
+    #[Route('/execution/{id}/output', name: 'app_scheduled_task_execution_output', methods: ['GET'])]
+    public function executionOutput(int $id, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $sessionOrgId = $request->getSession()->get('current_organisation_id');
+        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        if (!$organisation) {
+            return new JsonResponse(['error' => 'No organisation'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
+
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+            return new JsonResponse(['error' => 'Execution not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $rawOutput = $execution->getOutput() ?? $execution->getErrorMessage() ?? '';
+        $tenantType = $organisation->getTenantType() ?? '';
+
+        $renderedHtml = $this->responseRendererRegistry->render($tenantType, $rawOutput);
+
+        return new JsonResponse([
+            'html' => $renderedHtml,
+            'status' => $execution->getStatus(),
         ]);
     }
 

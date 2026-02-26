@@ -29,12 +29,45 @@ class ScheduledTaskExecutor
         $this->payloadBuilders = $payloadBuilders;
     }
 
+    /**
+     * Create a pending execution record (for async dispatch).
+     */
+    public function createPendingExecution(ScheduledTask $task, string $trigger): ScheduledTaskExecution
+    {
+        $execution = new ScheduledTaskExecution();
+        $execution->setScheduledTask($task);
+        $execution->setTrigger($trigger);
+        $execution->setStatus('pending');
+
+        $this->entityManager->persist($execution);
+
+        return $execution;
+    }
+
+    /**
+     * Execute a pre-existing pending execution asynchronously (called by Messenger handler).
+     */
+    public function executeAsync(ScheduledTask $task, ScheduledTaskExecution $execution): void
+    {
+        $this->performExecution($task, $execution);
+    }
+
+    /**
+     * Synchronous execute: creates execution + performs it. Used by the scheduled worker.
+     */
     public function execute(ScheduledTask $task, string $trigger): ScheduledTaskExecution
     {
         $execution = new ScheduledTaskExecution();
         $execution->setScheduledTask($task);
         $execution->setTrigger($trigger);
 
+        $this->performExecution($task, $execution);
+
+        return $execution;
+    }
+
+    private function performExecution(ScheduledTask $task, ScheduledTaskExecution $execution): void
+    {
         $startTime = microtime(true);
 
         // Webhook calls can take a long time (n8n workflow processing)
@@ -143,12 +176,10 @@ class ScheduledTaskExecutor
             [
                 'task_uuid' => $task->getUuid(),
                 'task_name' => $task->getName(),
-                'trigger' => $trigger,
+                'trigger' => $execution->getTrigger(),
                 'status' => $execution->getStatus(),
                 'duration_ms' => $duration,
             ],
         );
-
-        return $execution;
     }
 }

@@ -20,7 +20,7 @@ export default class extends Controller {
     }
 
     /**
-     * Test task execution - shows result in modal
+     * Test task execution - dispatches async and polls for result
      */
     async testTask(event) {
         const button = event.currentTarget;
@@ -39,14 +39,13 @@ export default class extends Controller {
             });
 
             const data = await response.json();
-            this.showModal(
-                data.success ? 'success' : 'error',
-                data.success ? 'Test Successful' : 'Test Failed',
-                data.success
-                    ? `Webhook responded with HTTP ${data.httpStatusCode} in ${(data.duration / 1000).toFixed(1)}s`
-                    : (data.errorMessage || 'The test execution failed.'),
-                data.output
-            );
+
+            if (response.status === 202 && data.executionId) {
+                this.showModal('pending', 'Test Started', 'Task dispatched. Waiting for result...', null);
+                this.pollExecution(data.executionId, 'Test');
+            } else {
+                this.showModal('error', 'Test Failed', data.message || 'The test execution failed.', null);
+            }
         } catch (error) {
             this.showModal('error', 'Test Error', 'An unexpected error occurred while testing.', null);
         } finally {
@@ -56,7 +55,7 @@ export default class extends Controller {
     }
 
     /**
-     * Run task now
+     * Run task now - dispatches async and polls for result
      */
     async runNow(event) {
         const button = event.currentTarget;
@@ -75,20 +74,78 @@ export default class extends Controller {
             });
 
             const data = await response.json();
-            this.showModal(
-                data.success ? 'success' : 'error',
-                data.success ? 'Execution Successful' : 'Execution Failed',
-                data.success
-                    ? `Webhook responded with HTTP ${data.httpStatusCode} in ${(data.duration / 1000).toFixed(1)}s`
-                    : (data.errorMessage || 'The execution failed.'),
-                data.output
-            );
+
+            if (response.status === 202 && data.executionId) {
+                this.showModal('pending', 'Execution Started', 'Task dispatched. Waiting for result...', null);
+                this.pollExecution(data.executionId, 'Execution');
+            } else {
+                this.showModal('error', 'Execution Failed', data.message || 'The execution failed.', null);
+            }
         } catch (error) {
             this.showModal('error', 'Execution Error', 'An unexpected error occurred.', null);
         } finally {
             button.disabled = false;
             button.innerHTML = originalContent;
         }
+    }
+
+    /**
+     * Poll execution status until complete
+     */
+    async pollExecution(executionId, label) {
+        const maxAttempts = 60;
+        let attempts = 0;
+
+        const poll = async () => {
+            attempts++;
+
+            try {
+                const response = await fetch(`/scheduled-tasks/execution/${executionId}/status`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+
+                if (data.status === 'pending') {
+                    if (attempts >= maxAttempts) {
+                        this.showModal('error', `${label} Timeout`, 'The execution is still running. Check back later.', null);
+                        return;
+                    }
+                    // Update modal message with elapsed time
+                    const modalMessage = document.getElementById('stModalMessage');
+                    if (modalMessage) {
+                        modalMessage.textContent = `Task dispatched. Waiting for result... (${attempts * 3}s)`;
+                    }
+                    setTimeout(poll, 3000);
+                    return;
+                }
+
+                // Execution completed - fetch rendered output
+                const outputResponse = await fetch(`/scheduled-tasks/execution/${executionId}/output`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const outputData = await outputResponse.json();
+
+                const isSuccess = data.status === 'success';
+                const message = isSuccess
+                    ? `Completed in ${(data.duration / 1000).toFixed(1)}s (HTTP ${data.httpStatusCode})`
+                    : (data.errorMessage || 'The execution failed.');
+
+                this.showModal(
+                    isSuccess ? 'success' : 'error',
+                    `${label} ${isSuccess ? 'Successful' : 'Failed'}`,
+                    message,
+                    null,
+                    outputData.html
+                );
+
+                // Reload to refresh execution history
+                setTimeout(() => window.location.reload(), 1000);
+            } catch (error) {
+                this.showModal('error', `${label} Error`, 'Failed to check execution status.', null);
+            }
+        };
+
+        setTimeout(poll, 3000);
     }
 
     /**
@@ -144,26 +201,48 @@ export default class extends Controller {
     }
 
     /**
-     * View execution output in modal
+     * View execution output - fetches rendered HTML from server
      */
-    viewOutput(event) {
+    async viewOutput(event) {
         const button = event.currentTarget;
-        const output = button.dataset.output;
+        const executionId = button.dataset.executionId;
         const status = button.dataset.execStatus;
         const taskName = button.dataset.taskName;
 
-        this.showModal(
-            status === 'success' ? 'success' : 'error',
-            taskName,
-            status === 'success' ? 'Execution completed successfully' : 'Execution failed',
-            output
-        );
+        if (status === 'pending') {
+            this.showModal('pending', taskName, 'Execution is still running...', null);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/scheduled-tasks/execution/${executionId}/output`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await response.json();
+
+            this.showModal(
+                status === 'success' ? 'success' : 'error',
+                taskName,
+                status === 'success' ? 'Execution completed successfully' : 'Execution failed',
+                null,
+                data.html
+            );
+        } catch (error) {
+            // Fallback to raw data attribute if fetch fails
+            const output = button.dataset.output;
+            this.showModal(
+                status === 'success' ? 'success' : 'error',
+                taskName,
+                status === 'success' ? 'Execution completed successfully' : 'Execution failed',
+                output
+            );
+        }
     }
 
     /**
      * Show modal with execution result
      */
-    showModal(type, title, message, output) {
+    showModal(type, title, message, output, renderedHtml) {
         const modal = document.getElementById('scheduledTaskModal');
         if (!modal) return;
 
@@ -174,22 +253,35 @@ export default class extends Controller {
         const modalOutput = document.getElementById('stModalOutput');
         const closeBtn = document.getElementById('stModalCloseBtn');
 
+        // Map pending to a visual type
+        const visualType = type === 'pending' ? 'pending' : type;
+
         modalTitle.textContent = title;
         modalMessage.textContent = message;
-        modalMessage.className = 'modal-message ' + type;
-        contentWrapper.className = 'modal-content status-' + type;
-        closeBtn.className = 'btn btn-status-' + type;
+        modalMessage.className = 'modal-message ' + visualType;
+        contentWrapper.className = 'modal-content status-' + visualType;
+        closeBtn.className = 'btn btn-status-' + visualType;
 
-        icon.className = 'modal-icon ' + type;
-        icon.innerHTML = type === 'success'
-            ? '<i class="fas fa-check-circle"></i>'
-            : '<i class="fas fa-exclamation-circle"></i>';
+        if (type === 'pending') {
+            icon.className = 'modal-icon pending';
+            icon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        } else {
+            icon.className = 'modal-icon ' + type;
+            icon.innerHTML = type === 'success'
+                ? '<i class="fas fa-check-circle"></i>'
+                : '<i class="fas fa-exclamation-circle"></i>';
+        }
 
-        if (output) {
-            modalOutput.textContent = output;
+        if (renderedHtml) {
+            modalOutput.innerHTML = renderedHtml;
             modalOutput.classList.remove('hidden');
+            modalOutput.classList.add('rendered-output');
+        } else if (output) {
+            modalOutput.textContent = output;
+            modalOutput.classList.remove('hidden', 'rendered-output');
         } else {
             modalOutput.classList.add('hidden');
+            modalOutput.classList.remove('rendered-output');
         }
 
         modal.classList.add('show');

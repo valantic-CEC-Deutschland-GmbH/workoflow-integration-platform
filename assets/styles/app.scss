@@ -7170,6 +7170,7 @@ select.form-control {
 
 .badge-success { background: rgba(76, 175, 80, 0.15); color: #81c784; border: 1px solid rgba(76, 175, 80, 0.25); }
 .badge-failed { background: rgba(244, 67, 54, 0.15); color: #ef5350; border: 1px solid rgba(244, 67, 54, 0.25); }
+.badge-pending { background: rgba(255, 152, 0, 0.15); color: #ffb74d; border: 1px solid rgba(255, 152, 0, 0.25); }
 
 // Toggle button
 .btn-toggle {
@@ -7259,6 +7260,85 @@ select.form-control {
   &::-webkit-scrollbar-thumb {
     background: var(--border-color);
     border-radius: 3px;
+  }
+}
+
+// Rendered output in modal (markdown HTML)
+.rendered-output {
+  white-space: normal;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  strong, b {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  ul, ol {
+    padding-left: var(--space-lg);
+    margin: var(--space-sm) 0;
+  }
+
+  li {
+    margin-bottom: var(--space-xs);
+  }
+
+  p {
+    margin: var(--space-sm) 0;
+  }
+
+  pre {
+    background: var(--bg-tertiary, rgba(0, 0, 0, 0.2));
+    padding: var(--space-md);
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: var(--text-xs);
+  }
+
+  code {
+    background: var(--bg-tertiary, rgba(0, 0, 0, 0.2));
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: 0.9em;
+  }
+
+  pre code {
+    background: transparent;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: var(--space-md) 0 var(--space-sm);
+    color: var(--text-primary);
+  }
+}
+
+// Pending modal state
+.status-pending {
+  .modal-icon.pending {
+    color: #ffb74d;
+  }
+}
+
+.btn-status-pending {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.25);
+
+  &:hover {
+    background: rgba(255, 152, 0, 0.25);
   }
 }
 
