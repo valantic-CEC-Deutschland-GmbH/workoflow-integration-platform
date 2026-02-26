@@ -16,7 +16,7 @@ class ScheduledTaskExecution
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(name: '`trigger`', length: 20)]
     private string $trigger = 'manual';
 
     #[ORM\Column(length: 20)]
