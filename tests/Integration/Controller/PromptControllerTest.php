@@ -85,7 +85,6 @@ class PromptControllerTest extends AbstractIntegrationTestCase
         // Platform select field should exist
         $platformSelect = $crawler->filter('select[id$="_platform"]');
         $this->assertCount(1, $platformSelect, 'Platform select field should exist in create form');
-
     }
 
     public function testCreatePromptWithPlatform(): void
