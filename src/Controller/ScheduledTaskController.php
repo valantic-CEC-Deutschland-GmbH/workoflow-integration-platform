@@ -258,6 +258,7 @@ class ScheduledTaskController extends AbstractController
             'success' => true,
             'status' => 'pending',
             'executionId' => $execution->getId(),
+            'taskName' => $task->getName(),
         ], Response::HTTP_ACCEPTED);
     }
 
@@ -292,6 +293,7 @@ class ScheduledTaskController extends AbstractController
             'success' => true,
             'status' => 'pending',
             'executionId' => $execution->getId(),
+            'taskName' => $task->getName(),
         ], Response::HTTP_ACCEPTED);
     }
 

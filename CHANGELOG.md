@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Webhook auth header** — Configure an authentication header for your webhook endpoint in tenant settings. The header is stored encrypted and returned in the tenant settings API for authenticated webhook forwarding
 
 ### Changed
+- **Inline execution progress** — "Run Now" and "Test" now show a pending row directly in the execution history table instead of a blocking modal overlay. The row updates in-place when the task completes, and pending rows automatically resume polling when you return to the page
 - **Scheduled Tasks dark theme** — Scheduled tasks pages now match the platform's dark theme with card-wrapped headers, dark table styling, color-coded badges, proper form inputs, and responsive mobile layout
 - **Delete execution history entries** — Individual entries in the scheduled task execution history can now be removed via a delete button
 

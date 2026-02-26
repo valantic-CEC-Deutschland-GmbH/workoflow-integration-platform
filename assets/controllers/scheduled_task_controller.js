@@ -3,6 +3,21 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['frequencySelect', 'timeField', 'weekdayField', 'row'];
 
+    connect() {
+        this.resumePendingPolling();
+    }
+
+    /**
+     * On page load, find any existing pending rows and start polling them
+     */
+    resumePendingPolling() {
+        const pendingRows = document.querySelectorAll('[data-pending-execution-id]');
+        pendingRows.forEach(row => {
+            const executionId = row.dataset.pendingExecutionId;
+            this.pollExecution(executionId);
+        });
+    }
+
     /**
      * Show/hide conditional fields based on frequency selection
      */
@@ -20,7 +35,7 @@ export default class extends Controller {
     }
 
     /**
-     * Test task execution - dispatches async and polls for result
+     * Test task execution - dispatches async and adds inline pending row
      */
     async testTask(event) {
         const button = event.currentTarget;
@@ -41,13 +56,13 @@ export default class extends Controller {
             const data = await response.json();
 
             if (response.status === 202 && data.executionId) {
-                this.showModal('pending', 'Test Started', 'Task dispatched. Waiting for result...', null);
-                this.pollExecution(data.executionId, 'Test');
+                this.addPendingRow(data.executionId, data.taskName, 'test');
+                this.pollExecution(data.executionId);
             } else {
-                this.showModal('error', 'Test Failed', data.message || 'The test execution failed.', null);
+                this.showToast('error', data.message || 'The test execution failed.');
             }
         } catch (error) {
-            this.showModal('error', 'Test Error', 'An unexpected error occurred while testing.', null);
+            this.showToast('error', 'An unexpected error occurred while testing.');
         } finally {
             button.disabled = false;
             button.innerHTML = originalContent;
@@ -55,7 +70,7 @@ export default class extends Controller {
     }
 
     /**
-     * Run task now - dispatches async and polls for result
+     * Run task now - dispatches async and adds inline pending row
      */
     async runNow(event) {
         const button = event.currentTarget;
@@ -76,13 +91,13 @@ export default class extends Controller {
             const data = await response.json();
 
             if (response.status === 202 && data.executionId) {
-                this.showModal('pending', 'Execution Started', 'Task dispatched. Waiting for result...', null);
-                this.pollExecution(data.executionId, 'Execution');
+                this.addPendingRow(data.executionId, data.taskName, 'manual');
+                this.pollExecution(data.executionId);
             } else {
-                this.showModal('error', 'Execution Failed', data.message || 'The execution failed.', null);
+                this.showToast('error', data.message || 'The execution failed.');
             }
         } catch (error) {
-            this.showModal('error', 'Execution Error', 'An unexpected error occurred.', null);
+            this.showToast('error', 'An unexpected error occurred.');
         } finally {
             button.disabled = false;
             button.innerHTML = originalContent;
@@ -90,9 +105,45 @@ export default class extends Controller {
     }
 
     /**
-     * Poll execution status until complete
+     * Add a pending row to the top of the execution history table
      */
-    async pollExecution(executionId, label) {
+    addPendingRow(executionId, taskName, trigger) {
+        // Ensure execution history section is visible
+        const section = document.getElementById('execution-history-section');
+        if (section) {
+            section.style.display = '';
+        }
+
+        const tbody = document.getElementById('executions-tbody');
+        if (!tbody) return;
+
+        const now = new Date();
+        const timestamp = now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0') + ':' +
+            String(now.getSeconds()).padStart(2, '0');
+
+        const row = document.createElement('tr');
+        row.id = `execution-row-${executionId}`;
+        row.innerHTML = `
+            <td>${this.escapeHtml(taskName)}</td>
+            <td><span class="badge badge-trigger badge-${trigger}">${trigger}</span></td>
+            <td><span class="badge badge-status badge-pending"><i class="fas fa-spinner fa-spin"></i> pending</span></td>
+            <td>${timestamp}</td>
+            <td>\u2014</td>
+            <td><span class="text-muted"><i class="fas fa-spinner fa-spin"></i></span></td>
+            <td class="actions-cell"></td>
+        `;
+
+        tbody.insertBefore(row, tbody.firstChild);
+    }
+
+    /**
+     * Poll execution status until complete, then update the row in-place
+     */
+    async pollExecution(executionId) {
         const maxAttempts = 60;
         let attempts = 0;
 
@@ -107,45 +158,56 @@ export default class extends Controller {
 
                 if (data.status === 'pending') {
                     if (attempts >= maxAttempts) {
-                        this.showModal('error', `${label} Timeout`, 'The execution is still running. Check back later.', null);
+                        this.showToast('error', 'Execution is still running. Check back later.');
                         return;
-                    }
-                    // Update modal message with elapsed time
-                    const modalMessage = document.getElementById('stModalMessage');
-                    if (modalMessage) {
-                        modalMessage.textContent = `Task dispatched. Waiting for result... (${attempts * 3}s)`;
                     }
                     setTimeout(poll, 3000);
                     return;
                 }
 
-                // Execution completed - fetch rendered output
-                const outputResponse = await fetch(`/scheduled-tasks/execution/${executionId}/output`, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                const outputData = await outputResponse.json();
-
-                const isSuccess = data.status === 'success';
-                const message = isSuccess
-                    ? `Completed in ${(data.duration / 1000).toFixed(1)}s (HTTP ${data.httpStatusCode})`
-                    : (data.errorMessage || 'The execution failed.');
-
-                this.showModal(
-                    isSuccess ? 'success' : 'error',
-                    `${label} ${isSuccess ? 'Successful' : 'Failed'}`,
-                    message,
-                    null,
-                    outputData.html
-                );
-
-                // Reload to refresh execution history
-                setTimeout(() => window.location.reload(), 1000);
+                this.updateExecutionRow(executionId, data);
             } catch (error) {
-                this.showModal('error', `${label} Error`, 'Failed to check execution status.', null);
+                this.showToast('error', 'Failed to check execution status.');
             }
         };
 
         setTimeout(poll, 3000);
+    }
+
+    /**
+     * Update a pending execution row in-place with completed data
+     */
+    updateExecutionRow(executionId, data) {
+        const row = document.getElementById(`execution-row-${executionId}`);
+        if (!row) return;
+
+        const cells = row.querySelectorAll('td');
+        const isSuccess = data.status === 'success';
+
+        // Update status badge (3rd cell)
+        cells[2].innerHTML = `<span class="badge badge-status badge-${data.status}">${data.status}</span>`;
+
+        // Update duration (5th cell)
+        cells[4].textContent = data.duration ? `${(data.duration / 1000).toFixed(1)}s` : '\u2014';
+
+        // Update output (6th cell) — add View button
+        const taskName = cells[0].textContent.trim();
+        cells[5].innerHTML = `
+            <button type="button" class="btn btn-sm btn-outline"
+                    data-action="click->scheduled-task#viewOutput"
+                    data-execution-id="${executionId}"
+                    data-exec-status="${data.status}"
+                    data-task-name="${this.escapeHtml(taskName)}"
+                    data-output="">
+                <i class="fas fa-eye"></i> View
+            </button>
+        `;
+
+        // Show toast
+        this.showToast(
+            isSuccess ? 'success' : 'error',
+            isSuccess ? 'Execution completed successfully' : 'Execution failed'
+        );
     }
 
     /**
@@ -305,5 +367,14 @@ export default class extends Controller {
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
+    }
+
+    /**
+     * Escape HTML to prevent XSS in dynamic content
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }

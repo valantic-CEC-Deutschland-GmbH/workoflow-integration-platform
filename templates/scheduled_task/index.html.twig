@@ -114,81 +114,79 @@
             </div>
         {% endif %}
 
-        {# Execution History #}
-        {% if executions|length > 0 %}
-            <div class="execution-history-section">
-                <h2>{{ 'scheduled_task.execution_history'|trans }}</h2>
-                <div class="table-responsive">
-                    <table class="data-table executions-table">
-                        <thead>
-                            <tr>
-                                <th>{{ 'scheduled_task.task_name'|trans }}</th>
-                                <th>{{ 'scheduled_task.trigger'|trans }}</th>
-                                <th>{{ 'scheduled_task.exec_status'|trans }}</th>
-                                <th>{{ 'scheduled_task.executed_at'|trans }}</th>
-                                <th>{{ 'scheduled_task.duration'|trans }}</th>
-                                <th>{{ 'scheduled_task.output'|trans }}</th>
-                                <th>{{ 'scheduled_task.actions'|trans }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for execution in executions %}
-                                <tr>
-                                    <td data-label="{{ 'scheduled_task.task_name'|trans }}">{{ execution.scheduledTask.name }}</td>
-                                    <td data-label="{{ 'scheduled_task.trigger'|trans }}">
-                                        <span class="badge badge-trigger badge-{{ execution.trigger }}">
-                                            {{ execution.trigger }}
-                                        </span>
-                                    </td>
-                                    <td data-label="{{ 'scheduled_task.exec_status'|trans }}">
-                                        <span class="badge badge-status badge-{{ execution.status }}">
-                                            {% if execution.status == 'pending' %}
-                                                <i class="fas fa-spinner fa-spin"></i>
-                                            {% endif %}
-                                            {{ execution.status }}
-                                        </span>
-                                    </td>
-                                    <td data-label="{{ 'scheduled_task.executed_at'|trans }}">{{ execution.executedAt|date('Y-m-d H:i:s') }}</td>
-                                    <td data-label="{{ 'scheduled_task.duration'|trans }}">
-                                        {% if execution.duration %}
-                                            {{ (execution.duration / 1000)|number_format(1) }}s
-                                        {% else %}
-                                            —
-                                        {% endif %}
-                                    </td>
-                                    <td data-label="{{ 'scheduled_task.output'|trans }}">
+        {# Execution History — always rendered so JS can insert rows #}
+        <div class="execution-history-section" id="execution-history-section" {% if executions|length == 0 %}style="display:none"{% endif %}>
+            <h2>{{ 'scheduled_task.execution_history'|trans }}</h2>
+            <div class="table-responsive">
+                <table class="data-table executions-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'scheduled_task.task_name'|trans }}</th>
+                            <th>{{ 'scheduled_task.trigger'|trans }}</th>
+                            <th>{{ 'scheduled_task.exec_status'|trans }}</th>
+                            <th>{{ 'scheduled_task.executed_at'|trans }}</th>
+                            <th>{{ 'scheduled_task.duration'|trans }}</th>
+                            <th>{{ 'scheduled_task.output'|trans }}</th>
+                            <th>{{ 'scheduled_task.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="executions-tbody">
+                        {% for execution in executions %}
+                            <tr {% if execution.status == 'pending' %}id="execution-row-{{ execution.id }}" data-pending-execution-id="{{ execution.id }}"{% endif %}>
+                                <td data-label="{{ 'scheduled_task.task_name'|trans }}">{{ execution.scheduledTask.name }}</td>
+                                <td data-label="{{ 'scheduled_task.trigger'|trans }}">
+                                    <span class="badge badge-trigger badge-{{ execution.trigger }}">
+                                        {{ execution.trigger }}
+                                    </span>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.exec_status'|trans }}">
+                                    <span class="badge badge-status badge-{{ execution.status }}">
                                         {% if execution.status == 'pending' %}
-                                            <span class="text-muted"><i class="fas fa-spinner fa-spin"></i></span>
-                                        {% elseif execution.output or execution.errorMessage %}
-                                            <button type="button" class="btn btn-sm btn-outline"
-                                                    data-action="click->scheduled-task#viewOutput"
-                                                    data-execution-id="{{ execution.id }}"
-                                                    data-output="{{ (execution.output ?? execution.errorMessage)|e('html_attr') }}"
-                                                    data-exec-status="{{ execution.status }}"
-                                                    data-task-name="{{ execution.scheduledTask.name }}">
-                                                <i class="fas fa-eye"></i> {{ 'scheduled_task.view'|trans }}
-                                            </button>
-                                        {% else %}
-                                            —
+                                            <i class="fas fa-spinner fa-spin"></i>
                                         {% endif %}
-                                    </td>
-                                    <td data-label="{{ 'scheduled_task.actions'|trans }}" class="actions-cell">
-                                        <form method="post" action="{{ path('app_scheduled_task_execution_delete', {id: execution.id}) }}"
-                                              data-action="submit->scheduled-task#confirmDeleteExecution">
-                                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete-execution-' ~ execution.id) }}">
-                                            <button type="submit" class="btn btn-sm btn-outline btn-danger"
-                                                    title="{{ 'scheduled_task.delete'|trans }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        {{ execution.status }}
+                                    </span>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.executed_at'|trans }}">{{ execution.executedAt|date('Y-m-d H:i:s') }}</td>
+                                <td data-label="{{ 'scheduled_task.duration'|trans }}">
+                                    {% if execution.duration %}
+                                        {{ (execution.duration / 1000)|number_format(1) }}s
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.output'|trans }}">
+                                    {% if execution.status == 'pending' %}
+                                        <span class="text-muted"><i class="fas fa-spinner fa-spin"></i></span>
+                                    {% elseif execution.output or execution.errorMessage %}
+                                        <button type="button" class="btn btn-sm btn-outline"
+                                                data-action="click->scheduled-task#viewOutput"
+                                                data-execution-id="{{ execution.id }}"
+                                                data-output="{{ (execution.output ?? execution.errorMessage)|e('html_attr') }}"
+                                                data-exec-status="{{ execution.status }}"
+                                                data-task-name="{{ execution.scheduledTask.name }}">
+                                            <i class="fas fa-eye"></i> {{ 'scheduled_task.view'|trans }}
+                                        </button>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.actions'|trans }}" class="actions-cell">
+                                    <form method="post" action="{{ path('app_scheduled_task_execution_delete', {id: execution.id}) }}"
+                                          data-action="submit->scheduled-task#confirmDeleteExecution">
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete-execution-' ~ execution.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline btn-danger"
+                                                title="{{ 'scheduled_task.delete'|trans }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        {% endif %}
+        </div>
     </div>
 </div>
 
