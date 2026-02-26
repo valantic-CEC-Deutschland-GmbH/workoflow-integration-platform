@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Scheduled task buttons now work** — Test, Run Now, toggle active/inactive, delete, and view output buttons on the Scheduled Tasks page are now functional
 - **Frequency fields displayed inline** — Time and weekday selectors now appear side-by-side with the frequency dropdown for a cleaner form layout
 - **Scheduled task execution error** — Fixed a database error when running a scheduled task manually or on schedule
+- **Scheduled task timeout** — Fixed "Run Now" failing with a 500 error when the AI agent takes longer than 30 seconds to respond
 
 ## 2026-02-25
 

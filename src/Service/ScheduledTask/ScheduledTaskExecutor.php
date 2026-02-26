@@ -37,6 +37,9 @@ class ScheduledTaskExecutor
 
         $startTime = microtime(true);
 
+        // Webhook calls can take a long time (n8n workflow processing)
+        set_time_limit(180);
+
         try {
             $org = $task->getOrganisation();
             $user = $task->getUser();
