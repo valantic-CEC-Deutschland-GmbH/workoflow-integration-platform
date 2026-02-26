@@ -101,6 +101,15 @@ export default class extends Controller {
     }
 
     /**
+     * Confirm delete execution history entry
+     */
+    confirmDeleteExecution(event) {
+        if (!confirm('Are you sure you want to delete this execution record?')) {
+            event.preventDefault();
+        }
+    }
+
+    /**
      * Toggle task active state
      */
     async toggleActive(event) {

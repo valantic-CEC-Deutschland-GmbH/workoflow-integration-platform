@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ScheduledTask;
+use App\Entity\ScheduledTaskExecution;
 use App\Entity\User;
 use App\Enum\TaskFrequency;
 use App\Repository\ScheduledTaskExecutionRepository;
@@ -187,6 +188,36 @@ class ScheduledTaskController extends AbstractController
         ]);
 
         $this->addFlash('success', $this->translator->trans('scheduled_task.deleted.success'));
+
+        return $this->redirectToRoute('app_scheduled_tasks');
+    }
+
+    #[Route('/execution/{id}/delete', name: 'app_scheduled_task_execution_delete', methods: ['POST'])]
+    public function deleteExecution(int $id, Request $request): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $sessionOrgId = $request->getSession()->get('current_organisation_id');
+        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        if (!$organisation) {
+            return $this->redirectToRoute('app_tenant_create');
+        }
+
+        $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
+
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+            throw $this->createNotFoundException('Execution not found');
+        }
+
+        if (!$this->isCsrfTokenValid('delete-execution-' . $id, $request->request->get('_csrf_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $execution->setDeletedAt(new \DateTime());
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $this->translator->trans('scheduled_task.execution_deleted.success'));
 
         return $this->redirectToRoute('app_scheduled_tasks');
     }

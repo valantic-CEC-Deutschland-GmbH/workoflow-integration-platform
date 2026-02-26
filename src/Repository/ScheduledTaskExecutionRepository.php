@@ -25,6 +25,7 @@ class ScheduledTaskExecutionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->join('e.scheduledTask', 'st')
             ->andWhere('st.organisation = :organisation')
+            ->andWhere('e.deletedAt IS NULL')
             ->setParameter('organisation', $organisation)
             ->orderBy('e.executedAt', 'DESC')
             ->setMaxResults($limit)

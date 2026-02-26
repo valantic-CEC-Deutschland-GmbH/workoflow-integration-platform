@@ -37,6 +37,9 @@ class ScheduledTaskExecution
     #[ORM\Column(nullable: true)]
     private ?int $duration = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deletedAt = null;
+
     #[ORM\ManyToOne(targetEntity: ScheduledTask::class, inversedBy: 'executions')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ScheduledTask $scheduledTask = null;
@@ -136,6 +139,17 @@ class ScheduledTaskExecution
     public function setScheduledTask(?ScheduledTask $scheduledTask): static
     {
         $this->scheduledTask = $scheduledTask;
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
         return $this;
     }
 }

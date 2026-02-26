@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - **Scheduled Tasks dark theme** — Scheduled tasks pages now match the platform's dark theme with card-wrapped headers, dark table styling, color-coded badges, proper form inputs, and responsive mobile layout
+- **Delete execution history entries** — Individual entries in the scheduled task execution history can now be removed via a delete button
 
 ### Fixed
 - **Scheduled task buttons now work** — Test, Run Now, toggle active/inactive, delete, and view output buttons on the Scheduled Tasks page are now functional
