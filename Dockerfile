@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions (including zip for PHPOffice libraries)
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip
 
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -62,6 +65,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP extensions (including zip for PHPOffice libraries)
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip
+
+# Install Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Install Composer in final stage for runtime operations
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
