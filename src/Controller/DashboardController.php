@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Organisation;
 use App\Entity\User;
+use App\Enum\TenantType;
 use App\Integration\IntegrationRegistry;
 use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
@@ -87,10 +88,16 @@ class DashboardController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
+            $tenantType = $request->request->get('tenant_type');
 
             if ($name) {
                 $organisation = new Organisation();
                 $organisation->setName($name);
+
+                $validTenantTypes = array_values(TenantType::choices());
+                if ($tenantType && in_array($tenantType, $validTenantTypes, true)) {
+                    $organisation->setTenantType($tenantType);
+                }
 
                 $user->addOrganisation($organisation);
                 $user->setRoles([User::ROLE_USER, User::ROLE_ADMIN]);
@@ -104,7 +111,7 @@ class DashboardController extends AbstractController
                 $auditLogService->log(
                     'organisation.created',
                     $user,
-                    ['name' => $name]
+                    ['name' => $name, 'tenant_type' => $tenantType]
                 );
 
                 $this->addFlash('success', 'organisation.created.success');
@@ -112,6 +119,8 @@ class DashboardController extends AbstractController
             }
         }
 
-        return $this->render('organisation/create.html.twig');
+        return $this->render('organisation/create.html.twig', [
+            'tenantTypeChoices' => TenantType::choices(),
+        ]);
     }
 }

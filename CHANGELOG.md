@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-26
+
+### Added
+- **Tenant type selection** — Choose between "MS Teams" or "Web" when creating a new tenant. The tenant type is displayed read-only on the tenant settings page and included in the tenant settings API response
+- **Webhook auth header** — Configure an authentication header for your webhook endpoint in tenant settings. The header is stored encrypted and returned in the tenant settings API for authenticated webhook forwarding
+
 ## 2026-02-25
 
 ### Added

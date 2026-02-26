@@ -111,6 +111,9 @@ organisation:
     placeholder: de ex. Compania Mea SRL
     help: Puteți schimba numele ulterior în setări.
     submit: Creați chiriaș
+    tenant_type: Tip chiriaș
+    tenant_type_placeholder: Selectați un tip de chiriaș...
+    tenant_type_help: Tipul chiriașului determină modul de rutare a mesajelor. Acesta nu poate fi schimbat ulterior.
   created:
     success: Chiriaș creat cu succes!
   name: Nume chiriaș
@@ -151,9 +154,11 @@ channel:
   invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
   workflow_user_id: ID utilizator Workoflow
   organisation_name: Nume chiriaș
+  tenant_type: Tip chiriaș
   channel_settings: Setări generale
   agent_settings: Setări orchestrator
   agent_type: Tip orchestrator
+  webhook_auth_header: Antet de autorizare
   workflow_visualization: Vizualizare flux de lucru
   send_invite: Trimiteți invitația
   make_admin: Faceți administrator

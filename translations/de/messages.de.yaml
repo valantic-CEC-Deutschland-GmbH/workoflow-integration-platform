@@ -111,6 +111,9 @@ organisation:
     placeholder: z.B. Meine Firma GmbH
     help: Sie können den Namen später in den Einstellungen ändern.
     submit: Mandant erstellen
+    tenant_type: Mandantentyp
+    tenant_type_placeholder: Mandantentyp auswählen...
+    tenant_type_help: Der Mandantentyp bestimmt, wie Nachrichten weitergeleitet werden. Dies kann später nicht geändert werden.
   created:
     success: Mandant erfolgreich erstellt!
   name: Mandantenname
@@ -151,9 +154,11 @@ channel:
   invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
   workflow_user_id: Workoflow Benutzer-ID
   organisation_name: Mandantenname
+  tenant_type: Mandantentyp
   channel_settings: Allgemeine Einstellungen
   agent_settings: Orchestrator-Einstellungen
   agent_type: Orchestrator-Typ
+  webhook_auth_header: Auth-Header
   workflow_visualization: Workflow-Visualisierung
   send_invite: Einladung senden
   make_admin: Zum Admin machen

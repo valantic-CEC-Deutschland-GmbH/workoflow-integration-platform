@@ -48,6 +48,9 @@ class Organisation
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $webhookType = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $tenantType = null;
+
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $webhookUrl = null;
 
@@ -62,6 +65,9 @@ class Organisation
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $encryptedOrgMcpAuthHeader = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $encryptedWebhookAuthHeader = null;
 
     public function __construct()
     {
@@ -239,6 +245,17 @@ class Organisation
         return $this;
     }
 
+    public function getTenantType(): ?string
+    {
+        return $this->tenantType;
+    }
+
+    public function setTenantType(?string $tenantType): static
+    {
+        $this->tenantType = $tenantType;
+        return $this;
+    }
+
     public function getWebhookUrl(): ?string
     {
         return $this->webhookUrl;
@@ -291,6 +308,17 @@ class Organisation
     public function setEncryptedOrgMcpAuthHeader(?string $encryptedOrgMcpAuthHeader): static
     {
         $this->encryptedOrgMcpAuthHeader = $encryptedOrgMcpAuthHeader;
+        return $this;
+    }
+
+    public function getEncryptedWebhookAuthHeader(): ?string
+    {
+        return $this->encryptedWebhookAuthHeader;
+    }
+
+    public function setEncryptedWebhookAuthHeader(?string $encryptedWebhookAuthHeader): static
+    {
+        $this->encryptedWebhookAuthHeader = $encryptedWebhookAuthHeader;
         return $this;
     }
 

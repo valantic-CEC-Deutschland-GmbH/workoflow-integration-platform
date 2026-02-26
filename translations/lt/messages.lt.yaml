@@ -111,6 +111,9 @@ organisation:
     placeholder: pvz. Mano įmonė UAB
     help: Pavadinimą galite pakeisti vėliau nustatymuose.
     submit: Sukurti nuomininką
+    tenant_type: Nuomininko tipas
+    tenant_type_placeholder: Pasirinkite nuomininko tipą...
+    tenant_type_help: Nuomininko tipas nustato, kaip pranešimai nukreipiami. Vėliau jo pakeisti negalima.
   created:
     success: Nuomininkas sėkmingai sukurtas!
   name: Nuomininko pavadinimas
@@ -151,9 +154,11 @@ channel:
   invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
   workflow_user_id: Workoflow vartotojo ID
   organisation_name: Nuomininko pavadinimas
+  tenant_type: Nuomininko tipas
   channel_settings: Bendrieji nustatymai
   agent_settings: Orkestratoriaus nustatymai
   agent_type: Orkestratoriaus tipas
+  webhook_auth_header: Autorizacijos antraštė
   workflow_visualization: Darbo eigos vizualizacija
   send_invite: Siųsti kvietimą
   make_admin: Padaryti administratoriumi

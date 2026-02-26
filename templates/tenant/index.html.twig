@@ -254,6 +254,15 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="tenant_type" class="form-label">{{ 'channel.tenant_type'|trans }}</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="tenant_type"
+                                   value="{{ organisation.tenantType == 'ms_teams' ? 'MS Teams' : (organisation.tenantType == 'web' ? 'Web' : '') }}"
+                                   readonly>
+                        </div>
+
+                        <div class="form-group">
                             <label for="uuid" class="form-label">{{ 'channel.uuid'|trans }}</label>
                             <input type="text"
                                    class="form-control"
@@ -332,6 +341,17 @@
                                    placeholder="http://localhost:5678/webhook/016d8b95-..."
                                    {% if not app.user.isAdmin() %}readonly{% endif %}>
                             <small class="form-text text-muted">This is the webhook receiving the user's prompt/payload. Feel free to use your own API endpoint and build your own customizations.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="webhook_auth_header" class="form-label">{{ 'channel.webhook_auth_header'|trans }}</label>
+                            <input type="password"
+                                   class="form-control"
+                                   id="webhook_auth_header"
+                                   name="webhook_auth_header"
+                                   value=""
+                                   placeholder="Authorization: Bearer your-token (leave empty to keep current)"
+                                   {% if not app.user.isAdmin() %}readonly{% endif %}>
                         </div>
                     </div>
 

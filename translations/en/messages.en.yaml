@@ -111,6 +111,9 @@ organisation:
     placeholder: e.g. My Company Inc.
     help: You can change the name later in settings.
     submit: Create Tenant
+    tenant_type: Tenant Type
+    tenant_type_placeholder: Select a tenant type...
+    tenant_type_help: The tenant type determines how messages are routed. This cannot be changed later.
   created:
     success: Tenant created successfully!
   name: Tenant Name
@@ -151,9 +154,11 @@ channel:
   invite_help: The user must register with Workoflow first
   workflow_user_id: Workoflow User ID
   organisation_name: Tenant Name
+  tenant_type: Tenant Type
   channel_settings: General Settings
   agent_settings: Orchestrator Settings
   agent_type: Orchestrator Type
+  webhook_auth_header: Auth Header
   workflow_visualization: Workflow Visualization
   send_invite: Send Invite
   make_admin: Make Admin

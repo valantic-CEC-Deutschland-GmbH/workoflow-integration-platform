@@ -87,6 +87,11 @@ class ChannelController extends AbstractController
             $organisation->setWebhookUrl($data['webhook_url']);
         }
 
+        if (isset($data['webhook_auth_header']) && !empty($data['webhook_auth_header'])) {
+            $encrypted = $this->encryptionService->encrypt($data['webhook_auth_header']);
+            $organisation->setEncryptedWebhookAuthHeader($encrypted);
+        }
+
         if (isset($data['workflow_url'])) {
             $organisation->setWorkflowUrl($data['workflow_url']);
         }
@@ -117,6 +122,7 @@ class ChannelController extends AbstractController
                     'organisation_id' => $organisation->getId(),
                     'webhook_type' => $organisation->getWebhookType(),
                     'has_webhook_url' => !empty($organisation->getWebhookUrl()),
+                    'has_webhook_auth_header' => !empty($organisation->getEncryptedWebhookAuthHeader()),
                     'has_system_prompt' => !empty($userOrganisation?->getSystemPrompt())
                 ]
             );

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\OrganisationRepository;
 use App\Service\AuditLogService;
+use App\Service\EncryptionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,6 +18,7 @@ class TenantApiController extends AbstractController
     public function __construct(
         private OrganisationRepository $organisationRepository,
         private AuditLogService $auditLogService,
+        private EncryptionService $encryptionService,
         private string $apiAuthUser,
         private string $apiAuthPassword,
         #[Autowire('%kernel.project_dir%')]
@@ -49,11 +51,22 @@ class TenantApiController extends AbstractController
             ]
         );
 
+        $webhookAuthHeader = null;
+        if ($organisation->getEncryptedWebhookAuthHeader()) {
+            try {
+                $webhookAuthHeader = $this->encryptionService->decrypt($organisation->getEncryptedWebhookAuthHeader());
+            } catch (\Exception) {
+                $webhookAuthHeader = null;
+            }
+        }
+
         $settings = [
             'name' => $organisation->getName(),
             'uuid' => $organisation->getUuid(),
+            'tenant_type' => $organisation->getTenantType(),
             'webhook_type' => $webhookType,
             'webhook_url' => $webhookUrl,
+            'webhook_auth_header' => $webhookAuthHeader,
         ];
 
         if ($request->query->get('system_prompt') === 'true') {

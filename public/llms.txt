@@ -220,7 +220,7 @@ For production, use JWT tokens via magic link authentication.
 GET /api/tenant/{org-uuid}/settings
 Authorization: Basic {base64(user:password)}
 ```
-Returns: `{ success, complete, settings: { name, uuid, webhook_type, webhook_url } }`
+Returns: `{ success, complete, settings: { name, uuid, tenant_type, webhook_type, webhook_url, webhook_auth_header } }`
 
 **List Available Tools**:
 ```
