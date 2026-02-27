@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-27
+
+### Fixed
+- **Worker container health checks** — Background worker containers (scheduled-worker, messenger-worker) no longer show as "unhealthy" in Docker. The inherited web server health check has been disabled since these containers run console commands, not web servers
+- **Symfony 8 configuration compatibility** — Resolved a deprecated property_info configuration option that caused warnings on every worker and console startup
+
+### Changed
+- **Auto-generated config reference** — Updated framework configuration reference to match Symfony 8.0 schema types
+
 ## 2026-02-26
 
 ### Added
