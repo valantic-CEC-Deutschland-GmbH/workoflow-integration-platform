@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ task ? 'scheduled_task.edit'|trans : 'scheduled_task.create'|trans }} - Workoflow{% endblock %}
+
+{% block body %}
+<div class="scheduled-tasks-page" data-controller="scheduled-task">
+    <div class="scheduled-tasks-container scheduled-task-form-container">
+        <a href="{{ path('app_scheduled_tasks') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> {{ 'action.back'|trans }}
+        </a>
+
+        <div class="scheduled-task-form-card">
+            <div class="scheduled-task-form-header">
+                <h1>{{ task ? 'scheduled_task.edit'|trans : 'scheduled_task.create'|trans }}</h1>
+                <p class="form-description">{{ 'scheduled_task.form_description'|trans }}</p>
+            </div>
+
+        <form method="post" class="scheduled-task-form"
+              action="{{ task ? path('app_scheduled_task_edit', {uuid: task.uuid}) : path('app_scheduled_task_new') }}">
+
+            <div class="form-group">
+                <label for="task_name" class="form-label">{{ 'scheduled_task.name'|trans }} *</label>
+                <input type="text" id="task_name" name="name" class="form-control"
+                       value="{{ task ? task.name : '' }}" required maxlength="255"
+                       placeholder="{{ 'scheduled_task.name_placeholder'|trans }}">
+            </div>
+
+            <div class="form-group">
+                <label for="task_description" class="form-label">{{ 'scheduled_task.description'|trans }}</label>
+                <input type="text" id="task_description" name="description" class="form-control"
+                       value="{{ task ? task.description : '' }}"
+                       placeholder="{{ 'scheduled_task.description_placeholder'|trans }}">
+            </div>
+
+            <div class="form-group">
+                <label for="task_prompt" class="form-label">{{ 'scheduled_task.prompt'|trans }} *</label>
+                <textarea id="task_prompt" name="prompt" class="form-control" rows="6" required
+                          placeholder="{{ 'scheduled_task.prompt_placeholder'|trans }}">{{ task ? task.prompt : '' }}</textarea>
+                <small class="form-help">{{ 'scheduled_task.prompt_help'|trans }}</small>
+            </div>
+
+            <div class="form-group">
+                <label for="task_frequency" class="form-label">{{ 'scheduled_task.frequency'|trans }} *</label>
+                <div class="frequency-row">
+                    <div class="frequency-row-field">
+                        <select id="task_frequency" name="frequency" class="form-control"
+                                data-action="change->scheduled-task#frequencyChanged"
+                                data-scheduled-task-target="frequencySelect">
+                            {% for label, value in frequencies %}
+                                <option value="{{ value }}" {{ (task and task.frequency == value) ? 'selected' : '' }}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="frequency-row-field" data-scheduled-task-target="timeField"
+                         style="{{ (task and task.frequency in ['daily', 'weekdays', 'weekly']) ? '' : 'display:none;' }}">
+                        <input type="time" id="task_execution_time" name="execution_time" class="form-control"
+                               value="{{ task ? task.executionTime : '09:00' }}">
+                    </div>
+
+                    <div class="frequency-row-field" data-scheduled-task-target="weekdayField"
+                         style="{{ (task and task.frequency == 'weekly') ? '' : 'display:none;' }}">
+                        <select id="task_weekday" name="weekday" class="form-control">
+                            <option value="1" {{ (task and task.weekday == 1) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_monday'|trans }}</option>
+                            <option value="2" {{ (task and task.weekday == 2) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_tuesday'|trans }}</option>
+                            <option value="3" {{ (task and task.weekday == 3) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_wednesday'|trans }}</option>
+                            <option value="4" {{ (task and task.weekday == 4) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_thursday'|trans }}</option>
+                            <option value="5" {{ (task and task.weekday == 5) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_friday'|trans }}</option>
+                            <option value="6" {{ (task and task.weekday == 6) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_saturday'|trans }}</option>
+                            <option value="0" {{ (task and task.weekday == 0) ? 'selected' : '' }}>{{ 'scheduled_task.weekday_sunday'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+                <small class="form-help">{{ 'scheduled_task.execution_time_help'|trans }}</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="hidden" name="active" value="0">
+                    <input type="checkbox" name="active" value="1" class="form-check-input"
+                           {{ (task is null or task.active) ? 'checked' : '' }}>
+                    {{ 'scheduled_task.active_label'|trans }}
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ path('app_scheduled_tasks') }}" class="btn btn-secondary">{{ 'common.cancel'|trans }}</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ 'common.save_changes'|trans }}
+                </button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

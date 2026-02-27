@@ -5,13 +5,13 @@ common:
   optional: optional
 
 nav:
-  general: General
+  general: My Agent
   skills: Skills
   files: Files
-  organisation: Channel
+  organisation: Tenant Settings
   profile: Profile
   logout: Logout
-  channel: Channel
+  channel: Tenant Settings
   members: Members
   audit_log: Audit Log
   release_notes: Release Notes
@@ -19,6 +19,63 @@ nav:
   workspace: Workspace
   settings: Settings
   prompt_vault: Prompt Vault
+  scheduled_tasks: Scheduled Tasks
+
+scheduled_task:
+  page_title: Scheduled Tasks
+  explanation: Automate recurring prompts sent to your AI agent. Create tasks with a prompt, frequency, and optional time configuration. Tasks are executed automatically via your organisation's configured webhook.
+  no_webhook_warning: "Your organisation has no webhook URL configured. Scheduled tasks require a webhook to send prompts to your AI agent."
+  configure_webhook: Configure in Tenant Settings
+  create: Create Scheduled Task
+  name: Name
+  description: Description
+  prompt: Prompt
+  frequency: Frequency
+  next_execution: Next Execution
+  status: Status
+  actions: Actions
+  active: Active
+  inactive: Inactive
+  activate: Activate
+  deactivate: Deactivate
+  active_label: Active (task will be executed on schedule)
+  test: Test
+  run_now: Run Now
+  edit: Edit
+  delete: Delete
+  view: View
+  no_tasks: No scheduled tasks yet. Create your first task to automate recurring prompts.
+  execution_history: Execution History
+  task_name: Task Name
+  trigger: Trigger
+  exec_status: Status
+  executed_at: Executed At
+  duration: Duration
+  output: Output
+  name_placeholder: "e.g., Daily Sprint Summary"
+  description_placeholder: "Optional short description"
+  prompt_placeholder: "Enter the prompt to send to your AI agent..."
+  prompt_help: This prompt will be sent to your AI agent via the configured webhook.
+  execution_time: Execution Time
+  execution_time_help: Time of day when the task should run (24h format).
+  weekday: Day of Week
+  weekday_monday: Monday
+  weekday_tuesday: Tuesday
+  weekday_wednesday: Wednesday
+  weekday_thursday: Thursday
+  weekday_friday: Friday
+  weekday_saturday: Saturday
+  weekday_sunday: Sunday
+  freq_manual: Manual
+  freq_hourly: Hourly
+  freq_daily: Daily
+  freq_weekdays: Weekdays
+  freq_weekly: Weekly
+  created.success: Scheduled task created successfully.
+  updated.success: Scheduled task updated successfully.
+  deleted.success: Scheduled task deleted successfully.
+  no_tasks_description: Create your first scheduled task to automate recurring workflows.
+  form_description: Define a recurring task that will be executed via webhook on a schedule.
 
 home:
   title: Welcome to Workoflow
@@ -68,83 +125,101 @@ auth:
     privacy: By signing in, you agree to our privacy policy.
 
 general:
-  title: General
+  title: My Agent
   welcome: Welcome, %name%!
-  organisation: Your Channel
+  agent_ready_setup: "Your AI Agent is ready to be set up."
+  agent_ready: "Your AI Agent has %count% active skill(s)."
+  agent_can_use: "Your agent can work with:"
+  onboarding_title: "Give Your Agent Its First Skill"
+  onboarding_description: "Skills connect your AI agent to the tools you use every day. Add a skill to get started."
+  add_first_skill: "Add Your First Skill"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Configure which services and capabilities your AI agent can use."
+  manage_agent_skills: "Manage Agent Skills"
+  recent_skills: "Configured Skills"
+  view_all: "View All"
+  stats_title: "Activity Overview"
+  stats_period: "Last %days% days"
+  stats_agent_sessions: "Agent Sessions"
+  stats_tool_executions: "Tool Executions"
+  stats_api_calls: "API Calls"
+  stats_prompt_activity: "Prompt Vault Activity"
+  stats_active_skills: "Active Skills"
+  stats_tool_types_used: "Tool Types Used"
+  stats_top_tools: "Most Used Tools"
+  stats_tooltip_agent_sessions: "Number of distinct agent invocations (unique sessions) in the last 30 days."
+  stats_tooltip_tool_executions: "Total number of individual tools called by your agent in the last 30 days."
+  stats_tooltip_api_calls: "Number of times external systems queried your available tools or prompts via API."
+  stats_tooltip_prompt_activity: "Total prompt actions (created, updated, upvoted, commented) in the last 30 days."
+  stats_tooltip_active_skills: "Number of integration skills currently configured for your agent."
+  stats_tooltip_tool_types_used: "How many different integration types (e.g. Jira, Confluence) your agent actually used."
+  technical_details: "API & Technical Details"
+  organisation: Your Tenant
   integration_api_url: Integration API URL
-  workflow_user_id: Channel Specific ID
+  workflow_user_id: Tenant Specific ID
   copy_curl_command: Copy curl command for tools
   copied: Copied!
-  integrations_count: Integrations
-  active_integrations: Active Integrations
-  your_role: Your Role
-  manage_integrations: Manage Integrations
-  recent_integrations: Recent Integrations
   never: Never
 
 organisation:
   create:
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
     placeholder: e.g. My Company Inc.
     help: You can change the name later in settings.
-    submit: Create Channel
+    submit: Create Tenant
+    tenant_type: Tenant Type
+    tenant_type_placeholder: Select a tenant type...
+    tenant_type_help: The tenant type determines how messages are routed. This cannot be changed later.
   created:
-    success: Channel created successfully!
-  name: Channel Name
-  settings: Channel Settings
+    success: Tenant created successfully!
+  name: Tenant Name
+  settings: Tenant Settings
   members: Members
   updated:
-    success: Channel updated successfully!
+    success: Tenant updated successfully!
   member:
     role_updated: Role updated successfully!
     cannot_change_own_role: You cannot change your own role.
   make_admin: Make Admin
   make_member: Make Member
   invite_member: Invite Member
+  invite_help: The user must register with Workoflow first
+  send_invite: Send Invite
+  select_organisation: Select Organisation
   invite:
     invalid_email: Invalid email address.
-    user_has_organisation: This user already belongs to a channel.
+    invalid_organisation: Invalid organisation selected.
+    user_already_in_organisation: This user is already a member of the selected organisation.
+    user_has_organisation: This user already belongs to a tenant.
     user_added: User added successfully!
     user_not_found: User must register with Workoflow first.
 
 channel:
-  title: Channel
-  management: Channel Management
-  management.description: Create and manage your channels
+  title: Tenant Settings
+  management: Tenant Management
+  management.description: Create and manage your tenants
   create:
-    button: Create New Channel
-    title: Create Channel
-    description: Please enter a name for your channel to continue.
-  uuid: Channel UUID
+    button: Create New Tenant
+    title: Create Tenant
+    description: Please enter a name for your tenant to continue.
+  uuid: Tenant UUID
   uuid_help: This UUID is used for the API endpoints
   integration_api_help: Use this API URL to connect AI agents (e.g. n8n) to your integrations
   save: Save
   invite_member: Invite Member
   invite_help: The user must register with Workoflow first
   workflow_user_id: Workoflow User ID
-  organisation_name: Channel Name
-  channel_settings: Channel Settings
-  agent_settings: Agent Settings
-  agent_type: Agent Type
+  organisation_name: Tenant Name
+  tenant_type: Tenant Type
+  channel_settings: General Settings
+  agent_settings: Orchestrator Settings
+  agent_type: Orchestrator Type
+  webhook_auth_header: Auth Header
   workflow_visualization: Workflow Visualization
   send_invite: Send Invite
   make_admin: Make Admin
   make_member: Make Member
-  organisation_type: Channel Type
-  type:
-    common: Common
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Configuration
-  configuration.description: Configure Microsoft Teams bot integration settings
-  app_type: Microsoft App Type
-  app_id: Microsoft App ID
-  app_password: Microsoft App Password
-  app_password.hint: This password will be stored encrypted for security
-  tenant_id: Microsoft Tenant ID
 
 status:
   active: Active
@@ -152,7 +227,6 @@ status:
   connected: Connected
   connected_hubspot: Connected to HubSpot
   connected_wrike: Connected to Wrike
-  connected_candis: Connected to Candis
   connected_outlook_mail: Connected to Outlook Mail
   connected_outlook_calendar: Connected to Outlook Calendar
   connected_msteams: Connected to MS Teams
@@ -197,20 +271,21 @@ integration:
   connect_microsoft: Connect with Microsoft
   connect_hubspot: Connect with HubSpot
   connect_wrike: Connect with Wrike
-  connect_candis: Connect with Candis
   oauth_required: Microsoft authorization is required. Click "Connect with Microsoft" below to continue.
   oauth_required_hubspot: HubSpot authorization is required. Click "Connect with HubSpot" below to continue.
   oauth_required_wrike: Wrike authorization is required. Click "Connect with Wrike" below to continue.
-  oauth_required_candis: Candis authorization is required. Click "Connect with Candis" below to continue. You will select your company during the Candis consent screen.
   oauth_reconnect_confirm: This will replace your existing connection. Continue?
   reconnect_microsoft: Reconnect with Microsoft
   reconnect_hubspot: Reconnect with HubSpot
   reconnect_wrike: Reconnect with Wrike
-  reconnect_candis: Reconnect with Candis
   reconnect_outlook_mail: Reconnect with Microsoft
   reconnect_outlook_calendar: Reconnect with Microsoft
   reconnect_msteams: Reconnect with Microsoft
   toggle_error: Failed to update setting
+  tool_category_read: Read
+  tool_category_write: Write
+  tool_category_delete: Delete
+  tool_restricted_by_mode: Restricted by your current tool access mode
   workflow_id: Workoflow ID
   functions: Functions
   active_of: active of
@@ -251,7 +326,7 @@ integration:
   add_another: Add Another %name%
   add_another_desc: Connect another instance of this integration
   experimental_notice: This skill is still in development. Features may change and some functionality might not work as expected.
-  projektron_session_notice: These values automatically expire after a day, or if you recreate your Projektron session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
+  projektron_session_notice: These values automatically expire after a day, or if you recreate your BCS (Projektron) session. Ensure to recently update them before using the skill. Please excuse the inconvenience.
   add_jira: Add Jira Instance
   add_confluence: Add Confluence Instance
   add_sharepoint: Add SharePoint Instance
@@ -364,6 +439,9 @@ integration:
       get_pipeline:
         name: Get Pipeline Details
         description: Get detailed information about a specific CI/CD pipeline. Returns pipeline status, stages, duration, commit SHA, user who triggered it, and detailed job information. Use pipeline ID to retrieve full execution details.
+  remote_mcp_servers: Remote MCP Servers
+  remote_mcp_description: Connect to vendor-provided MCP servers and proxy their tools through your Workoflow endpoint
+  add_remote_mcp: Add Remote MCP Server
   add_gitlab: Add GitLab Instance
   active: Active
   credentials_not_editable: Credentials cannot be edited for security reasons.
@@ -432,6 +510,8 @@ action:
 
 file:
   title: Files
+  explanation_p1: Upload files to train your AI agent with your own data. Documents uploaded here are used for Retrieval-Augmented Generation (RAG), allowing the agent to search and reference your content when answering questions.
+  explanation_p2: Supported formats include PDF, DOCX, XLSX, CSV, TXT, JSON, and images. The more relevant data you provide, the more accurate and helpful your AI agent's responses will be.
   upload: Upload
   upload_files: Upload Files
   no_files: No files uploaded yet.
@@ -447,6 +527,15 @@ file:
   upload_error: Failed to upload files
   upload_disabled_no_connection: Upload disabled - No connection to file storage
   connection_error_hint: Please ensure MinIO is running and accessible at the configured endpoint.
+  add_data: Manually add data
+  filename: Filename
+  filename_placeholder: my-data.txt
+  filename_help: Optional. A .txt extension will be added automatically if not provided.
+  content: Content
+  content_placeholder: Paste or type your text content here...
+  content_help: The text content that will be saved as a file for your AI agent to use.
+  save: Save
+  create_text_error: Failed to save text file
   deleted:
     success: File deleted successfully!
     error: Error deleting file.
@@ -458,7 +547,7 @@ user:
   email: Email
   role: Role
   joined_at: Joined at
-  organisation: Channel
+  organisation: Tenant
   workflow_user_id: My Workflow User ID
 
 profile:
@@ -470,7 +559,7 @@ profile:
   delete_account_confirm: Are you sure you want to delete your account?
   delete_account_consequences: 'This action will:'
   delete_consequence_1: Delete all your integrations
-  delete_consequence_2: Remove your access to the channel
+  delete_consequence_2: Remove your access to the tenant
   delete_consequence_3: Permanently delete all your data
   confirm_delete: Yes, delete account
   api_token: API Token
@@ -491,6 +580,15 @@ profile:
   api_param_uuid: Get a specific prompt by UUID
   generate_token_first: Generate a token first to get a ready-to-use curl command.
   no_organisation: No organisation selected.
+  tool_mode: Tool Access Mode
+  tool_mode_description: Control which types of tools your AI agents can use. Restrictive modes prevent accidental modifications.
+  mode_read_only: Read Only
+  mode_read_only_desc: Only search, read and list tools. Safest mode for browsing.
+  mode_standard: Standard
+  mode_standard_desc: Read + write/create/update tools. For productive work.
+  mode_full: Full Access
+  mode_full_desc: All tools including delete. Use with caution.
+  mode_updated: Tool access mode updated.
 
 footer:
   rights: All rights reserved.
@@ -592,9 +690,19 @@ prompt:
   tab:
     personal: My Prompts
     organisation: Team Prompts
+  skill: Skill
+  select_skill: Select a skill (optional)
+  skill_help: Optionally link this prompt to a specific skill/integration.
+  platform: Platform
+  select_platform: Select a platform (optional)
+  platform_help: Specify which AI platform this prompt is designed for. This helps others find prompts for the tools they use.
   filter:
     all_categories: All Categories
     category: Category
+    skill: Skill
+    all_skills: All Skills
+    platform: Platform
+    all_platforms: All Platforms
     sort: Sort by
   sort:
     newest: Newest first
@@ -610,7 +718,7 @@ prompt:
   description_placeholder: Brief summary of what this prompt does...
   description_help: A short description helps others understand the purpose of this prompt.
   category: Category
-  select_category: Select a category
+  select_category: Select a category (optional)
   scope: Visibility
   scope_help: Personal prompts are only visible to you. Team prompts are shared with your organisation.
   scope_personal: Personal (only visible to me)
@@ -672,6 +780,8 @@ prompt:
     get_all: Get All Prompts (Personal + Team)
     get_by_uuid: Get Specific Prompt by UUID
     filter_category: Filter by Category
-    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer"
+    filter_skill: Filter by Skill
+    filter_platform: Filter by Platform
+    hint_combine: "Tip: Combine parameters, e.g. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: You need to generate an API token first to access prompts via API.
     generate_token: Generate Token in Profile

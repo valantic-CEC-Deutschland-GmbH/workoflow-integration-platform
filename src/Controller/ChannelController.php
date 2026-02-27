@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use App\Service\Integration\RemoteMcpService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-#[Route('/channel')]
+#[Route('/tenant')]
 #[IsGranted('ROLE_ADMIN')]
 class ChannelController extends AbstractController
 {
@@ -22,11 +24,14 @@ class ChannelController extends AbstractController
         private EntityManagerInterface $entityManager,
         private AuditLogService $auditLogService,
         private HttpClientInterface $httpClient,
-        private EncryptionService $encryptionService
+        private EncryptionService $encryptionService,
+        private RemoteMcpService $remoteMcpService,
+        #[Autowire('%kernel.project_dir%')]
+        private string $projectDir
     ) {
     }
 
-    #[Route('', name: 'app_channel')]
+    #[Route('', name: 'app_tenant')]
     public function index(Request $request): Response
     {
         /** @var User $user */
@@ -35,19 +40,23 @@ class ChannelController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
 
-        return $this->render('channel/index.html.twig', [
+        $promptPath = $this->projectDir . '/templates/skills/prompts/main_agent.twig';
+        $systemPromptContent = file_get_contents($promptPath) ?: '';
+
+        return $this->render('tenant/index.html.twig', [
             'organisation' => $organisation,
             'userOrganisation' => $userOrganisation,
             'user' => $user,
+            'systemPromptContent' => $systemPromptContent,
         ]);
     }
 
-    #[Route('/update', name: 'app_channel_update', methods: ['POST'])]
+    #[Route('/update', name: 'app_tenant_update', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function update(Request $request): Response
     {
@@ -57,7 +66,7 @@ class ChannelController extends AbstractController
         $organisation = $user->getCurrentOrganisation($sessionOrgId);
 
         if (!$organisation) {
-            return $this->redirectToRoute('app_channel_create');
+            return $this->redirectToRoute('app_tenant_create');
         }
 
         $userOrganisation = $user->getCurrentUserOrganisation($sessionOrgId);
@@ -78,6 +87,11 @@ class ChannelController extends AbstractController
             $organisation->setWebhookUrl($data['webhook_url']);
         }
 
+        if (isset($data['webhook_auth_header']) && !empty($data['webhook_auth_header'])) {
+            $encrypted = $this->encryptionService->encrypt($data['webhook_auth_header']);
+            $organisation->setEncryptedWebhookAuthHeader($encrypted);
+        }
+
         if (isset($data['workflow_url'])) {
             $organisation->setWorkflowUrl($data['workflow_url']);
         }
@@ -88,33 +102,14 @@ class ChannelController extends AbstractController
             $organisation->setEncryptedN8nApiKey($encryptedKey);
         }
 
-        // Handle organisation type
-        if (isset($data['organisation_type'])) {
-            $organisation->setOrganisationType($data['organisation_type']);
+        // Handle Organisation MCP Server
+        if (isset($data['org_mcp_server_url'])) {
+            $organisation->setOrgMcpServerUrl($data['org_mcp_server_url'] ?: null);
         }
 
-        // Handle MS Teams fields
-        if (isset($data['microsoft_app_type'])) {
-            $organisation->setMicrosoftAppType($data['microsoft_app_type']);
-        }
-
-        if (isset($data['microsoft_app_id'])) {
-            $organisation->setMicrosoftAppId($data['microsoft_app_id']);
-        }
-
-        // Handle encrypted MS Teams password
-        if (isset($data['microsoft_app_password']) && !empty($data['microsoft_app_password'])) {
-            $encryptedPassword = $this->encryptionService->encrypt($data['microsoft_app_password']);
-            $organisation->setEncryptedMicrosoftAppPassword($encryptedPassword);
-        }
-
-        if (isset($data['microsoft_app_tenant_id'])) {
-            $organisation->setMicrosoftAppTenantId($data['microsoft_app_tenant_id']);
-        }
-
-        // Update UserOrganisation fields
-        if ($userOrganisation && isset($data['system_prompt'])) {
-            $userOrganisation->setSystemPrompt($data['system_prompt']);
+        if (isset($data['org_mcp_auth_header']) && !empty($data['org_mcp_auth_header'])) {
+            $encrypted = $this->encryptionService->encrypt($data['org_mcp_auth_header']);
+            $organisation->setEncryptedOrgMcpAuthHeader($encrypted);
         }
 
         try {
@@ -127,19 +122,20 @@ class ChannelController extends AbstractController
                     'organisation_id' => $organisation->getId(),
                     'webhook_type' => $organisation->getWebhookType(),
                     'has_webhook_url' => !empty($organisation->getWebhookUrl()),
+                    'has_webhook_auth_header' => !empty($organisation->getEncryptedWebhookAuthHeader()),
                     'has_system_prompt' => !empty($userOrganisation?->getSystemPrompt())
                 ]
             );
 
-            $this->addFlash('success', 'Channel settings have been saved successfully.');
+            $this->addFlash('success', 'Tenant settings have been saved successfully.');
         } catch (\Exception $e) {
             $this->addFlash('error', 'Failed to save settings: ' . $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_channel');
+        return $this->redirectToRoute('app_tenant');
     }
 
-    #[Route('/api/n8n-workflow/{orgId}', name: 'app_channel_n8n_workflow', methods: ['GET'])]
+    #[Route('/api/n8n-workflow/{orgId}', name: 'app_tenant_n8n_workflow', methods: ['GET'])]
     public function fetchN8nWorkflow(string $orgId, Request $request): JsonResponse
     {
         /** @var User $user */
@@ -224,5 +220,24 @@ class ChannelController extends AbstractController
                 'error' => 'Failed to fetch workflow: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    #[Route('/test-org-mcp', name: 'app_tenant_test_org_mcp', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function testOrgMcp(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $url = $data['url'] ?? '';
+        $authHeader = $data['auth_header'] ?? '';
+
+        $credentials = [
+            'server_url' => $url,
+            'auth_type' => 'none',
+            'custom_headers' => $authHeader,
+        ];
+
+        $result = $this->remoteMcpService->testConnectionDetailed($credentials);
+
+        return new JsonResponse($result);
     }
 }

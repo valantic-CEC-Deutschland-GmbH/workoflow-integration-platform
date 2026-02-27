@@ -5,13 +5,13 @@ common:
   optional: neprivaloma
 
 nav:
-  general: Bendra informacija
+  general: Mano agentas
   skills: Įgūdžiai
   files: Failai
-  organisation: Kanalas
+  organisation: Nuomininko nustatymai
   profile: Profilis
   logout: Atsijungti
-  channel: Kanalas
+  channel: Nuomininko nustatymai
   members: Nariai
   audit_log: Audito žurnalas
   release_notes: Leidimo pastabos
@@ -19,6 +19,63 @@ nav:
   workspace: Darbo sritis
   settings: Nustatymai
   prompt_vault: Prompt Vault
+  scheduled_tasks: Suplanuotos užduotys
+
+scheduled_task:
+  page_title: Suplanuotos užduotys
+  explanation: Automatizuokite pasikartojančias užklausas siunčiamas AI agentui. Sukurkite užduotis su užklausa, dažnumu ir pasirinktiniu laiko nustatymu. Užduotys vykdomos automatiškai per organizacijos sukonfigūruotą webhook.
+  no_webhook_warning: "Jūsų organizacija neturi sukonfigūruoto webhook URL. Suplanuotoms užduotims reikia webhook, kad būtų galima siųsti užklausas AI agentui."
+  configure_webhook: Konfigūruoti nuomininko nustatymuose
+  create: Sukurti suplanuotą užduotį
+  name: Pavadinimas
+  description: Aprašymas
+  prompt: Užklausa
+  frequency: Dažnumas
+  next_execution: Kitas vykdymas
+  status: Būsena
+  actions: Veiksmai
+  active: Aktyvus
+  inactive: Neaktyvus
+  activate: Aktyvuoti
+  deactivate: Deaktyvuoti
+  active_label: Aktyvus (užduotis bus vykdoma pagal tvarkaraštį)
+  test: Testas
+  run_now: Vykdyti dabar
+  edit: Redaguoti
+  delete: Ištrinti
+  view: Peržiūrėti
+  no_tasks: Dar nėra suplanuotų užduočių. Sukurkite pirmą užduotį, kad automatizuotumėte pasikartojančias užklausas.
+  execution_history: Vykdymo istorija
+  task_name: Užduoties pavadinimas
+  trigger: Paleidiklis
+  exec_status: Būsena
+  executed_at: Įvykdyta
+  duration: Trukmė
+  output: Išvestis
+  name_placeholder: "pvz., Dienos sprinto santrauka"
+  description_placeholder: "Pasirenkamas trumpas aprašymas"
+  prompt_placeholder: "Įveskite užklausą, kuri bus siunčiama AI agentui..."
+  prompt_help: Ši užklausa bus siunčiama AI agentui per sukonfigūruotą webhook.
+  execution_time: Vykdymo laikas
+  execution_time_help: Dienos laikas, kada užduotis turėtų būti vykdoma (24 val. formatas).
+  weekday: Savaitės diena
+  weekday_monday: Pirmadienis
+  weekday_tuesday: Antradienis
+  weekday_wednesday: Trečiadienis
+  weekday_thursday: Ketvirtadienis
+  weekday_friday: Penktadienis
+  weekday_saturday: Šeštadienis
+  weekday_sunday: Sekmadienis
+  freq_manual: Rankinis
+  freq_hourly: Kas valandą
+  freq_daily: Kasdien
+  freq_weekdays: Darbo dienomis
+  freq_weekly: Kas savaitę
+  created.success: Suplanuota užduotis sėkmingai sukurta.
+  updated.success: Suplanuota užduotis sėkmingai atnaujinta.
+  deleted.success: Suplanuota užduotis sėkmingai ištrinta.
+  no_tasks_description: Sukurkite pirmą suplanuotą užduotį, kad automatizuotumėte pasikartojančius darbo procesus.
+  form_description: Apibrėžkite pasikartojančią užduotį, kuri bus vykdoma per webhook pagal tvarkaraštį.
 
 home:
   title: Sveiki atvykę į Workoflow
@@ -68,83 +125,101 @@ auth:
     privacy: Prisijungdami sutinkate su mūsų privatumo politika.
 
 general:
-  title: Bendra informacija
+  title: Mano agentas
   welcome: Sveiki, %name%!
-  organisation: Jūsų kanalas
+  agent_ready_setup: "Jūsų AI agentas paruoštas konfigūravimui."
+  agent_ready: "Jūsų AI agentas turi %count% aktyvų(-ius) įgūdį(-žius)."
+  agent_can_use: "Jūsų agentas gali dirbti su:"
+  onboarding_title: "Suteikite agentui pirmąjį įgūdį"
+  onboarding_description: "Įgūdžiai sujungia jūsų AI agentą su kasdien naudojamais įrankiais. Pridėkite įgūdį, kad pradėtumėte."
+  add_first_skill: "Pridėti pirmąjį įgūdį"
+  manage_skills_title: "Agento įgūdžiai"
+  manage_skills_description: "Konfigūruokite, kokias paslaugas ir galimybes gali naudoti jūsų AI agentas."
+  manage_agent_skills: "Valdyti agento įgūdžius"
+  recent_skills: "Sukonfigūruoti įgūdžiai"
+  view_all: "Peržiūrėti visus"
+  stats_title: "Veiklos apžvalga"
+  stats_period: "Paskutinės %days% dienos"
+  stats_agent_sessions: "Agento sesijos"
+  stats_tool_executions: "Įrankių vykdymai"
+  stats_api_calls: "API iškvietimai"
+  stats_prompt_activity: "Prompt Vault veikla"
+  stats_active_skills: "Aktyvūs įgūdžiai"
+  stats_tool_types_used: "Naudotų įrankių tipai"
+  stats_top_tools: "Dažniausiai naudojami įrankiai"
+  stats_tooltip_agent_sessions: "Skirtingų agento iškvietimų (unikalių sesijų) skaičius per pastarąsias 30 dienų."
+  stats_tooltip_tool_executions: "Bendras atskirų įrankių, kuriuos jūsų agentas iškvietė per pastarąsias 30 dienų, skaičius."
+  stats_tooltip_api_calls: "Kiek kartų išorinės sistemos per API užklausė jūsų prieinamus įrankius ar promptus."
+  stats_tooltip_prompt_activity: "Visų promptų veiksmų (sukurtų, atnaujintų, balsuotų, komentuotų) skaičius per pastarąsias 30 dienų."
+  stats_tooltip_active_skills: "Šiuo metu jūsų agentui sukonfigūruotų integracijos įgūdžių skaičius."
+  stats_tooltip_tool_types_used: "Kiek skirtingų integracijos tipų (pvz. Jira, Confluence) jūsų agentas iš tikrųjų naudojo."
+  technical_details: "API ir techniniai duomenys"
+  organisation: Jūsų nuomininkas
   integration_api_url: Integracijos API URL
-  workflow_user_id: Kanalui specifinis ID
+  workflow_user_id: Nuomininkui specifinis ID
   copy_curl_command: Kopijuoti curl komandą įrankiams
   copied: Nukopijuota!
-  integrations_count: Integracijos
-  active_integrations: Aktyvios integracijos
-  your_role: Jūsų rolė
-  manage_integrations: Valdyti integracijas
-  recent_integrations: Naujausios integracijos
   never: Niekada
 
 organisation:
   create:
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
     placeholder: pvz. Mano įmonė UAB
     help: Pavadinimą galite pakeisti vėliau nustatymuose.
-    submit: Sukurti kanalą
+    submit: Sukurti nuomininką
+    tenant_type: Nuomininko tipas
+    tenant_type_placeholder: Pasirinkite nuomininko tipą...
+    tenant_type_help: Nuomininko tipas nustato, kaip pranešimai nukreipiami. Vėliau jo pakeisti negalima.
   created:
-    success: Kanalas sėkmingai sukurtas!
-  name: Kanalo pavadinimas
-  settings: Kanalo nustatymai
+    success: Nuomininkas sėkmingai sukurtas!
+  name: Nuomininko pavadinimas
+  settings: Nuomininko nustatymai
   members: Nariai
   updated:
-    success: Kanalas sėkmingai atnaujintas!
+    success: Nuomininkas sėkmingai atnaujintas!
   member:
     role_updated: Rolė sėkmingai atnaujinta!
     cannot_change_own_role: Negalite keisti savo pačių rolės.
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
   invite_member: Pakviesti narį
+  invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
+  send_invite: Siųsti kvietimą
+  select_organisation: Pasirinkite organizaciją
   invite:
     invalid_email: Neteisingas el. pašto adresas.
+    invalid_organisation: Pasirinkta netinkama organizacija.
+    user_already_in_organisation: Šis vartotojas jau yra pasirinktos organizacijos narys.
     user_has_organisation: Šis vartotojas jau priklauso kanalui.
     user_added: Vartotojas sėkmingai pridėtas!
     user_not_found: Vartotojas pirmiausia turi užsiregistruoti Workoflow.
 
 channel:
-  title: Kanalas
-  management: Kanalų valdymas
-  management.description: Kurkite ir valdykite savo kanalus
+  title: Nuomininko nustatymai
+  management: Nuomininkų valdymas
+  management.description: Kurkite ir valdykite savo nuomininkus
   create:
-    button: Sukurti naują kanalą
-    title: Sukurti kanalą
-    description: Įveskite kanalo pavadinimą, kad galėtumėte tęsti.
-  uuid: Kanalo UUID
+    button: Sukurti naują nuomininką
+    title: Sukurti nuomininką
+    description: Įveskite nuomininko pavadinimą, kad galėtumėte tęsti.
+  uuid: Nuomininko UUID
   uuid_help: Šis UUID naudojamas API galiniams taškams
   integration_api_help: Naudokite šį API URL AI agentams (pvz. n8n) prijungti prie jūsų integracijų
   save: Išsaugoti
   invite_member: Pakviesti narį
   invite_help: Vartotojas pirmiausia turi užsiregistruoti Workoflow
   workflow_user_id: Workoflow vartotojo ID
-  organisation_name: Kanalo pavadinimas
-  channel_settings: Kanalo nustatymai
-  agent_settings: Agento nustatymai
-  agent_type: Agento tipas
+  organisation_name: Nuomininko pavadinimas
+  tenant_type: Nuomininko tipas
+  channel_settings: Bendrieji nustatymai
+  agent_settings: Orkestratoriaus nustatymai
+  agent_type: Orkestratoriaus tipas
+  webhook_auth_header: Autorizacijos antraštė
   workflow_visualization: Darbo eigos vizualizacija
   send_invite: Siųsti kvietimą
   make_admin: Padaryti administratoriumi
   make_member: Padaryti nariu
-  organisation_type: Kanalo tipas
-  type:
-    common: Bendras
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams konfigūracija
-  configuration.description: Konfigūruokite Microsoft Teams boto integracijos nustatymus
-  app_type: Microsoft programos tipas
-  app_id: Microsoft programos ID
-  app_password: Microsoft programos slaptažodis
-  app_password.hint: Šis slaptažodis bus saugomas užšifruotai
-  tenant_id: Microsoft nuomininko ID
 
 status:
   active: Aktyvus
@@ -152,7 +227,6 @@ status:
   connected: Prisijungta
   connected_hubspot: Prisijungta prie HubSpot
   connected_wrike: Prisijungta prie Wrike
-  connected_candis: Prisijungta prie Candis
   connected_outlook_mail: Prisijungta prie Outlook Mail
   connected_outlook_calendar: Prisijungta prie Outlook Calendar
   connected_msteams: Prisijungta prie MS Teams
@@ -197,20 +271,21 @@ integration:
   connect_microsoft: Prisijungti su Microsoft
   connect_hubspot: Prisijungti su HubSpot
   connect_wrike: Prisijungti su Wrike
-  connect_candis: Prisijungti su Candis
   oauth_required: Reikalinga Microsoft autorizacija. Spustelėkite „Prisijungti su Microsoft" žemiau, kad tęstumėte.
   oauth_required_hubspot: Reikalinga HubSpot autorizacija. Spustelėkite „Prisijungti su HubSpot" žemiau, kad tęstumėte.
   oauth_required_wrike: Reikalinga Wrike autorizacija. Spustelėkite „Prisijungti su Wrike" žemiau, kad tęstumėte.
-  oauth_required_candis: Reikalinga Candis autorizacija. Spustelėkite „Prisijungti su Candis" žemiau, kad tęstumėte. Candis sutikimo ekrane pasirinksite savo įmonę.
   oauth_reconnect_confirm: Tai pakeis esamą ryšį. Tęsti?
   reconnect_microsoft: Prisijungti iš naujo su Microsoft
   reconnect_hubspot: Prisijungti iš naujo su HubSpot
   reconnect_wrike: Prisijungti iš naujo su Wrike
-  reconnect_candis: Prisijungti iš naujo su Candis
   reconnect_outlook_mail: Prisijungti iš naujo su Microsoft
   reconnect_outlook_calendar: Prisijungti iš naujo su Microsoft
   reconnect_msteams: Prisijungti iš naujo su Microsoft
   toggle_error: Nepavyko atnaujinti nustatymo
+  tool_category_read: Skaitymas
+  tool_category_write: Rašymas
+  tool_category_delete: Trynimas
+  tool_restricted_by_mode: Apribota pagal jūsų dabartinį įrankių prieigos režimą
   workflow_id: Workoflow ID
   functions: Funkcijos
   active_of: aktyvių iš
@@ -251,7 +326,7 @@ integration:
   add_another: Pridėti kitą %name%
   add_another_desc: Prijungti kitą šios integracijos egzempliorių
   experimental_notice: Šis įgūdis vis dar kuriamas. Funkcijos gali keistis ir kai kurios galimybės gali neveikti taip, kaip tikėtasi.
-  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate Projektron sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
+  projektron_session_notice: Šios reikšmės automatiškai nustoja galioti po dienos arba jei iš naujo sukuriate BCS (Projektron) sesiją. Prieš naudodami įgūdį, būtinai atnaujinkite jas. Atsiprašome už nepatogumus.
   add_jira: Pridėti Jira egzempliorių
   add_confluence: Pridėti Confluence egzempliorių
   add_sharepoint: Pridėti SharePoint egzempliorių
@@ -364,6 +439,9 @@ integration:
       get_pipeline:
         name: Gauti vamzdyno detales
         description: Gauti išsamią informaciją apie konkretų CI/CD vamzdyną. Grąžina vamzdyno būseną, etapus, trukmę, commit'o SHA, vartotoją, kuris jį paleido, ir išsamią darbų informaciją. Naudokite vamzdyno ID pilnoms vykdymo detalėms gauti.
+  remote_mcp_servers: Nuotoliniai MCP serveriai
+  remote_mcp_description: Prisijunkite prie trečiųjų šalių MCP serverių ir persiųskite jų įrankius per savo Workoflow galutinį tašką
+  add_remote_mcp: Pridėti nuotolinį MCP serverį
   add_gitlab: Pridėti GitLab egzempliorių
   active: Aktyvus
   credentials_not_editable: Prisijungimo duomenys negali būti redaguojami dėl saugumo priežasčių.
@@ -432,6 +510,8 @@ action:
 
 file:
   title: Failai
+  explanation_p1: Įkelkite failus, kad apmokytumėte savo AI agentą savo duomenimis. Čia įkelti dokumentai naudojami informacijos gavimo papildytai generacijai (RAG), leidžiant agentui ieškoti ir remtis jūsų turiniu atsakant į klausimus.
+  explanation_p2: Palaikomi formatai apima PDF, DOCX, XLSX, CSV, TXT, JSON ir vaizdus. Kuo daugiau aktualių duomenų pateiksite, tuo tikslesni ir naudingesni bus jūsų AI agento atsakymai.
   upload: Įkelti
   upload_files: Įkelti failus
   no_files: Dar nėra įkeltų failų.
@@ -447,6 +527,15 @@ file:
   upload_error: Nepavyko įkelti failų
   upload_disabled_no_connection: Įkėlimas išjungtas - Nėra ryšio su failų saugykla
   connection_error_hint: Įsitikinkite, kad MinIO veikia ir pasiekiamas sukonfigūruotame galiniame taške.
+  add_data: Pridėti duomenis rankiniu būdu
+  filename: Failo pavadinimas
+  filename_placeholder: mano-duomenys.txt
+  filename_help: Neprivaloma. .txt plėtinys bus pridėtas automatiškai, jei nepateiktas.
+  content: Turinys
+  content_placeholder: Įklijuokite arba įveskite tekstinį turinį čia...
+  content_help: Tekstinis turinys, kuris bus išsaugotas kaip failas jūsų AI agentui naudoti.
+  save: Išsaugoti
+  create_text_error: Nepavyko išsaugoti tekstinio failo
   deleted:
     success: Failas sėkmingai ištrintas!
     error: Klaida trinant failą.
@@ -491,6 +580,15 @@ profile:
   api_param_uuid: Gauti konkretų promptą pagal UUID
   generate_token_first: Pirmiausia sugeneruokite raktą, kad gautumėte paruoštą curl komandą.
   no_organisation: Nepasirinkta organizacija.
+  tool_mode: Įrankių prieigos režimas
+  tool_mode_description: Valdykite, kokius įrankių tipus gali naudoti jūsų AI agentai. Riboti režimai neleidžia atsitiktinių pakeitimų.
+  mode_read_only: Tik skaitymas
+  mode_read_only_desc: Tik paieškos, skaitymo ir sąrašų įrankiai. Saugiausias režimas.
+  mode_standard: Standartinis
+  mode_standard_desc: Skaitymo ir rašymo įrankiai. Produktyviam darbui.
+  mode_full: Pilna prieiga
+  mode_full_desc: Visi įrankiai, įskaitant trynimą. Naudokite atsargiai.
+  mode_updated: Įrankių prieigos režimas atnaujintas.
 
 footer:
   rights: Visos teisės saugomos.
@@ -592,9 +690,19 @@ prompt:
   tab:
     personal: Mano promptai
     organisation: Komandos promptai
+  skill: Įgūdis
+  select_skill: Pasirinkite įgūdį (neprivaloma)
+  skill_help: Neprivaloma susieti šį promptą su konkrečiu įgūdžiu/integracija.
+  platform: Platforma
+  select_platform: Pasirinkite platformą (neprivaloma)
+  platform_help: Nurodykite, kuriai AI platformai skirtas šis promptas. Tai padeda kitiems rasti promptus jų naudojamiems įrankiams.
   filter:
     all_categories: Visos kategorijos
     category: Kategorija
+    skill: Įgūdis
+    all_skills: Visi įgūdžiai
+    platform: Platforma
+    all_platforms: Visos platformos
     sort: Rūšiuoti pagal
   sort:
     newest: Naujausi pirmiausia
@@ -610,7 +718,7 @@ prompt:
   description_placeholder: Trumpa santrauka, ką šis promptas daro...
   description_help: Trumpas aprašymas padeda kitiems suprasti šio prompto paskirtį.
   category: Kategorija
-  select_category: Pasirinkite kategoriją
+  select_category: Pasirinkite kategoriją (neprivaloma)
   scope: Matomumas
   scope_help: Asmeniniai promptai matomi tik jums. Komandos promptai dalijami su jūsų organizacija.
   scope_personal: Asmeninis (matomas tik man)
@@ -672,6 +780,8 @@ prompt:
     get_all: Gauti visus promptus (Asmeniniai + Komandos)
     get_by_uuid: Gauti konkretų promptą pagal UUID
     filter_category: Filtruoti pagal kategoriją
-    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer"
+    filter_skill: Filtruoti pagal įgūdį
+    filter_platform: Filtruoti pagal platformą
+    hint_combine: "Patarimas: Derinkite parametrus, pvz. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: Pirmiausia turite sugeneruoti API raktą, kad galėtumėte pasiekti promptus per API.
     generate_token: Generuoti raktą profilyje

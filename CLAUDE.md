@@ -1,7 +1,8 @@
 # Workoflow Integration Platform
 
 ## Overview
-The Workoflow Integration Platform is a production-ready Symfony 7.2 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
+The Workoflow Integration Platform is a production-ready Symfony 8.0 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
+If you have read this file, greet me with "Hey Workoflow Dev"
 
 ### Development Rules
 1. **CHANGELOG.md Updates**:
@@ -57,7 +58,7 @@ The Workoflow Integration Platform is a production-ready Symfony 7.2 application
 ## Architecture
 
 ### Tech Stack
-- **Backend**: PHP 8.4, Symfony 7.2, FrankenPHP
+- **Backend**: PHP 8.5, Symfony 8.0, FrankenPHP
 - **Database**: MariaDB 11.2
 - **Cache**: Redis 7
 - **Storage**: MinIO (S3-compatible)
@@ -341,3 +342,23 @@ docker-compose exec frankenphp npm run build
 - REST API Implementation
 - File Management
 - Multi-Language Support (DE/EN)
+
+
+## Workoflow Integration Platform (Production)
+
+**CRITICAL**: The integration platform uses a separate prod compose file:
+```bash
+# Connect and deploy
+ssh val-workoflow-prod
+sudo -iu docker
+cd /home/docker/docker-setups/workoflow-integration-platform
+
+# ALWAYS use docker-compose-prod.yml for production!
+docker-compose -f docker-compose-prod.yml up -d
+docker-compose -f docker-compose-prod.yml restart frankenphp
+
+# NEVER use plain docker-compose commands - they create new volumes and lose data!
+# docker-compose up -d  # WRONG!
+```
+
+The `docker-compose-prod.yml` uses `external: true` volumes that reference existing production data. Using the default `docker-compose.yml` creates new prefixed volumes and disconnects from production data.

@@ -210,6 +210,11 @@ class OutlookCalendarIntegration implements PersonalizedSkillInterface
         return null;
     }
 
+    public function getLogoPath(): string
+    {
+        return '/images/logos/outlook-calendar-icon.svg';
+    }
+
     private function persistRefreshedCredentials(int $configId, array $credentials): void
     {
         try {
@@ -233,8 +238,8 @@ class OutlookCalendarIntegration implements PersonalizedSkillInterface
 
         $newTokens = $this->outlookCalendarService->refreshToken(
             $credentials['refresh_token'],
-            $credentials['client_id'],
-            $credentials['client_secret'],
+            $_ENV['AZURE_CLIENT_ID'] ?? $credentials['client_id'],
+            $_ENV['AZURE_CLIENT_SECRET'] ?? $credentials['client_secret'],
             $credentials['tenant_id']
         );
 

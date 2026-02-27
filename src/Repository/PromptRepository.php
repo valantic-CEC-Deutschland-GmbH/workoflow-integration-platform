@@ -27,7 +27,9 @@ class PromptRepository extends ServiceEntityRepository
         Organisation $organisation,
         ?string $scope = null,
         ?string $category = null,
-        ?string $uuid = null
+        ?string $uuid = null,
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -71,6 +73,18 @@ class PromptRepository extends ServiceEntityRepository
                 ->setParameter('category', $category);
         }
 
+        // Filter by skill
+        if ($skill !== null) {
+            $qb->andWhere('p.skill = :skill')
+                ->setParameter('skill', $skill);
+        }
+
+        // Filter by platform
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
+        }
+
         return $qb->orderBy('p.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -84,7 +98,9 @@ class PromptRepository extends ServiceEntityRepository
         User $user,
         Organisation $organisation,
         ?string $category = null,
-        string $sort = 'newest'
+        string $sort = 'newest',
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -100,6 +116,16 @@ class PromptRepository extends ServiceEntityRepository
                 ->setParameter('category', $category);
         }
 
+        if ($skill !== null) {
+            $qb->andWhere('p.skill = :skill')
+                ->setParameter('skill', $skill);
+        }
+
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
+        }
+
         $this->applySorting($qb, $sort);
 
         return $qb->getQuery()->getResult();
@@ -112,7 +138,9 @@ class PromptRepository extends ServiceEntityRepository
     public function findOrganisationPrompts(
         Organisation $organisation,
         ?string $category = null,
-        string $sort = 'newest'
+        string $sort = 'newest',
+        ?string $skill = null,
+        ?string $platform = null
     ): array {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.organisation = :organisation')
@@ -124,6 +152,16 @@ class PromptRepository extends ServiceEntityRepository
         if ($category !== null) {
             $qb->andWhere('p.category = :category')
                 ->setParameter('category', $category);
+        }
+
+        if ($skill !== null) {
+            $qb->andWhere('p.skill = :skill')
+                ->setParameter('skill', $skill);
+        }
+
+        if ($platform !== null) {
+            $qb->andWhere('p.platform = :platform')
+                ->setParameter('platform', $platform);
         }
 
         $this->applySorting($qb, $sort);

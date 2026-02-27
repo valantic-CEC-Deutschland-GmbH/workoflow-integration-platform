@@ -1,19 +1,22 @@
 # Workoflow Integration Platform
 
-> AI-first integration hub providing unified REST API access to 95+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis, and platform services. Built for AI agents, automation workflows, and conversational interfaces.
+> AI-first integration hub providing unified REST API access to 85+ tools across Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron), and platform services. Built for AI agents, automation workflows, and conversational interfaces.
 
-**Last Updated**: 2025-11-24
+**Last Updated**: 2026-02-25
 **Version**: 1.2.0
-**Architecture**: Multi-tenant Symfony 7.2 platform with plugin-based integration system
+**Architecture**: Multi-tenant Symfony 8.0 platform with plugin-based integration system
 **Authentication**: OAuth2 (Google), Magic Links, Basic Auth + JWT for API
-**Tech Stack**: PHP 8.4, Symfony 7.2, FrankenPHP, MariaDB 11.2, Redis, MinIO S3
+**Tool Access Modes**: Read Only / Standard / Full — per-user control over which tool categories (Read, Write, Delete) AI agents can use
+**Tech Stack**: PHP 8.5, Symfony 8.0, FrankenPHP, MariaDB 12, Redis 8, MinIO S3
 
 ## Core Concepts
 
 The platform follows a **Skills-based architecture** where integrations are treated as AI agent "skills":
 
-- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, Projektron, Candis)
+- **Personalized Skills**: User-specific integrations requiring external credentials (Jira, Confluence, SharePoint, Outlook Mail, Outlook Calendar, MS Teams, GitLab, Trello, SAP C4C, BCS (Projektron))
+- **Remote MCP Servers**: Connect any vendor-provided MCP server (e.g., Atlassian, GitHub, Slack). Tools are discovered dynamically via MCP protocol and proxied through the Workoflow endpoint. Supports both per-user and organisation-wide MCP servers (org tools use `_org` suffix)
 - **Platform Skills**: Built-in system tools requiring no external auth (PDF generation, file sharing, web search, employee lookup)
+- **Scheduled Tasks**: Automate recurring prompts (hourly/daily/weekdays/weekly) sent to the AI agent via webhook, with execution history and response tracking
 
 ### Dynamic Tool Discovery
 
@@ -24,7 +27,7 @@ GET /api/integrations/{org-uuid}/?workflow_user_id={user-id}&tool_type={type}
 Authorization: Basic {base64(workoflow:workoflow)}
 ```
 
-Tool types: `jira`, `confluence`, `sharepoint`, `outlook_mail`, `outlook_calendar`, `msteams`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `candis`, `system`
+Tool types: `jira`, `confluence`, `sharepoint`, `outlook_mail`, `outlook_calendar`, `msteams`, `gitlab`, `trello`, `sap_c4c`, `projektron`, `remote_mcp`, `system`
 
 ### Tool Execution
 
@@ -48,7 +51,7 @@ Content-Type: application/json
 
 [Getting Started Guide](/CLAUDE.md#setup): Complete setup for development and production environments
 
-[API Examples](/API_EXAMPLES.md): cURL examples for authentication, tool discovery, and execution
+[API Examples](/docs/API_EXAMPLES.md): cURL examples for authentication, tool discovery, and execution
 
 ## Architecture Documentation
 
@@ -68,11 +71,11 @@ Content-Type: application/json
 
 [Trello Integration](/docs/TRELLO.md): 12 tools for board management, card operations, list handling, label management
 
-[SharePoint Integration](/sharepoint-setup.md): 6 tools for document search (KQL), file reading (PDF, Word, Excel, PowerPoint), downloads
+[SharePoint Integration](/docs/sharepoint-setup.md): 6 tools for document search (KQL), file reading (PDF, Word, Excel, PowerPoint), downloads
 
 [Channel System](/docs/CHANNEL.md): Multi-channel support for Slack, MS Teams, WhatsApp with user authentication
 
-**Confluence Integration**: 5 tools for CQL search, page management, content creation, comment handling (see API_EXAMPLES.md and CLAUDE.md)
+**Confluence Integration**: 5 tools for CQL search, page management, content creation, comment handling (see docs/API_EXAMPLES.md and CLAUDE.md)
 
 **SAP C4C Integration**: Lead management, opportunity tracking, account management for SAP Cloud for Customer (see CHANGELOG.md for features)
 
@@ -80,7 +83,7 @@ Content-Type: application/json
 
 ### Integration Tool Summary
 
-The platform provides 95+ tools across 11 user integrations:
+The platform provides 85+ tools across 10 user integrations:
 
 **Jira (12 tools)**
 - Issue search and management (JQL queries)
@@ -134,13 +137,7 @@ The platform provides 95+ tools across 11 user integrations:
 - Account and contact management
 - Activity logging
 
-**Candis (9 tools)**
-- Invoice management (list, view details, update payment status)
-- Reimbursement tracking (general expenses, hospitality, per diem, mileage)
-- Master data imports (cost centers, contacts, GL accounts)
-- Export operations (create exports, track status)
-
-**Projektron (1 tool)**
+**BCS (Projektron) (1 tool)**
 - Task and project discovery (get all available items)
 - Time tracking preparation (booking URLs)
 
@@ -167,15 +164,34 @@ Returns OpenAPI-style tool definitions with:
 - Descriptions with integration context
 - Parameter schemas with types and validation
 - Required vs optional fields
+- Tool category (`read`, `write`, or `delete`)
+
+### Tool Access Modes
+
+Each user can set a **Tool Access Mode** on their profile to control which tool categories are available:
+
+- **Read Only**: Only `read` tools (search, list, get). Safest mode for browsing data.
+- **Standard**: `read` + `write` tools (create, update, transition). For productive work.
+- **Full**: All tools including `delete`. Use with caution.
+
+The API enforces these modes — tools outside the user's allowed categories are excluded from discovery and return HTTP 403 if executed directly. Existing users default to Standard mode; new users default to Read Only.
 
 **Static Export**:
 
-[tools-export.xml](/tools-export.xml): Complete tool catalog export in XML format
+[tools-export.xml](/docs/reference/tools-export.xml): Complete tool catalog export in XML format
 
 Export your own tools:
 ```bash
 docker-compose exec frankenphp php bin/console app:export-tools --category=system
 ```
+
+## Prompt Vault
+
+The Prompt Vault is a shared library for managing, organizing, and discovering AI prompts. Users can create personal or team-shared prompts, tag them with categories, skills (integrations), and target AI platforms.
+
+**Platform Tagging**: Each prompt can be tagged with the AI platform it's designed for (e.g., ChatGPT, Claude Desktop, Claude Code, Copilot, Cursor, Gemini, GitHub Copilot, Workoflow, and more). Filter prompts by platform in the UI or via API using `?platform=chatgpt`.
+
+**API Access**: Prompts are accessible via REST API at `/api/prompts` with filtering by scope, category, skill, and platform. Authentication via `X-Prompt-Token` header or `Authorization: Bearer` token.
 
 ## AI Agent System
 
@@ -200,6 +216,13 @@ For production, use JWT tokens via magic link authentication.
 
 ### Endpoints
 
+**Tenant Settings** (for bot multi-tenancy):
+```
+GET /api/tenant/{org-uuid}/settings
+Authorization: Basic {base64(user:password)}
+```
+Returns: `{ success, complete, settings: { name, uuid, tenant_type, webhook_type, webhook_url, webhook_auth_header } }`
+
 **List Available Tools**:
 ```
 GET /api/integrations/{org-uuid}/?workflow_user_id={user-id}
@@ -212,7 +235,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 **Tool Filtering**:
 ```
-?tool_type=jira,confluence,sharepoint,outlook_mail,outlook_calendar,msteams,gitlab,trello,sap_c4c,projektron,candis,system
+?tool_type=jira,confluence,sharepoint,outlook_mail,outlook_calendar,msteams,gitlab,trello,sap_c4c,projektron,system
 ```
 
 **Error Responses**:
@@ -224,7 +247,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 ### Example Workflows
 
-[API Examples](/API_EXAMPLES.md): Complete examples including:
+[API Examples](/docs/API_EXAMPLES.md): Complete examples including:
 1. Authentication and token generation
 2. Listing available tools
 3. Executing Jira search
@@ -275,7 +298,7 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 [Changelog](/CHANGELOG.md): User-facing changes, features, fixes, and improvements
 
-[Tool Export XML](/tools-export.xml): Complete tool catalog in XML format for offline reference
+[Tool Export XML](/docs/reference/tools-export.xml): Complete tool catalog in XML format for offline reference
 
 [Work on n8n Agents Prompt](/docs/work_on_n8n_agents_prompt.md): Development workflow for n8n agent integration
 
@@ -287,4 +310,4 @@ POST /api/integrations/{org-uuid}/execute?workflow_user_id={user-id}
 
 **For Developers**: Start with the API Examples, use the tool discovery endpoint to explore available integrations, and reference the architecture documentation to understand the plugin system. The platform follows SOLID principles and uses modern Symfony patterns.
 
-**Need Help?**: Check the comprehensive documentation in /docs, review API_EXAMPLES.md for practical examples, or consult CLAUDE.md for development guidelines.
+**Need Help?**: Check the comprehensive documentation in /docs, review docs/API_EXAMPLES.md for practical examples, or consult CLAUDE.md for development guidelines.

@@ -7,7 +7,8 @@ class ToolDefinition
     public function __construct(
         private string $name,
         private string $description,
-        private array $parameters = []
+        private array $parameters = [],
+        private ToolCategory $category = ToolCategory::READ
     ) {
     }
 
@@ -26,12 +27,18 @@ class ToolDefinition
         return $this->parameters;
     }
 
+    public function getCategory(): ToolCategory
+    {
+        return $this->category;
+    }
+
     public function toArray(): array
     {
         return [
             'name' => $this->name,
             'description' => $this->description,
-            'parameters' => $this->parameters
+            'parameters' => $this->parameters,
+            'category' => $this->category->value
         ];
     }
 }

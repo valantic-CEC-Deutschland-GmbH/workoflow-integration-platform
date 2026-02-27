@@ -1,0 +1,103 @@
+[
+  {
+    "headers": {
+      "authorization": "Basic MDUwVm9tMGRpTWhsMU9obTlWbzlLTERuU1prRXVNMFE6aEl4YkhwRHFNQVlPQ25BTWUzRjJCMzlMYXdsclQ1aTI="
+    },
+    "params": {},
+    "query": {},
+    "body": {
+      "text": "can you tell me wich ticket i have open in the sprint and wich are unassigned right now?",
+      "textFormat": "plain",
+      "attachments": [
+        {
+          "contentType": "text/html",
+          "content": "<p>can you tell me wich ticket i have open in the sprint and wich are unassigned right now?</p>"
+        }
+      ],
+      "type": "message",
+      "timestamp": "2026-02-26T09:21:30.989Z",
+      "localTimestamp": "2026-02-26T09:21:30.989Z",
+      "id": "1772097690951",
+      "channelId": "msteams",
+      "serviceUrl": "https://smba.trafficmanager.net/de/ae6f26a3-6f27-4ed6-a3a8-800c3226fb79/",
+      "from": {
+        "id": "29:1WNodJik3rRYucJYmPwj9eXePu4p10wc5nC1dQ5Qhe55B-GyErHwBOkt92bbhJuXtNjUfV8G-nqY_8R0yOZrByw",
+        "name": "Justus Brixius",
+        "aadObjectId": "6281257c-e91c-4ba2-9a64-71e7b1250773"
+      },
+      "conversation": {
+        "conversationType": "personal",
+        "tenantId": "ae6f26a3-6f27-4ed6-a3a8-800c3226fb79",
+        "id": "a:1f0GXz7bgmi2KeOZ6gvMwi0_x1rPn7eoe8zuOsxjb6MYoF21E4GrUXkX801DjkLadwdUkFO_t8Pi0qcIOdlJz-LZ8Hh0kVGZUFZEKuk1b7w1nbWjb_sW7oMjkalKFxXUG"
+      },
+      "recipient": {
+        "id": "28:ec40bbb0-909e-4b46-908f-ce9b37735e5f",
+        "name": "GenesisHorizon"
+      },
+      "entities": [
+        {
+          "locale": "de-DE",
+          "country": "DE",
+          "platform": "Web",
+          "timezone": "Europe/Berlin",
+          "type": "clientInfo"
+        }
+      ],
+      "channelData": {
+        "tenant": {
+          "id": "ae6f26a3-6f27-4ed6-a3a8-800c3226fb79"
+        }
+      },
+      "locale": "de-DE",
+      "localTimezone": "Europe/Berlin",
+      "rawTimestamp": "2026-02-26T09:21:30.9891642Z",
+      "rawLocalTimestamp": "2026-02-26T10:21:30.9891642+01:00",
+      "callerId": "urn:botframework:azure",
+      "_fileDetection": {
+        "hasNonHtmlAttachments": false,
+        "detectedFileUrls": [],
+        "attachmentTypes": [
+          "text/html"
+        ],
+        "entityTypes": [
+          "clientInfo"
+        ],
+        "possibleFileAttachments": []
+      },
+      "custom": {
+        "isThreadReply": false,
+        "threadMessageId": null,
+        "originalThreadMessage": null,
+        "user": {
+          "id": "29:1WNodJik3rRYucJYmPwj9eXePu4p10wc5nC1dQ5Qhe55B-GyErHwBOkt92bbhJuXtNjUfV8G-nqY_8R0yOZrByw",
+          "name": "Justus Brixius",
+          "aadObjectId": "6281257c-e91c-4ba2-9a64-71e7b1250773",
+          "givenName": "Justus",
+          "surname": "Brixius",
+          "email": "justus.brixius@cec.valantic.com",
+          "userPrincipalName": "justus.brixius@cec.valantic.com",
+          "tenantId": "ae6f26a3-6f27-4ed6-a3a8-800c3226fb79",
+          "userRole": "user",
+          "teamContext": null,
+          "meetingContext": null,
+          "fetchedAt": "2026-02-26T09:21:32.967Z"
+        },
+        "conversationDetails": {
+          "conversationType": "personal",
+          "conversationId": "a:1f0GXz7bgmi2KeOZ6gvMwi0_x1rPn7eoe8zuOsxjb6MYoF21E4GrUXkX801DjkLadwdUkFO_t8Pi0qcIOdlJz-LZ8Hh0kVGZUFZEKuk1b7w1nbWjb_sW7oMjkalKFxXUG",
+          "tenantId": "ae6f26a3-6f27-4ed6-a3a8-800c3226fb79",
+          "isGroup": false
+        },
+        "enrichmentTimestamp": "2026-02-26T09:21:33.507Z",
+        "session": {
+          "sessionId": "edee4a17-7fb5-4ca4-81c1-aafb80fd8cf5",
+          "createdAt": "2026-02-25T22:24:30.036Z",
+          "messageCount": 2,
+          "isNewSession": false
+        }
+      }
+    },
+    "webhookUrl": "workflows.vcec.cloud/webhook/016d8b95-d5a5-4ac6-acb5-359a547f642f",
+    "executionMode": "production"
+  }
+]

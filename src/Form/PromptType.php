@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
+use App\Integration\IntegrationRegistry;
+use App\Integration\PersonalizedSkillInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -13,6 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PromptType extends AbstractType
 {
+    public function __construct(
+        private IntegrationRegistry $integrationRegistry,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -21,7 +29,7 @@ class PromptType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 255]),
+                    new Assert\Length(max: 255),
                 ],
                 'attr' => [
                     'placeholder' => 'prompt.title_placeholder',
@@ -51,9 +59,27 @@ class PromptType extends AbstractType
             ])
             ->add('category', ChoiceType::class, [
                 'label' => 'prompt.category',
-                'required' => true,
+                'required' => false,
                 'choices' => array_flip(Prompt::getCategories()),
                 'placeholder' => 'prompt.select_category',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+            ])
+            ->add('skill', ChoiceType::class, [
+                'label' => 'prompt.skill',
+                'required' => false,
+                'choices' => $this->buildSkillChoices(),
+                'placeholder' => 'prompt.select_skill',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+            ])
+            ->add('platform', ChoiceType::class, [
+                'label' => 'prompt.platform',
+                'required' => false,
+                'choices' => PromptPlatform::choices(),
+                'placeholder' => 'prompt.select_platform',
                 'attr' => [
                     'class' => 'form-control',
                 ],
@@ -74,5 +100,21 @@ class PromptType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Prompt::class,
         ]);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function buildSkillChoices(): array
+    {
+        $choices = [];
+        foreach ($this->integrationRegistry->all() as $integration) {
+            if ($integration instanceof PersonalizedSkillInterface) {
+                $choices[$integration->getName()] = $integration->getType();
+            }
+        }
+        ksort($choices);
+
+        return $choices;
     }
 }

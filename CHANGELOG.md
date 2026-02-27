@@ -4,6 +4,140 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-02-27
+
+### Fixed
+- **Worker container health checks** — Background worker containers (scheduled-worker, messenger-worker) no longer show as "unhealthy" in Docker. The inherited web server health check has been disabled since these containers run console commands, not web servers
+- **Symfony 8 configuration compatibility** — Resolved a deprecated property_info configuration option that caused warnings on every worker and console startup
+
+### Changed
+- **Auto-generated config reference** — Updated framework configuration reference to match Symfony 8.0 schema types
+
+## 2026-02-26
+
+### Added
+- **Scheduled Tasks** — Automate recurring prompts on hourly, daily, weekday, or weekly schedules. Tasks send prompts to your AI agent via the organisation's configured webhook, with full execution history tracking and response viewing
+- **Scheduled task worker** — A persistent background worker automatically executes due tasks on schedule. Can also be triggered manually with "Run Now" or "Test" buttons
+- **Async task execution** — "Run Now" and "Test" buttons now return instantly and show a live progress indicator while the task runs in the background, eliminating timeout errors for long-running tasks
+- **Formatted response output** — Task execution results are now displayed as formatted text with clickable links, bold, and lists instead of raw JSON
+- **Tenant type selection** — Choose between "MS Teams" or "Web" when creating a new tenant. The tenant type is displayed read-only on the tenant settings page and included in the tenant settings API response
+- **Webhook auth header** — Configure an authentication header for your webhook endpoint in tenant settings. The header is stored encrypted and returned in the tenant settings API for authenticated webhook forwarding
+
+### Changed
+- **Inline execution progress** — "Run Now" and "Test" now show a pending row directly in the execution history table instead of a blocking modal overlay. The row updates in-place when the task completes, and pending rows automatically resume polling when you return to the page
+- **Scheduled Tasks dark theme** — Scheduled tasks pages now match the platform's dark theme with card-wrapped headers, dark table styling, color-coded badges, proper form inputs, and responsive mobile layout
+- **Delete execution history entries** — Individual entries in the scheduled task execution history can now be removed via a delete button
+
+### Fixed
+- **Scheduled task buttons now work** — Test, Run Now, toggle active/inactive, delete, and view output buttons on the Scheduled Tasks page are now functional
+- **Frequency fields displayed inline** — Time and weekday selectors now appear side-by-side with the frequency dropdown for a cleaner form layout
+- **Scheduled task execution error** — Fixed a database error when running a scheduled task manually or on schedule
+- **Scheduled task timeout** — Fixed "Run Now" failing with a 500 error when the AI agent takes longer than 30 seconds to respond
+
+## 2026-02-25
+
+### Added
+- **Organisation-wide Remote MCP Server** — Admins can configure a shared MCP server in tenant settings that makes its tools available to all organisation members automatically
+- **Remote MCP Server integration** — Connect any MCP-compatible server as a skill source. Tools are discovered dynamically and available via the API alongside native integrations
+- **Platform field in Prompt Vault** — Tag prompts with the AI platform they are designed for (ChatGPT, Claude, Copilot, Cursor, Gemini, and more). Filter prompts by platform in the UI and via API (`?platform=chatgpt`) to quickly find prompts for the tools you use
+- **Platform filter in Prompt API** — Use `?platform=chatgpt` to filter prompts by target AI platform via the API
+- **Platform column in CSV import** — The prompt import now supports a "platform" column to assign prompts to AI platforms during bulk import
+- **Code coverage reporting** — Test coverage is now tracked via Codecov with a badge displayed in the README
+- **Multi-client MCP configuration** — The Skills page now shows copy-paste configurations for 7 AI clients: Claude Desktop, Claude Code, Cursor, VS Code, Windsurf, Gemini CLI, and Codex
+- **Automated test suite** — Integration tests, smoke tests, and API tests now run fully without external service credentials
+- **Smoke tests** — Critical pages (Skills, My Agent, Prompts, Release Notes, Health) are verified on every CI run
+- **API endpoint tests** — Skills API and MCP API endpoints are now tested for authentication and responses
+
+### Fixed
+- **CI pipeline** — Tests now run reliably in GitHub Actions without requiring external secrets
+- **Integration setup forms** — Fixed a crash when opening Jira/Confluence setup pages caused by a Symfony 8 compatibility issue
+
+### Changed
+- **Repository cleanup** — Organized project structure by moving test scripts, documentation, and reference files into proper subdirectories for a cleaner root folder
+- **Symfony 8 upgrade** — Migrated the entire platform from Symfony 7.3 to Symfony 8.0
+- **PHP 8.5** — Updated runtime from PHP 8.4 to PHP 8.5
+- **Major dependency upgrades** — Upgraded Doctrine DBAL to v4, Doctrine Bundle to v3, Doctrine Migrations Bundle to v4, Predis to v3, PhpSpreadsheet to v5, PHPUnit to v13, and PHPStan phpdoc-parser to v2
+- **Database upgrade** — Updated MariaDB from 11.2 to 12
+- **Security updates** — firebase/php-jwt to v7 (CVE-2025-45769), PHPUnit to 13 (CVE-2026-24765)
+- **Infrastructure** — Updated Redis to 8 in both development and CI environments
+- **CI/CD pipeline** — Updated GitHub Actions to latest versions (checkout v6, cache v5, setup-node v6)
+
+## 2026-02-24
+
+### Changed
+- **Updater Agent** now uses the shared reusable workflow from the Claude Code Marketplace, supporting Docker image updates, GitHub Actions version pins, and configurable major/minor version control
+
+## 2026-02-23
+
+### Added
+- **Skill filter in Prompt Vault** — Filter prompts by skill/integration (e.g., Jira, Confluence, GitLab) to quickly find prompts designed for a specific tool
+- **Skill dropdown in prompt create/edit forms** — Optionally link a prompt to a specific skill/integration when creating or editing
+- **Skill column in CSV import** — The prompt import now supports a "skill" column to assign prompts to integrations during bulk import
+- **Skill filter in Prompt API** — Use `?skill=jira` to filter prompts by skill via the API
+
+### Changed
+- **Category is now optional for prompts** — Prompts no longer require a category, making it easier to create general-purpose prompts
+- **API response includes skill field** — The prompt API now returns a `skill` field for each prompt
+
+### Added
+- **Tool Access Modes** — Choose between Read Only, Standard, and Full access to control what your AI agents can do. Read Only mode restricts agents to search and read operations. Standard mode adds create and update capabilities. Full mode enables all operations including delete
+- **Tool access mode selector on Profile page** — Switch your tool access mode from your profile with a single click. New users default to Read Only for safety
+- **Tool category badges on Skills setup** — Each tool now shows a Read, Write, or Delete badge so you can see at a glance what each tool does. Tools outside your current access mode appear grayed out
+- **Activity Overview on My Agent dashboard** — See key usage metrics at a glance: agent sessions, tool executions, API calls, Prompt Vault activity, active skills, and tool types used over the last 30 days
+- **Stat card tooltips** — Hover over any metric on the Activity Overview to see a short explanation of what it measures
+- **Most Used Tools section** — The dashboard now shows your top 3 most frequently used tools to help you understand how your agent is being utilized
+
+### Removed
+- **Candis Invoice Management skill** — The Candis integration has been removed from the platform
+
+## 2026-02-18
+
+### Changed
+- **Projektron skill renamed to "BCS (Projektron)"** — The skill now displays as "BCS (Projektron)" throughout the platform, reflecting that Projektron is the vendor and BCS (Business Coordination Software) is the product name
+
+### Fixed
+- **Flash messages now display translated text** — Status messages (e.g., after changing a member's role) now show properly translated text instead of raw translation keys like "organisation.member.role_updated"
+
+### Removed
+- **Duplicate skill chips bar on dashboard** — The "Your agent can work with" section has been removed since it duplicated the Recent Skills section below
+- **Technical API details from dashboard** — The collapsible API & Technical Details section has been moved off the dashboard for a cleaner experience
+
+### Changed
+- **Dashboard redesigned as "My Agent"** — The dashboard now focuses on your AI agent's skills instead of technical details, showing active skills at a glance with visual skill chips
+- **New onboarding experience** — New users see a welcoming prompt to add their first skill, guiding them to get started quickly
+- **Technical details collapsed by default** — API URLs and curl commands are now tucked behind an expandable section to reduce clutter
+- **"General" renamed to "My Agent"** — The navigation item now reflects the agent-centric purpose of the dashboard
+- **Integration logos are now defined per skill** — Each skill type provides its own logo path, eliminating hardcoded logo maps and making the system easier to extend
+
+### Added
+- **Manually add data to Files** — Create text files directly from the Files page without uploading from your device. Click "Manually add data", paste or type your content, and save it as a .txt file for your AI agent to use
+- **Files page header with explanation** — The Files page now includes a descriptive header explaining that uploaded files are used to train the AI agent via RAG, matching the style of the Skills page header
+- **Tenant Settings API** — New `/api/tenant/{uuid}/settings` endpoint allows the bot to fetch tenant-specific webhook URLs and configuration dynamically, enabling true multi-tenancy instead of a single shared webhook URL
+- **Organisation selector on Invite Member** — The Invite Member dialog now lets you choose which organisation to add the member to, instead of always using the currently active one
+
+### Changed
+- **"Channel" renamed to "Tenant Settings"** — The Channel page is now called "Tenant Settings" throughout the UI in all four languages (EN, DE, LT, RO) to better reflect its purpose. URLs have also been updated from `/channel` to `/tenant`
+- **N8N API Key repositioned** — The N8N API Key field is now placed directly below the N8N Visualization URL for better grouping of visualization-related settings
+- **System Prompt is now read-only** — The System Prompt field on the Tenant Settings page now displays the platform's main agent prompt as a read-only reference; it is no longer editable per tenant
+- **System Prompt available via Tenant API** — The Tenant Settings API now supports `?system_prompt=true` to include the main agent system prompt in the response
+
+### Fixed
+- **Dashboard "Recent Integrations" now shows most recently used** — The dashboard overview now correctly displays the 5 most recently accessed integrations instead of sorting alphabetically by type
+- **Prompt import now works across multiple tenants** — Default prompts can now be imported into each tenant independently; previously importing into a second tenant would fail
+- **Admin can now change member roles in multi-organisation setups** — Previously, clicking "Make Admin" or "Make Member" would fail with a permission error when both users belonged to multiple organisations
+
+### Removed
+- **MS Teams Configuration section** — Removed the Microsoft App Type, App ID, App Password, and Tenant ID fields from the Tenant Settings page; these per-bot-deployment settings belong in the bot's environment configuration
+- **Organisation Type dropdown** — Removed the Channel Type selector (Common / eCommerce / MS Teams) as it is no longer needed
+
+## 2026-02-17
+
+### Added
+- **Azure credential health check** — The `/health` endpoint now validates Azure client credentials so monitoring can detect expired or rotated secrets before users encounter errors with Microsoft integrations (SharePoint, MS Teams, Outlook Mail, Outlook Calendar)
+
+### Fixed
+- **Microsoft integrations no longer break after client secret rotation** — SharePoint, MS Teams, Outlook Mail, and Outlook Calendar integrations now use the current server credentials when refreshing tokens, so existing users won't get errors after an Azure secret update
+
 ## 2026-02-13
 
 ### Fixed

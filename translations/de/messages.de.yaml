@@ -5,13 +5,13 @@ common:
   optional: optional
 
 nav:
-  general: Allgemein
+  general: Mein Agent
   skills: Skills
   files: Dateien
-  organisation: Kanal
+  organisation: Mandanteneinstellungen
   profile: Profil
   logout: Abmelden
-  channel: Kanal
+  channel: Mandanteneinstellungen
   members: Mitglieder
   audit_log: Audit-Protokoll
   release_notes: Versionshinweise
@@ -19,6 +19,63 @@ nav:
   workspace: Arbeitsbereich
   settings: Einstellungen
   prompt_vault: Prompt Vault
+  scheduled_tasks: Geplante Aufgaben
+
+scheduled_task:
+  page_title: Geplante Aufgaben
+  explanation: Automatisieren Sie wiederkehrende Prompts an Ihren KI-Agenten. Erstellen Sie Aufgaben mit einem Prompt, einer Häufigkeit und optionaler Zeitkonfiguration. Aufgaben werden automatisch über den konfigurierten Webhook Ihrer Organisation ausgeführt.
+  no_webhook_warning: "Für Ihre Organisation ist keine Webhook-URL konfiguriert. Geplante Aufgaben benötigen einen Webhook, um Prompts an Ihren KI-Agenten zu senden."
+  configure_webhook: In Mandanteneinstellungen konfigurieren
+  create: Geplante Aufgabe erstellen
+  name: Name
+  description: Beschreibung
+  prompt: Prompt
+  frequency: Häufigkeit
+  next_execution: Nächste Ausführung
+  status: Status
+  actions: Aktionen
+  active: Aktiv
+  inactive: Inaktiv
+  activate: Aktivieren
+  deactivate: Deaktivieren
+  active_label: Aktiv (Aufgabe wird planmäßig ausgeführt)
+  test: Testen
+  run_now: Jetzt ausführen
+  edit: Bearbeiten
+  delete: Löschen
+  view: Anzeigen
+  no_tasks: Noch keine geplanten Aufgaben. Erstellen Sie Ihre erste Aufgabe, um wiederkehrende Prompts zu automatisieren.
+  execution_history: Ausführungsverlauf
+  task_name: Aufgabenname
+  trigger: Auslöser
+  exec_status: Status
+  executed_at: Ausgeführt am
+  duration: Dauer
+  output: Ausgabe
+  name_placeholder: "z.B. Tägliche Sprint-Zusammenfassung"
+  description_placeholder: "Optionale kurze Beschreibung"
+  prompt_placeholder: "Geben Sie den Prompt ein, der an Ihren KI-Agenten gesendet werden soll..."
+  prompt_help: Dieser Prompt wird über den konfigurierten Webhook an Ihren KI-Agenten gesendet.
+  execution_time: Ausführungszeit
+  execution_time_help: Tageszeit, zu der die Aufgabe ausgeführt werden soll (24h-Format).
+  weekday: Wochentag
+  weekday_monday: Montag
+  weekday_tuesday: Dienstag
+  weekday_wednesday: Mittwoch
+  weekday_thursday: Donnerstag
+  weekday_friday: Freitag
+  weekday_saturday: Samstag
+  weekday_sunday: Sonntag
+  freq_manual: Manuell
+  freq_hourly: Stündlich
+  freq_daily: Täglich
+  freq_weekdays: Werktags
+  freq_weekly: Wöchentlich
+  created.success: Geplante Aufgabe erfolgreich erstellt.
+  updated.success: Geplante Aufgabe erfolgreich aktualisiert.
+  deleted.success: Geplante Aufgabe erfolgreich gelöscht.
+  no_tasks_description: Erstellen Sie Ihre erste geplante Aufgabe, um wiederkehrende Workflows zu automatisieren.
+  form_description: Definieren Sie eine wiederkehrende Aufgabe, die planmäßig per Webhook ausgeführt wird.
 
 home:
   title: Willkommen bei Workoflow
@@ -68,83 +125,101 @@ auth:
     privacy: Mit der Anmeldung akzeptieren Sie unsere Datenschutzbestimmungen.
 
 general:
-  title: Allgemein
+  title: Mein Agent
   welcome: Willkommen, %name%!
-  organisation: Ihr Kanal
+  agent_ready_setup: "Ihr KI-Agent ist bereit zur Einrichtung."
+  agent_ready: "Ihr KI-Agent hat %count% aktive(n) Skill(s)."
+  agent_can_use: "Ihr Agent kann arbeiten mit:"
+  onboarding_title: "Geben Sie Ihrem Agenten seinen ersten Skill"
+  onboarding_description: "Skills verbinden Ihren KI-Agenten mit den Tools, die Sie täglich nutzen. Fügen Sie einen Skill hinzu, um loszulegen."
+  add_first_skill: "Ersten Skill hinzufügen"
+  manage_skills_title: "Agent Skills"
+  manage_skills_description: "Konfigurieren Sie, welche Dienste und Fähigkeiten Ihr KI-Agent nutzen kann."
+  manage_agent_skills: "Agent Skills verwalten"
+  recent_skills: "Konfigurierte Skills"
+  view_all: "Alle anzeigen"
+  stats_title: "Aktivitätsübersicht"
+  stats_period: "Letzte %days% Tage"
+  stats_agent_sessions: "Agent-Sitzungen"
+  stats_tool_executions: "Tool-Ausführungen"
+  stats_api_calls: "API-Aufrufe"
+  stats_prompt_activity: "Prompt Vault Aktivität"
+  stats_active_skills: "Aktive Skills"
+  stats_tool_types_used: "Verwendete Tool-Typen"
+  stats_top_tools: "Meistgenutzte Tools"
+  stats_tooltip_agent_sessions: "Anzahl unterschiedlicher Agent-Aufrufe (einzigartige Sitzungen) in den letzten 30 Tagen."
+  stats_tooltip_tool_executions: "Gesamtzahl der einzelnen Tools, die Ihr Agent in den letzten 30 Tagen aufgerufen hat."
+  stats_tooltip_api_calls: "Anzahl der API-Abfragen externer Systeme nach Ihren verfügbaren Tools oder Prompts."
+  stats_tooltip_prompt_activity: "Gesamtzahl der Prompt-Aktionen (erstellt, aktualisiert, bewertet, kommentiert) in den letzten 30 Tagen."
+  stats_tooltip_active_skills: "Anzahl der aktuell für Ihren Agenten konfigurierten Integrations-Skills."
+  stats_tooltip_tool_types_used: "Wie viele verschiedene Integrationstypen (z.B. Jira, Confluence) Ihr Agent tatsächlich genutzt hat."
+  technical_details: "API & Technische Details"
+  organisation: Ihr Mandant
   integration_api_url: Integration API URL
-  workflow_user_id: Kanal-spezifische ID
+  workflow_user_id: Mandanten-spezifische ID
   copy_curl_command: curl-Befehl für /tools Endpunkt kopieren
   copied: Kopiert!
-  integrations_count: Integrationen
-  active_integrations: Aktive Integrationen
-  your_role: Ihre Rolle
-  manage_integrations: Integrationen verwalten
-  recent_integrations: Neueste Integrationen
   never: Nie
 
 organisation:
   create:
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
     placeholder: z.B. Meine Firma GmbH
     help: Sie können den Namen später in den Einstellungen ändern.
-    submit: Kanal erstellen
+    submit: Mandant erstellen
+    tenant_type: Mandantentyp
+    tenant_type_placeholder: Mandantentyp auswählen...
+    tenant_type_help: Der Mandantentyp bestimmt, wie Nachrichten weitergeleitet werden. Dies kann später nicht geändert werden.
   created:
-    success: Kanal erfolgreich erstellt!
-  name: Kanalname
-  settings: Kanaleinstellungen
+    success: Mandant erfolgreich erstellt!
+  name: Mandantenname
+  settings: Mandanteneinstellungen
   members: Mitglieder
   updated:
-    success: Kanal erfolgreich aktualisiert!
+    success: Mandant erfolgreich aktualisiert!
   member:
     role_updated: Rolle erfolgreich aktualisiert!
     cannot_change_own_role: Sie können Ihre eigene Rolle nicht ändern.
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
   invite_member: Mitglied einladen
+  invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
+  send_invite: Einladung senden
+  select_organisation: Organisation auswählen
   invite:
     invalid_email: Ungültige E-Mail-Adresse.
-    user_has_organisation: Dieser Benutzer gehört bereits einem Kanal an.
+    invalid_organisation: Ungültige Organisation ausgewählt.
+    user_already_in_organisation: Dieser Benutzer ist bereits Mitglied der ausgewählten Organisation.
+    user_has_organisation: Dieser Benutzer gehört bereits einem Mandanten an.
     user_added: Benutzer erfolgreich hinzugefügt!
     user_not_found: Benutzer muss sich zuerst bei Workoflow registrieren.
 
 channel:
-  title: Kanal
-  management: Kanalverwaltung
-  management.description: Erstellen und verwalten Sie Ihre Kanäle
+  title: Mandanteneinstellungen
+  management: Mandantenverwaltung
+  management.description: Erstellen und verwalten Sie Ihre Mandanten
   create:
-    button: Neuen Kanal erstellen
-    title: Kanal erstellen
-    description: Bitte geben Sie einen Namen für Ihren Kanal ein, um fortzufahren.
-  uuid: Kanal-UUID
+    button: Neuen Mandanten erstellen
+    title: Mandant erstellen
+    description: Bitte geben Sie einen Namen für Ihren Mandanten ein, um fortzufahren.
+  uuid: Mandanten-UUID
   uuid_help: Diese UUID wird für die API-Endpunkte verwendet
   integration_api_help: Verwenden Sie diese API-URL, um AI-Agenten (z.B. n8n) mit Ihren Integrationen zu verbinden
   save: Speichern
   invite_member: Mitglied einladen
   invite_help: Der Benutzer muss sich zuerst bei Workoflow registrieren
   workflow_user_id: Workoflow Benutzer-ID
-  organisation_name: Kanalname
-  channel_settings: Kanaleinstellungen
-  agent_settings: Agenteneinstellungen
-  agent_type: Agententyp
+  organisation_name: Mandantenname
+  tenant_type: Mandantentyp
+  channel_settings: Allgemeine Einstellungen
+  agent_settings: Orchestrator-Einstellungen
+  agent_type: Orchestrator-Typ
+  webhook_auth_header: Auth-Header
   workflow_visualization: Workflow-Visualisierung
   send_invite: Einladung senden
   make_admin: Zum Admin machen
   make_member: Zum Mitglied machen
-  organisation_type: Kanaltyp
-  type:
-    common: Allgemein
-    ecommerce: E-Commerce
-    msteams: MS Teams
-
-msteams:
-  configuration: MS Teams Konfiguration
-  configuration.description: Konfigurieren Sie die Microsoft Teams Bot-Integrationseinstellungen
-  app_type: Microsoft App-Typ
-  app_id: Microsoft App-ID
-  app_password: Microsoft App-Passwort
-  app_password.hint: Dieses Passwort wird verschlüsselt gespeichert
-  tenant_id: Microsoft Mandanten-ID
 
 status:
   active: Aktiv
@@ -152,7 +227,6 @@ status:
   connected: Verbunden
   connected_hubspot: Mit HubSpot verbunden
   connected_wrike: Mit Wrike verbunden
-  connected_candis: Mit Candis verbunden
   connected_outlook_mail: Mit Outlook Mail verbunden
   connected_outlook_calendar: Mit Outlook Kalender verbunden
   connected_msteams: Mit MS Teams verbunden
@@ -190,20 +264,21 @@ integration:
   connect_microsoft: Mit Microsoft verbinden
   connect_hubspot: Mit HubSpot verbinden
   connect_wrike: Mit Wrike verbinden
-  connect_candis: Mit Candis verbinden
   oauth_required: Microsoft-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Microsoft verbinden", um fortzufahren.
   oauth_required_hubspot: HubSpot-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit HubSpot verbinden", um fortzufahren.
   oauth_required_wrike: Wrike-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Wrike verbinden", um fortzufahren.
-  oauth_required_candis: Candis-Autorisierung ist erforderlich. Klicken Sie unten auf "Mit Candis verbinden", um fortzufahren. Sie wählen Ihr Unternehmen während des Candis-Zustimmungsbildschirms aus.
   oauth_reconnect_confirm: Dies ersetzt Ihre bestehende Verbindung. Fortfahren?
   reconnect_microsoft: Erneut mit Microsoft verbinden
   reconnect_hubspot: Erneut mit HubSpot verbinden
   reconnect_wrike: Erneut mit Wrike verbinden
-  reconnect_candis: Erneut mit Candis verbinden
   reconnect_outlook_mail: Erneut mit Microsoft verbinden
   reconnect_outlook_calendar: Erneut mit Microsoft verbinden
   reconnect_msteams: Erneut mit Microsoft verbinden
   toggle_error: Einstellung konnte nicht aktualisiert werden
+  tool_category_read: Lesen
+  tool_category_write: Schreiben
+  tool_category_delete: Löschen
+  tool_restricted_by_mode: Eingeschränkt durch Ihren aktuellen Werkzeug-Zugriffsmodus
   type: Typ
   status: Status
   last_accessed: Letzter Zugriff
@@ -251,7 +326,7 @@ integration:
   add_another: Weitere %name% hinzufügen
   add_another_desc: Eine weitere Instanz dieser Integration verbinden
   experimental_notice: Dieser Skill befindet sich noch in der Entwicklung. Funktionen können sich ändern und einige Funktionalitäten funktionieren möglicherweise nicht wie erwartet.
-  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre Projektron-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
+  projektron_session_notice: Diese Werte verfallen automatisch nach einem Tag oder wenn Sie Ihre BCS (Projektron)-Sitzung neu erstellen. Stellen Sie sicher, dass Sie diese vor der Nutzung des Skills aktualisieren. Bitte entschuldigen Sie die Unannehmlichkeiten.
   add_jira: Jira-Instanz hinzufügen
   add_confluence: Confluence-Instanz hinzufügen
   add_sharepoint: SharePoint-Instanz hinzufügen
@@ -364,6 +439,9 @@ integration:
       get_pipeline:
         name: Pipeline-Details abrufen
         description: Detaillierte Informationen zu einer bestimmten CI/CD-Pipeline abrufen. Liefert Pipeline-Status, Stages, Dauer, Commit-SHA, Benutzer der sie ausgelöst hat und detaillierte Job-Informationen. Verwenden Sie Pipeline-ID um vollständige Ausführungsdetails abzurufen.
+  remote_mcp_servers: Remote MCP Server
+  remote_mcp_description: Verbinden Sie sich mit MCP-Servern von Drittanbietern und leiten Sie deren Tools über Ihren Workoflow-Endpunkt weiter
+  add_remote_mcp: Remote MCP Server hinzufügen
   add_gitlab: GitLab-Instanz hinzufügen
   active: Aktiv
   credentials_not_editable: Anmeldedaten können aus Sicherheitsgründen nicht bearbeitet werden.
@@ -432,6 +510,8 @@ action:
 
 file:
   title: Dateien
+  explanation_p1: Laden Sie Dateien hoch, um Ihren KI-Agenten mit eigenen Daten zu trainieren. Hier hochgeladene Dokumente werden für Retrieval-Augmented Generation (RAG) verwendet, sodass der Agent Ihre Inhalte durchsuchen und bei der Beantwortung von Fragen referenzieren kann.
+  explanation_p2: Unterstützte Formate sind PDF, DOCX, XLSX, CSV, TXT, JSON und Bilder. Je mehr relevante Daten Sie bereitstellen, desto genauer und hilfreicher werden die Antworten Ihres KI-Agenten.
   upload: Hochladen
   upload_files: Dateien hochladen
   no_files: Noch keine Dateien hochgeladen.
@@ -447,6 +527,15 @@ file:
   upload_error: Fehler beim Hochladen der Dateien
   upload_disabled_no_connection: Hochladen deaktiviert - Keine Verbindung zum Dateispeicher
   connection_error_hint: Bitte stellen Sie sicher, dass MinIO läuft und über den konfigurierten Endpunkt erreichbar ist.
+  add_data: Daten manuell hinzufügen
+  filename: Dateiname
+  filename_placeholder: meine-daten.txt
+  filename_help: Optional. Eine .txt-Endung wird automatisch hinzugefügt, falls nicht angegeben.
+  content: Inhalt
+  content_placeholder: Fügen Sie Ihren Textinhalt hier ein oder geben Sie ihn ein...
+  content_help: Der Textinhalt, der als Datei für Ihren KI-Agenten gespeichert wird.
+  save: Speichern
+  create_text_error: Textdatei konnte nicht gespeichert werden
   deleted:
     success: Datei erfolgreich gelöscht!
     error: Fehler beim Löschen der Datei.
@@ -459,7 +548,7 @@ user:
   email: E-Mail
   role: Rolle
   joined_at: Beigetreten am
-  organisation: Kanal
+  organisation: Mandant
   workflow_user_id: Meine Workflow Benutzer-ID
 
 
@@ -472,7 +561,7 @@ profile:
   delete_account_confirm: Sind Sie sicher, dass Sie Ihren Account löschen möchten?
   delete_account_consequences: 'Diese Aktion wird:'
   delete_consequence_1: Alle Ihre Integrationen löschen
-  delete_consequence_2: Ihren Zugang zum Kanal entfernen
+  delete_consequence_2: Ihren Zugang zum Mandanten entfernen
   delete_consequence_3: Alle Ihre Daten unwiderruflich löschen
   confirm_delete: Ja, Account löschen
   api_token: Persönlicher API-Token
@@ -492,6 +581,15 @@ profile:
   api_param_category: Nach Kategorie filtern (z.B. developer, devops)
   api_param_uuid: Einen bestimmten Prompt per UUID abrufen
   generate_token_first: Generieren Sie zuerst einen Token, um einen einsatzbereiten curl-Befehl zu erhalten.
+  tool_mode: Werkzeug-Zugriffsmodus
+  tool_mode_description: Steuern Sie, welche Werkzeugtypen Ihre KI-Agenten verwenden können. Restriktive Modi verhindern versehentliche Änderungen.
+  mode_read_only: Nur Lesen
+  mode_read_only_desc: Nur Such-, Lese- und Auflistungswerkzeuge. Sicherster Modus.
+  mode_standard: Standard
+  mode_standard_desc: Lese- und Schreibwerkzeuge. Für produktives Arbeiten.
+  mode_full: Vollzugriff
+  mode_full_desc: Alle Werkzeuge inklusive Löschen. Mit Vorsicht verwenden.
+  mode_updated: Werkzeug-Zugriffsmodus aktualisiert.
 
 footer:
   rights: Alle Rechte vorbehalten.
@@ -625,9 +723,19 @@ prompt:
     description: Erstellen Sie Ihren ersten Prompt, um loszulegen
     personal_description: Erstellen Sie Ihren ersten persönlichen Prompt
     org_description: Erstellen Sie den ersten Organisations-Prompt
+  skill: Skill
+  select_skill: Skill auswählen (optional)
+  skill_help: Verknüpfen Sie diesen Prompt optional mit einem bestimmten Skill/Integration.
+  platform: Plattform
+  select_platform: Plattform auswählen (optional)
+  platform_help: Geben Sie an, für welche KI-Plattform dieser Prompt gedacht ist. So können andere Prompts für ihre genutzten Tools leichter finden.
   filter:
     all_categories: Alle Kategorien
     category: Kategorie
+    skill: Skill
+    all_skills: Alle Skills
+    platform: Plattform
+    all_platforms: Alle Plattformen
     sort: Sortieren nach
   sort:
     newest: Neueste zuerst
@@ -674,6 +782,8 @@ prompt:
     get_all: Alle Prompts abrufen (Persönlich + Team)
     get_by_uuid: Bestimmten Prompt per UUID abrufen
     filter_category: Nach Kategorie filtern
-    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer"
+    filter_skill: Nach Skill filtern
+    filter_platform: Nach Plattform filtern
+    hint_combine: "Tipp: Parameter kombinieren, z.B. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: Sie müssen zuerst einen API-Token generieren, um Prompts per API abzurufen.
     generate_token: Token im Profil generieren

@@ -8,9 +8,57 @@
     <div class="dashboard-container">
         <h1 class="dashboard-title">{{ 'profile.title'|trans }}</h1>
 
+        {# Tool Access Mode Section #}
+        <div class="profile-section tool-mode-section">
+            <h2 class="section-title">{{ 'profile.tool_mode'|trans }}</h2>
+            <p class="section-description">{{ 'profile.tool_mode_description'|trans }}</p>
+
+            <div class="mode-cards">
+                <label class="mode-card{% if user.toolAccessMode == 'read_only' %} active{% endif %}" data-mode="read_only">
+                    <input type="radio" name="tool_mode" value="read_only"{% if user.toolAccessMode == 'read_only' %} checked{% endif %}>
+                    <div class="mode-card-content">
+                        <div class="mode-card-header">
+                            <i class="fas fa-eye"></i>
+                            <span class="mode-card-title">{{ 'profile.mode_read_only'|trans }}</span>
+                        </div>
+                        <p class="mode-card-desc">{{ 'profile.mode_read_only_desc'|trans }}</p>
+                        <span class="mode-badge mode-badge-read">READ</span>
+                    </div>
+                </label>
+
+                <label class="mode-card{% if user.toolAccessMode == 'standard' %} active{% endif %}" data-mode="standard">
+                    <input type="radio" name="tool_mode" value="standard"{% if user.toolAccessMode == 'standard' %} checked{% endif %}>
+                    <div class="mode-card-content">
+                        <div class="mode-card-header">
+                            <i class="fas fa-edit"></i>
+                            <span class="mode-card-title">{{ 'profile.mode_standard'|trans }}</span>
+                        </div>
+                        <p class="mode-card-desc">{{ 'profile.mode_standard_desc'|trans }}</p>
+                        <span class="mode-badge mode-badge-read">READ</span>
+                        <span class="mode-badge mode-badge-write">WRITE</span>
+                    </div>
+                </label>
+
+                <label class="mode-card{% if user.toolAccessMode == 'full' %} active{% endif %}" data-mode="full">
+                    <input type="radio" name="tool_mode" value="full"{% if user.toolAccessMode == 'full' %} checked{% endif %}>
+                    <div class="mode-card-content">
+                        <div class="mode-card-header">
+                            <i class="fas fa-unlock-alt"></i>
+                            <span class="mode-card-title">{{ 'profile.mode_full'|trans }}</span>
+                        </div>
+                        <p class="mode-card-desc">{{ 'profile.mode_full_desc'|trans }}</p>
+                        <span class="mode-badge mode-badge-read">READ</span>
+                        <span class="mode-badge mode-badge-write">WRITE</span>
+                        <span class="mode-badge mode-badge-delete">DELETE</span>
+                    </div>
+                </label>
+            </div>
+            <div id="toolModeStatus" class="tool-mode-status" style="display: none;"></div>
+        </div>
+
         <div class="profile-section">
             <h2 class="section-title">{{ 'profile.personal_info'|trans }}</h2>
-            
+
             <div class="info-grid">
                 <div class="info-item">
                     <span class="info-label">{{ 'user.name'|trans }}</span>
@@ -193,6 +241,44 @@ function copyCurlCommand(btn) {
         }, 2000);
     });
 }
+
+// Tool access mode switching
+document.querySelectorAll('.mode-card input[name="tool_mode"]').forEach(radio => {
+    radio.addEventListener('change', async function() {
+        const mode = this.value;
+        const statusEl = document.getElementById('toolModeStatus');
+
+        // Update active card
+        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+        this.closest('.mode-card').classList.add('active');
+
+        try {
+            const response = await fetch('{{ path("app_profile_tool_mode") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `mode=${encodeURIComponent(mode)}&_csrf_token={{ csrf_token('tool-mode') }}`
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                statusEl.textContent = data.message;
+                statusEl.className = 'tool-mode-status success';
+                statusEl.style.display = 'block';
+            } else {
+                throw new Error(data.error || 'Failed to update');
+            }
+        } catch (error) {
+            statusEl.textContent = error.message;
+            statusEl.className = 'tool-mode-status error';
+            statusEl.style.display = 'block';
+        }
+
+        setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    });
+});
 
 // Close modal when clicking outside
 document.getElementById('deleteModal').addEventListener('click', (e) => {

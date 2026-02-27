@@ -5,13 +5,13 @@ common:
   optional: opțional
 
 nav:
-  general: General
+  general: Agentul meu
   skills: Abilități
   files: Fișiere
-  organisation: Canal
+  organisation: Setări chiriaș
   profile: Profil
   logout: Deconectare
-  channel: Canal
+  channel: Setări chiriaș
   members: Membri
   audit_log: Jurnal de audit
   release_notes: Note de lansare
@@ -19,6 +19,63 @@ nav:
   workspace: Spațiu de lucru
   settings: Setări
   prompt_vault: Prompt Vault
+  scheduled_tasks: Sarcini programate
+
+scheduled_task:
+  page_title: Sarcini programate
+  explanation: Automatizați solicitările recurente trimise agentului AI. Creați sarcini cu un prompt, frecvență și configurare opțională a orei. Sarcinile sunt executate automat prin webhook-ul configurat al organizației.
+  no_webhook_warning: "Organizația dvs. nu are configurat un URL webhook. Sarcinile programate necesită un webhook pentru a trimite solicitări agentului AI."
+  configure_webhook: Configurați în Setări chiriaș
+  create: Creați sarcină programată
+  name: Nume
+  description: Descriere
+  prompt: Prompt
+  frequency: Frecvență
+  next_execution: Următoarea execuție
+  status: Status
+  actions: Acțiuni
+  active: Activ
+  inactive: Inactiv
+  activate: Activare
+  deactivate: Dezactivare
+  active_label: Activ (sarcina va fi executată conform programului)
+  test: Test
+  run_now: Rulează acum
+  edit: Editare
+  delete: Ștergere
+  view: Vizualizare
+  no_tasks: Nu există încă sarcini programate. Creați prima sarcină pentru a automatiza solicitările recurente.
+  execution_history: Istoric execuții
+  task_name: Numele sarcinii
+  trigger: Declanșator
+  exec_status: Status
+  executed_at: Executat la
+  duration: Durată
+  output: Ieșire
+  name_placeholder: "ex. Rezumat zilnic sprint"
+  description_placeholder: "Descriere scurtă opțională"
+  prompt_placeholder: "Introduceți promptul care va fi trimis agentului AI..."
+  prompt_help: Acest prompt va fi trimis agentului AI prin webhook-ul configurat.
+  execution_time: Ora execuției
+  execution_time_help: Ora din zi la care sarcina ar trebui să ruleze (format 24h).
+  weekday: Ziua săptămânii
+  weekday_monday: Luni
+  weekday_tuesday: Marți
+  weekday_wednesday: Miercuri
+  weekday_thursday: Joi
+  weekday_friday: Vineri
+  weekday_saturday: Sâmbătă
+  weekday_sunday: Duminică
+  freq_manual: Manual
+  freq_hourly: Orar
+  freq_daily: Zilnic
+  freq_weekdays: Zile lucrătoare
+  freq_weekly: Săptămânal
+  created.success: Sarcină programată creată cu succes.
+  updated.success: Sarcină programată actualizată cu succes.
+  deleted.success: Sarcină programată ștearsă cu succes.
+  no_tasks_description: Creați prima sarcină programată pentru a automatiza fluxurile de lucru recurente.
+  form_description: Definiți o sarcină recurentă care va fi executată prin webhook conform programului.
 
 home:
   title: Bine ați venit la Workoflow
@@ -68,83 +125,101 @@ auth:
     privacy: Prin autentificare, sunteți de acord cu politica noastră de confidențialitate.
 
 general:
-  title: General
+  title: Agentul meu
   welcome: Bine ați venit, %name%!
-  organisation: Canalul dvs.
+  agent_ready_setup: "Agentul dvs. AI este gata de configurare."
+  agent_ready: "Agentul dvs. AI are %count% abilitate(i) activă(e)."
+  agent_can_use: "Agentul dvs. poate lucra cu:"
+  onboarding_title: "Oferiți agentului prima abilitate"
+  onboarding_description: "Abilitățile conectează agentul AI la instrumentele pe care le folosiți zilnic. Adăugați o abilitate pentru a începe."
+  add_first_skill: "Adăugați prima abilitate"
+  manage_skills_title: "Abilități Agent"
+  manage_skills_description: "Configurați ce servicii și capabilități poate folosi agentul AI."
+  manage_agent_skills: "Gestionați abilitățile agentului"
+  recent_skills: "Abilități configurate"
+  view_all: "Vedeți toate"
+  stats_title: "Prezentare activitate"
+  stats_period: "Ultimele %days% zile"
+  stats_agent_sessions: "Sesiuni agent"
+  stats_tool_executions: "Execuții instrumente"
+  stats_api_calls: "Apeluri API"
+  stats_prompt_activity: "Activitate Prompt Vault"
+  stats_active_skills: "Abilități active"
+  stats_tool_types_used: "Tipuri instrumente utilizate"
+  stats_top_tools: "Cele mai utilizate instrumente"
+  stats_tooltip_agent_sessions: "Numărul de invocări distincte ale agentului (sesiuni unice) în ultimele 30 de zile."
+  stats_tooltip_tool_executions: "Numărul total de instrumente individuale apelate de agentul dvs. în ultimele 30 de zile."
+  stats_tooltip_api_calls: "Numărul de interogări API ale sistemelor externe pentru instrumentele sau prompturile dvs. disponibile."
+  stats_tooltip_prompt_activity: "Total acțiuni prompturi (create, actualizate, votate, comentate) în ultimele 30 de zile."
+  stats_tooltip_active_skills: "Numărul de abilități de integrare configurate în prezent pentru agentul dvs."
+  stats_tooltip_tool_types_used: "Câte tipuri diferite de integrare (de ex. Jira, Confluence) a utilizat efectiv agentul dvs."
+  technical_details: "API și detalii tehnice"
+  organisation: Chiriașul dvs.
   integration_api_url: URL API de integrare
-  workflow_user_id: ID specific canalului
+  workflow_user_id: ID specific chiriașului
   copy_curl_command: Copiați comanda curl pentru instrumente
   copied: Copiat!
-  integrations_count: Integrări
-  active_integrations: Integrări active
-  your_role: Rolul dvs.
-  manage_integrations: Gestionați integrările
-  recent_integrations: Integrări recente
   never: Niciodată
 
 organisation:
   create:
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
     placeholder: de ex. Compania Mea SRL
     help: Puteți schimba numele ulterior în setări.
-    submit: Creați canal
+    submit: Creați chiriaș
+    tenant_type: Tip chiriaș
+    tenant_type_placeholder: Selectați un tip de chiriaș...
+    tenant_type_help: Tipul chiriașului determină modul de rutare a mesajelor. Acesta nu poate fi schimbat ulterior.
   created:
-    success: Canal creat cu succes!
-  name: Nume canal
-  settings: Setări canal
+    success: Chiriaș creat cu succes!
+  name: Nume chiriaș
+  settings: Setări chiriaș
   members: Membri
   updated:
-    success: Canal actualizat cu succes!
+    success: Chiriaș actualizat cu succes!
   member:
     role_updated: Rol actualizat cu succes!
     cannot_change_own_role: Nu vă puteți schimba propriul rol.
   make_admin: Faceți administrator
   make_member: Faceți membru
   invite_member: Invitați membru
+  invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
+  send_invite: Trimiteți invitația
+  select_organisation: Selectați organizația
   invite:
     invalid_email: Adresă de email invalidă.
-    user_has_organisation: Acest utilizator aparține deja unui canal.
+    invalid_organisation: Organizație selectată invalidă.
+    user_already_in_organisation: Acest utilizator este deja membru al organizației selectate.
+    user_has_organisation: Acest utilizator aparține deja unui chiriaș.
     user_added: Utilizator adăugat cu succes!
     user_not_found: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow.
 
 channel:
-  title: Canal
-  management: Gestionarea canalelor
-  management.description: Creați și gestionați canalele dvs.
+  title: Setări chiriaș
+  management: Gestionarea chiriașilor
+  management.description: Creați și gestionați chiriașii dvs.
   create:
-    button: Creați canal nou
-    title: Creați canal
-    description: Vă rugăm să introduceți un nume pentru canalul dvs. pentru a continua.
-  uuid: UUID canal
+    button: Creați chiriaș nou
+    title: Creați chiriaș
+    description: Vă rugăm să introduceți un nume pentru chiriașul dvs. pentru a continua.
+  uuid: UUID chiriaș
   uuid_help: Acest UUID este utilizat pentru endpoint-urile API
   integration_api_help: Utilizați acest URL API pentru a conecta agenții AI (de ex. n8n) la integrările dvs.
   save: Salvează
   invite_member: Invitați membru
   invite_help: Utilizatorul trebuie să se înregistreze mai întâi la Workoflow
   workflow_user_id: ID utilizator Workoflow
-  organisation_name: Nume canal
-  channel_settings: Setări canal
-  agent_settings: Setări agent
-  agent_type: Tip agent
+  organisation_name: Nume chiriaș
+  tenant_type: Tip chiriaș
+  channel_settings: Setări generale
+  agent_settings: Setări orchestrator
+  agent_type: Tip orchestrator
+  webhook_auth_header: Antet de autorizare
   workflow_visualization: Vizualizare flux de lucru
   send_invite: Trimiteți invitația
   make_admin: Faceți administrator
   make_member: Faceți membru
-  organisation_type: Tip canal
-  type:
-    common: Comun
-    ecommerce: eCommerce
-    msteams: MS Teams
-
-msteams:
-  configuration: Configurare MS Teams
-  configuration.description: Configurați setările de integrare a botului Microsoft Teams
-  app_type: Tipul aplicației Microsoft
-  app_id: ID aplicație Microsoft
-  app_password: Parolă aplicație Microsoft
-  app_password.hint: Această parolă va fi stocată criptată pentru securitate
-  tenant_id: ID chiriaș Microsoft
 
 status:
   active: Activ
@@ -152,7 +227,6 @@ status:
   connected: Conectat
   connected_hubspot: Conectat la HubSpot
   connected_wrike: Conectat la Wrike
-  connected_candis: Conectat la Candis
   connected_outlook_mail: Conectat la Outlook Mail
   connected_outlook_calendar: Conectat la Outlook Calendar
   connected_msteams: Conectat la MS Teams
@@ -197,20 +271,21 @@ integration:
   connect_microsoft: Conectați-vă cu Microsoft
   connect_hubspot: Conectați-vă cu HubSpot
   connect_wrike: Conectați-vă cu Wrike
-  connect_candis: Conectați-vă cu Candis
   oauth_required: Este necesară autorizarea Microsoft. Faceți clic pe „Conectați-vă cu Microsoft" mai jos pentru a continua.
   oauth_required_hubspot: Este necesară autorizarea HubSpot. Faceți clic pe „Conectați-vă cu HubSpot" mai jos pentru a continua.
   oauth_required_wrike: Este necesară autorizarea Wrike. Faceți clic pe „Conectați-vă cu Wrike" mai jos pentru a continua.
-  oauth_required_candis: Este necesară autorizarea Candis. Faceți clic pe „Conectați-vă cu Candis" mai jos pentru a continua. Veți selecta compania dvs. în timpul ecranului de consimțământ Candis.
   oauth_reconnect_confirm: Aceasta va înlocui conexiunea existentă. Continuați?
   reconnect_microsoft: Reconectați-vă cu Microsoft
   reconnect_hubspot: Reconectați-vă cu HubSpot
   reconnect_wrike: Reconectați-vă cu Wrike
-  reconnect_candis: Reconectați-vă cu Candis
   reconnect_outlook_mail: Reconectați-vă cu Microsoft
   reconnect_outlook_calendar: Reconectați-vă cu Microsoft
   reconnect_msteams: Reconectați-vă cu Microsoft
   toggle_error: Setarea nu a putut fi actualizată
+  tool_category_read: Citire
+  tool_category_write: Scriere
+  tool_category_delete: Ștergere
+  tool_restricted_by_mode: Restricționat de modul dvs. curent de acces la instrumente
   workflow_id: ID Workoflow
   functions: Funcții
   active_of: active din
@@ -251,7 +326,7 @@ integration:
   add_another: Adăugați alt %name%
   add_another_desc: Conectați o altă instanță a acestei integrări
   experimental_notice: Această abilitate este încă în dezvoltare. Funcționalitățile se pot schimba și unele funcții ar putea să nu funcționeze conform așteptărilor.
-  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea Projektron. Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
+  projektron_session_notice: Aceste valori expiră automat după o zi sau dacă vă recreați sesiunea BCS (Projektron). Asigurați-vă că le actualizați înainte de a utiliza abilitatea. Vă rugăm să ne scuzați pentru inconveniență.
   add_jira: Adăugați instanță Jira
   add_confluence: Adăugați instanță Confluence
   add_sharepoint: Adăugați instanță SharePoint
@@ -364,6 +439,9 @@ integration:
       get_pipeline:
         name: Obțineți detaliile pipeline-ului
         description: Obțineți informații detaliate despre un pipeline CI/CD specific. Returnează starea pipeline-ului, etapele, durata, SHA-ul commit-ului, utilizatorul care l-a declanșat și informații detaliate despre joburi. Utilizați ID-ul pipeline-ului pentru detalii complete de execuție.
+  remote_mcp_servers: Servere MCP la distanță
+  remote_mcp_description: Conectați-vă la servere MCP furnizate de terți și redirecționați instrumentele lor prin endpoint-ul Workoflow
+  add_remote_mcp: Adăugați server MCP la distanță
   add_gitlab: Adăugați instanță GitLab
   active: Activ
   credentials_not_editable: Acreditările nu pot fi editate din motive de securitate.
@@ -432,6 +510,8 @@ action:
 
 file:
   title: Fișiere
+  explanation_p1: Încărcați fișiere pentru a antrena agentul AI cu datele dvs. proprii. Documentele încărcate aici sunt utilizate pentru Retrieval-Augmented Generation (RAG), permițând agentului să caute și să facă referire la conținutul dvs. atunci când răspunde la întrebări.
+  explanation_p2: Formatele acceptate includ PDF, DOCX, XLSX, CSV, TXT, JSON și imagini. Cu cât furnizați mai multe date relevante, cu atât răspunsurile agentului dvs. AI vor fi mai precise și mai utile.
   upload: Încărcare
   upload_files: Încărcați fișiere
   no_files: Niciun fișier încărcat încă.
@@ -447,6 +527,15 @@ file:
   upload_error: Încărcarea fișierelor a eșuat
   upload_disabled_no_connection: Încărcare dezactivată - Fără conexiune la stocarea fișierelor
   connection_error_hint: Vă rugăm să vă asigurați că MinIO rulează și este accesibil la endpoint-ul configurat.
+  add_data: Adăugați date manual
+  filename: Nume fișier
+  filename_placeholder: datele-mele.txt
+  filename_help: Opțional. O extensie .txt va fi adăugată automat dacă nu este specificată.
+  content: Conținut
+  content_placeholder: Lipiți sau scrieți conținutul text aici...
+  content_help: Conținutul text care va fi salvat ca fișier pentru agentul dvs. AI.
+  save: Salvează
+  create_text_error: Salvarea fișierului text a eșuat
   deleted:
     success: Fișier șters cu succes!
     error: Eroare la ștergerea fișierului.
@@ -470,7 +559,7 @@ profile:
   delete_account_confirm: Sunteți sigur că doriți să vă ștergeți contul?
   delete_account_consequences: 'Această acțiune va:'
   delete_consequence_1: Șterge toate integrările dvs.
-  delete_consequence_2: Elimina accesul dvs. la canal
+  delete_consequence_2: Elimina accesul dvs. la chiriaș
   delete_consequence_3: Șterge permanent toate datele dvs.
   confirm_delete: Da, ștergeți contul
   api_token: Token API
@@ -491,6 +580,15 @@ profile:
   api_param_uuid: Obțineți un prompt specific după UUID
   generate_token_first: Generați mai întâi un token pentru a obține o comandă curl gata de utilizat.
   no_organisation: Nicio organizație selectată.
+  tool_mode: Mod acces instrumente
+  tool_mode_description: Controlați ce tipuri de instrumente pot folosi agenții AI. Modurile restrictive previn modificările accidentale.
+  mode_read_only: Doar citire
+  mode_read_only_desc: Doar instrumente de căutare, citire și listare. Cel mai sigur mod.
+  mode_standard: Standard
+  mode_standard_desc: Instrumente de citire și scriere. Pentru lucru productiv.
+  mode_full: Acces complet
+  mode_full_desc: Toate instrumentele inclusiv ștergerea. Utilizați cu precauție.
+  mode_updated: Modul de acces la instrumente a fost actualizat.
 
 footer:
   rights: Toate drepturile rezervate.
@@ -592,9 +690,19 @@ prompt:
   tab:
     personal: Prompturile mele
     organisation: Prompturi echipă
+  skill: Skill
+  select_skill: Selectați un skill (opțional)
+  skill_help: Asociați opțional acest prompt cu un skill/integrare specifică.
+  platform: Platformă
+  select_platform: Selectați o platformă (opțional)
+  platform_help: Specificați pentru ce platformă AI este conceput acest prompt. Ajută pe alții să găsească prompturi pentru instrumentele pe care le folosesc.
   filter:
     all_categories: Toate categoriile
     category: Categorie
+    skill: Skill
+    all_skills: Toate skill-urile
+    platform: Platformă
+    all_platforms: Toate platformele
     sort: Sortați după
   sort:
     newest: Cele mai noi primele
@@ -610,7 +718,7 @@ prompt:
   description_placeholder: Rezumat scurt al ceea ce face acest prompt...
   description_help: O scurtă descriere ajută pe alții să înțeleagă scopul acestui prompt.
   category: Categorie
-  select_category: Selectați o categorie
+  select_category: Selectați o categorie (opțional)
   scope: Vizibilitate
   scope_help: Prompturile personale sunt vizibile doar pentru dvs. Prompturile de echipă sunt partajate cu organizația dvs.
   scope_personal: Personal (vizibil doar pentru mine)
@@ -672,6 +780,8 @@ prompt:
     get_all: Obțineți toate prompturile (Personal + Echipă)
     get_by_uuid: Obțineți un prompt specific după UUID
     filter_category: Filtrați după categorie
-    hint_combine: "Sfat: Combinați parametrii, de ex. ?scope=organisation&category=developer"
+    filter_skill: Filtrați după skill
+    filter_platform: Filtrați după platformă
+    hint_combine: "Sfat: Combinați parametrii, de ex. ?scope=organisation&category=developer&skill=jira&platform=chatgpt"
     no_token: Trebuie să generați mai întâi un token API pentru a accesa prompturile prin API.
     generate_token: Generați token-ul în Profil

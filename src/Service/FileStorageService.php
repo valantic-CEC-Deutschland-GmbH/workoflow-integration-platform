@@ -117,6 +117,66 @@ class FileStorageService
         }
     }
 
+    public function uploadContent(string $content, string $filename, string $orgUuid, int $userId): array
+    {
+        $this->ensureBucketExists();
+
+        // Sanitize filename: strip unsafe chars, keep alphanumeric, dashes, underscores, dots
+        $filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+
+        // Fallback if filename is empty after sanitization
+        if ($filename === '' || $filename === null) {
+            $filename = 'manual_' . date('Y-m-d_His');
+        }
+
+        // Auto-append .txt if missing
+        if (!str_ends_with(strtolower($filename), '.txt')) {
+            $filename .= '.txt';
+        }
+
+        // Validate content size
+        $contentSize = strlen($content);
+        if ($contentSize > $this->maxFileSize) {
+            throw new \InvalidArgumentException('Content size exceeds maximum allowed size');
+        }
+
+        $key = sprintf(
+            '%s/%d/%s_%s',
+            $orgUuid,
+            $userId,
+            uniqid(),
+            $filename
+        );
+
+        try {
+            $result = $this->getS3Client()->putObject([
+                'Bucket' => $this->bucket,
+                'Key' => $key,
+                'Body' => $content,
+                'ContentType' => 'text/plain; charset=utf-8',
+                'Metadata' => [
+                    'original_name' => $filename,
+                    'uploaded_by' => (string) $userId,
+                    'uploaded_at' => date('Y-m-d H:i:s'),
+                ]
+            ]);
+
+            return [
+                'key' => $key,
+                'original_name' => $filename,
+                'size' => $contentSize,
+                'mime_type' => 'text/plain',
+                'url' => $result['ObjectURL'] ?? null,
+            ];
+        } catch (S3Exception $e) {
+            $this->logger->error('Text file creation failed', [
+                'error' => $e->getMessage(),
+                'filename' => $filename
+            ]);
+            throw new \RuntimeException('Failed to create text file');
+        }
+    }
+
     public function listFiles(string $orgUuid): array
     {
         $this->ensureBucketExists();

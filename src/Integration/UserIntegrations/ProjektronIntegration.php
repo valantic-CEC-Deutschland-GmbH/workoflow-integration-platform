@@ -6,6 +6,7 @@ use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
+use App\Integration\ToolCategory;
 use App\Service\Integration\ProjektronService;
 use Twig\Environment;
 
@@ -24,7 +25,7 @@ class ProjektronIntegration implements PersonalizedSkillInterface
 
     public function getName(): string
     {
-        return 'Projektron';
+        return 'BCS (Projektron)';
     }
 
     public function getTools(): array
@@ -105,7 +106,8 @@ class ProjektronIntegration implements PersonalizedSkillInterface
                         'description' => 'Work description (e.g., "Development", "Meeting", "Code Review")',
                         'required' => true,
                     ],
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'projektron_get_absences',
@@ -137,7 +139,7 @@ class ProjektronIntegration implements PersonalizedSkillInterface
     public function executeTool(string $toolName, array $parameters, ?array $credentials = null): array
     {
         if ($credentials === null) {
-            throw new \InvalidArgumentException('Credentials are required for Projektron integration');
+            throw new \InvalidArgumentException('Credentials are required for BCS (Projektron) integration');
         }
 
         return match ($toolName) {
@@ -173,10 +175,10 @@ class ProjektronIntegration implements PersonalizedSkillInterface
             new CredentialField(
                 'domain',
                 'url',
-                'Projektron Domain',
+                'BCS Domain',
                 'https://projektron.valantic.com',
                 true,
-                'Your Projektron instance URL (e.g., https://projektron.company.com)'
+                'Your Projektron BCS instance URL (e.g., https://projektron.company.com)'
             ),
             new CredentialField(
                 'username',
@@ -184,7 +186,7 @@ class ProjektronIntegration implements PersonalizedSkillInterface
                 'Username',
                 'your.name@company.com',
                 true,
-                'Your Projektron username or email address'
+                'Your Projektron BCS username or email address'
             ),
             new CredentialField(
                 'jsessionid',
@@ -221,6 +223,11 @@ class ProjektronIntegration implements PersonalizedSkillInterface
     public function getSetupInstructions(): ?string
     {
         return null;
+    }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/Projektron_Logo.png';
     }
 
     private function getAllTasks(array $credentials): array

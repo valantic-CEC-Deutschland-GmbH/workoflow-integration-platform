@@ -6,9 +6,11 @@ use App\Form\IntegrationConfigType;
 use App\Integration\CredentialField;
 use App\Integration\IntegrationInterface;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Validator\Validation;
 
+#[AllowMockObjectsWithoutExpectations]
 class IntegrationConfigTypeTest extends TypeTestCase
 {
     private IntegrationInterface $mockIntegration;
@@ -27,7 +29,7 @@ class IntegrationConfigTypeTest extends TypeTestCase
         parent::setUp();
 
         // Create a mock integration
-        $this->mockIntegration = $this->createMock(IntegrationInterface::class);
+        $this->mockIntegration = $this->createStub(IntegrationInterface::class);
         $this->mockIntegration->method('getCredentialFields')->willReturn([
             new CredentialField('url', 'url', 'URL', 'https://example.com', true, 'Test URL'),
             new CredentialField('username', 'email', 'Email', 'email@example.com', true, 'Test email'),

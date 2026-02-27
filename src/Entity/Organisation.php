@@ -48,6 +48,9 @@ class Organisation
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $webhookType = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $tenantType = null;
+
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $webhookUrl = null;
 
@@ -57,21 +60,14 @@ class Organisation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $encryptedN8nApiKey = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $organisationType = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $microsoftAppType = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $microsoftAppId = null;
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $orgMcpServerUrl = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $encryptedMicrosoftAppPassword = null;
+    private ?string $encryptedOrgMcpAuthHeader = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $microsoftAppTenantId = null;
-
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $encryptedWebhookAuthHeader = null;
 
     public function __construct()
     {
@@ -249,6 +245,17 @@ class Organisation
         return $this;
     }
 
+    public function getTenantType(): ?string
+    {
+        return $this->tenantType;
+    }
+
+    public function setTenantType(?string $tenantType): static
+    {
+        $this->tenantType = $tenantType;
+        return $this;
+    }
+
     public function getWebhookUrl(): ?string
     {
         return $this->webhookUrl;
@@ -282,58 +289,36 @@ class Organisation
         return $this;
     }
 
-    public function getOrganisationType(): ?string
+    public function getOrgMcpServerUrl(): ?string
     {
-        return $this->organisationType;
+        return $this->orgMcpServerUrl;
     }
 
-    public function setOrganisationType(?string $organisationType): static
+    public function setOrgMcpServerUrl(?string $orgMcpServerUrl): static
     {
-        $this->organisationType = $organisationType;
+        $this->orgMcpServerUrl = $orgMcpServerUrl;
         return $this;
     }
 
-    public function getMicrosoftAppType(): ?string
+    public function getEncryptedOrgMcpAuthHeader(): ?string
     {
-        return $this->microsoftAppType;
+        return $this->encryptedOrgMcpAuthHeader;
     }
 
-    public function setMicrosoftAppType(?string $microsoftAppType): static
+    public function setEncryptedOrgMcpAuthHeader(?string $encryptedOrgMcpAuthHeader): static
     {
-        $this->microsoftAppType = $microsoftAppType;
+        $this->encryptedOrgMcpAuthHeader = $encryptedOrgMcpAuthHeader;
         return $this;
     }
 
-    public function getMicrosoftAppId(): ?string
+    public function getEncryptedWebhookAuthHeader(): ?string
     {
-        return $this->microsoftAppId;
+        return $this->encryptedWebhookAuthHeader;
     }
 
-    public function setMicrosoftAppId(?string $microsoftAppId): static
+    public function setEncryptedWebhookAuthHeader(?string $encryptedWebhookAuthHeader): static
     {
-        $this->microsoftAppId = $microsoftAppId;
-        return $this;
-    }
-
-    public function getEncryptedMicrosoftAppPassword(): ?string
-    {
-        return $this->encryptedMicrosoftAppPassword;
-    }
-
-    public function setEncryptedMicrosoftAppPassword(?string $encryptedMicrosoftAppPassword): static
-    {
-        $this->encryptedMicrosoftAppPassword = $encryptedMicrosoftAppPassword;
-        return $this;
-    }
-
-    public function getMicrosoftAppTenantId(): ?string
-    {
-        return $this->microsoftAppTenantId;
-    }
-
-    public function setMicrosoftAppTenantId(?string $microsoftAppTenantId): static
-    {
-        $this->microsoftAppTenantId = $microsoftAppTenantId;
+        $this->encryptedWebhookAuthHeader = $encryptedWebhookAuthHeader;
         return $this;
     }
 
