@@ -493,7 +493,7 @@ integration:
     recommended: Rekomenduojama
     install_extension: Įdiegti plėtinį
     extension_desc: Paprasčiausias būdas prijungti Claude Desktop prie Workoflow. Konfigūracijos failai nereikalingi.
-    valantic_team: Valantic komandos paskyra
+    valantic_team: Komandos paskyra
     step_open_claude: Atidarykite Claude Desktop
     step_extensions: "Eikite į Nustatymai &rarr; Plėtiniai"
     step_search: "Ieškokite <strong>Workoflow</strong> prekyvietėje"

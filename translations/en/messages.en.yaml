@@ -493,7 +493,7 @@ integration:
     recommended: Recommended
     install_extension: Install Extension
     extension_desc: The easiest way to connect Claude Desktop to Workoflow. No configuration files needed.
-    valantic_team: Valantic Team Account
+    valantic_team: Team Account
     step_open_claude: Open Claude Desktop
     step_extensions: "Go to Settings &rarr; Extensions"
     step_search: "Search for <strong>Workoflow</strong> in the marketplace"
