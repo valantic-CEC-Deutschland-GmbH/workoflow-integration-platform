@@ -490,6 +490,21 @@ integration:
     hint_token: Dein X-Prompt-Token identifiziert automatisch deinen Benutzer und deine Organisation. Halte ihn sicher und teile ihn nicht.
     no_token: Du musst einen persönlichen Zugriffstoken generieren, um den MCP Server zu nutzen.
     generate_token: Token im Profil generieren
+    recommended: Empfohlen
+    install_extension: Erweiterung installieren
+    extension_desc: Der einfachste Weg, Claude Desktop mit Workoflow zu verbinden. Keine Konfigurationsdateien nötig.
+    valantic_team: Valantic Team-Konto
+    step_open_claude: Claude Desktop öffnen
+    step_extensions: "Gehe zu Einstellungen &rarr; Erweiterungen"
+    step_search: "Suche nach <strong>Workoflow</strong> im Marketplace"
+    step_install: "Klicke auf <strong>Installieren</strong>"
+    step_enter_token: Gib deinen Workoflow-Token ein, wenn du dazu aufgefordert wirst
+    other_accounts: Andere Konten
+    download_extension: Erweiterung herunterladen (.mcpb)
+    step_drag: "Ziehe die <code>.mcpb</code>-Datei in den Installationsbereich"
+    token_hint: "Dein Workoflow-Token findest du auf deiner"
+    profile_page: Profilseite
+    advanced_manual: "Erweitert: Manuelle JSON-Konfiguration"
 
 action:
   edit: Bearbeiten

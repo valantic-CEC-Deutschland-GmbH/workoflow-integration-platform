@@ -490,6 +490,21 @@ integration:
     hint_token: Jūsų X-Prompt-Token automatiškai identifikuoja jūsų vartotoją ir organizaciją. Saugokite jį ir nesidalykite.
     no_token: Turite sugeneruoti asmeninį prieigos raktą, kad galėtumėte naudoti MCP serverį.
     generate_token: Generuoti raktą profilyje
+    recommended: Rekomenduojama
+    install_extension: Įdiegti plėtinį
+    extension_desc: Paprasčiausias būdas prijungti Claude Desktop prie Workoflow. Konfigūracijos failai nereikalingi.
+    valantic_team: Valantic komandos paskyra
+    step_open_claude: Atidarykite Claude Desktop
+    step_extensions: "Eikite į Nustatymai &rarr; Plėtiniai"
+    step_search: "Ieškokite <strong>Workoflow</strong> prekyvietėje"
+    step_install: "Spustelėkite <strong>Įdiegti</strong>"
+    step_enter_token: Įveskite savo Workoflow raktą, kai bus paprašyta
+    other_accounts: Kitos paskyros
+    download_extension: Atsisiųsti plėtinį (.mcpb)
+    step_drag: "Vilkite <code>.mcpb</code> failą į diegimo sritį"
+    token_hint: "Jūsų Workoflow raktas yra pasiekiamas jūsų"
+    profile_page: Profilio puslapyje
+    advanced_manual: "Išplėstinė: Rankinė JSON konfigūracija"
 
 action:
   edit: Redaguoti

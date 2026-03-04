@@ -490,6 +490,21 @@ integration:
     hint_token: Token-ul dvs. X-Prompt-Token vă identifică automat utilizatorul și organizația. Păstrați-l în siguranță și nu îl partajați.
     no_token: Trebuie să generați un token personal de acces pentru a utiliza serverul MCP.
     generate_token: Generați token-ul în Profil
+    recommended: Recomandat
+    install_extension: Instalați extensia
+    extension_desc: Cel mai simplu mod de a conecta Claude Desktop la Workoflow. Nu sunt necesare fișiere de configurare.
+    valantic_team: Cont de echipă Valantic
+    step_open_claude: Deschideți Claude Desktop
+    step_extensions: "Accesați Setări &rarr; Extensii"
+    step_search: "Căutați <strong>Workoflow</strong> în marketplace"
+    step_install: "Faceți clic pe <strong>Instalare</strong>"
+    step_enter_token: Introduceți token-ul Workoflow când vi se solicită
+    other_accounts: Alte conturi
+    download_extension: Descărcați extensia (.mcpb)
+    step_drag: "Trageți fișierul <code>.mcpb</code> în zona de instalare"
+    token_hint: "Token-ul dvs. Workoflow este disponibil pe"
+    profile_page: pagina de Profil
+    advanced_manual: "Avansat: Configurare manuală JSON"
 
 action:
   edit: Editare
