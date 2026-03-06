@@ -152,28 +152,6 @@ class IntegrationOAuthController extends AbstractController
             );
             $config->setActive(true);
 
-            // Auto-disable less useful tools for SharePoint on first setup
-            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
-            if (
-                $config->getIntegrationType() === 'sharepoint' &&
-                $oauthFlowIntegration &&
-                $oauthFlowIntegration == $configId &&
-                empty($config->getDisabledTools())
-            ) {
-                // These tools are less useful for AI agents, disable by default
-                $toolsToDisable = [
-                    'sharepoint_list_files',      // Agents should search, not browse
-                    'sharepoint_download_file',    // Only returns URL, agent can't fetch it
-                    'sharepoint_get_list_items'    // Too technical for most use cases
-                ];
-
-                foreach ($toolsToDisable as $toolName) {
-                    $config->disableTool($toolName);
-                }
-
-                error_log('Auto-disabled less useful SharePoint tools for new OAuth integration: ' . implode(', ', $toolsToDisable));
-            }
-
             $this->entityManager->flush();
 
             // Clean up session

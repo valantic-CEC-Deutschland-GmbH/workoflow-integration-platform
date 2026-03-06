@@ -68,6 +68,18 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                 ]
             ),
             new ToolDefinition(
+                'sharepoint_list_sites',
+                'List accessible SharePoint sites in the tenant. Returns site IDs in the format "hostname,guid,guid" which are required by other SharePoint tools (list_files, read_page, get_list_items). Use this tool first to discover valid site IDs before calling other tools.',
+                [
+                    [
+                        'name' => 'searchQuery',
+                        'type' => 'string',
+                        'required' => false,
+                        'description' => 'Optional search term to filter sites by name (e.g. "Marketing", "HR"). If omitted, returns all accessible sites.'
+                    ]
+                ]
+            ),
+            new ToolDefinition(
                 'sharepoint_read_document',
                 'Extract and read text content from SharePoint documents (Word, Excel, PowerPoint, PDF, text files). Returns: Object containing extracted text content, metadata including fileName, fileSize, mimeType, and documentInfo with title, author, pageCount, wordCount (when available).',
                 [
@@ -123,37 +135,19 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
             ),
             new ToolDefinition(
                 'sharepoint_list_files',
-                'List files in a SharePoint directory. Returns: Array of driveItem objects with properties: id, name, size, webUrl, createdDateTime, lastModifiedDateTime, createdBy, lastModifiedBy, file (with mimeType and hashes), folder (if item is a folder), parentReference.',
+                'List files and folders in a SharePoint document library directory. Returns: Array of driveItem objects with properties: id, name, size, webUrl, lastModifiedDateTime, file (with mimeType), folder (if item is a folder). Use sharepoint_list_sites first to get a valid siteId.',
                 [
                     [
                         'name' => 'siteId',
                         'type' => 'string',
                         'required' => true,
-                        'description' => 'Site ID'
+                        'description' => 'Site ID in "hostname,guid,guid" format (get from sharepoint_list_sites or search results). You can also pass a site display name (e.g. "Marketing") and it will be auto-resolved.'
                     ],
                     [
                         'name' => 'path',
                         'type' => 'string',
                         'required' => false,
-                        'description' => 'Directory path (optional)'
-                    ]
-                ]
-            ),
-            new ToolDefinition(
-                'sharepoint_download_file',
-                'Download a file from SharePoint. Returns: Binary file content stream or redirect URL to pre-authenticated download location. Response includes Content-Type header with file MIME type and Content-Disposition header with filename.',
-                [
-                    [
-                        'name' => 'siteId',
-                        'type' => 'string',
-                        'required' => true,
-                        'description' => 'Site ID'
-                    ],
-                    [
-                        'name' => 'itemId',
-                        'type' => 'string',
-                        'required' => true,
-                        'description' => 'Item ID'
+                        'description' => 'Directory path relative to the document library root. Examples: "General" for the General folder, "Projects/2024" for a nested folder. Omit or leave empty to list the root directory.'
                     ]
                 ]
             ),
@@ -165,7 +159,7 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                         'name' => 'siteId',
                         'type' => 'string',
                         'required' => true,
-                        'description' => 'Site ID'
+                        'description' => 'Site ID in "hostname,guid,guid" format (get from sharepoint_list_sites or search results). You can also pass a site display name (e.g. "Marketing") and it will be auto-resolved.'
                     ],
                     [
                         'name' => 'listId',
@@ -205,6 +199,10 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                 min($parameters['limit'] ?? 25, 50),
                 $parameters['userQuery'] ?? null
             ),
+            'sharepoint_list_sites' => $this->sharePointService->listSites(
+                $credentials,
+                $parameters['searchQuery'] ?? null
+            ),
             'sharepoint_read_document' => $this->sharePointService->readDocument(
                 $credentials,
                 $parameters['siteId'],
@@ -222,11 +220,6 @@ Tips: Use OR to include synonyms and translations (German+English) for bilingual
                 $credentials,
                 $parameters['siteId'],
                 $parameters['path'] ?? ''
-            ),
-            'sharepoint_download_file' => $this->sharePointService->downloadFile(
-                $credentials,
-                $parameters['siteId'],
-                $parameters['itemId']
             ),
             'sharepoint_get_list_items' => $this->sharePointService->getListItems(
                 $credentials,

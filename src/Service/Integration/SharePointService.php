@@ -252,54 +252,8 @@ class SharePointService
         try {
             error_log('Reading SharePoint page - SiteID: ' . $siteId . ', PageID: ' . $pageId);
 
-            // Check if siteId looks like a name rather than a proper ID
-            // A proper site ID contains commas and GUIDs, or is in hostname:path format
-            if (!str_contains($siteId, ',') && !str_contains($siteId, '.sharepoint.com')) {
-                error_log('SiteID appears to be a name, attempting to resolve to actual site ID');
-
-                // Search for the site by name
-                $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
-                    'auth_bearer' => $credentials['access_token'],
-                    'query' => [
-                        'search' => $siteId,
-                        '$top' => 10
-                    ]
-                ]);
-
-                $sites = $sitesResponse->toArray();
-
-                if (isset($sites['value']) && count($sites['value']) > 0) {
-                    // Try to find exact match first
-                    $resolvedSiteId = null;
-                    foreach ($sites['value'] as $site) {
-                        if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                        if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['name'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                    }
-
-                    // If no exact match, use the first result
-                    if (!$resolvedSiteId && isset($sites['value'][0]['id'])) {
-                        $resolvedSiteId = $sites['value'][0]['id'];
-                        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
-                        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedSiteId);
-                    }
-
-                    if ($resolvedSiteId) {
-                        $siteId = $resolvedSiteId;
-                    } else {
-                        throw new \Exception('Could not resolve site name "' . $siteId . '" to a valid site ID');
-                    }
-                } else {
-                    throw new \Exception('No sites found matching "' . $siteId . '"');
-                }
-            }
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
 
             // Check if pageId looks like a name/title rather than a GUID
             // A proper page ID is a GUID format like "7b6fd3e8-80ad-4392-9643-6bab61be81e0"
@@ -413,6 +367,9 @@ class SharePointService
     public function listFiles(array $credentials, string $siteId, string $path = ''): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             $endpoint = $path
                 ? "/sites/{$siteId}/drive/root:/{$path}:/children"
                 : "/sites/{$siteId}/drive/root/children";
@@ -495,6 +452,9 @@ class SharePointService
     public function getListItems(array $credentials, string $siteId, string $listId, array $filters = []): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             error_log('Getting SharePoint list items - SiteID: ' . $siteId . ', ListID: ' . $listId);
 
             $query = [
@@ -587,6 +547,59 @@ class SharePointService
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * Resolve a site name or display name to a proper Graph API site ID.
+     *
+     * A proper site ID contains commas (hostname,guid,guid) or .sharepoint.com.
+     * If the provided siteId doesn't match that pattern, search for the site by name.
+     *
+     * @param array<string, mixed> $credentials Authentication credentials
+     * @param string $siteId Site ID or display name to resolve
+     * @return string Resolved site ID
+     */
+    private function resolveSiteId(array $credentials, string $siteId): string
+    {
+        // Already a proper site ID
+        if (str_contains($siteId, ',') || str_contains($siteId, '.sharepoint.com')) {
+            return $siteId;
+        }
+
+        error_log('SiteID appears to be a name, attempting to resolve to actual site ID: ' . $siteId);
+
+        $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
+            'auth_bearer' => $credentials['access_token'],
+            'query' => [
+                'search' => $siteId,
+                '$top' => 10
+            ]
+        ]);
+
+        $sites = $sitesResponse->toArray();
+
+        if (!isset($sites['value']) || count($sites['value']) === 0) {
+            throw new \Exception('No sites found matching "' . $siteId . '"');
+        }
+
+        // Try exact match first
+        foreach ($sites['value'] as $site) {
+            if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+            if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['name'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+        }
+
+        // Use first result as fallback
+        $resolvedId = $sites['value'][0]['id'];
+        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
+        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedId);
+
+        return $resolvedId;
     }
 
     /**

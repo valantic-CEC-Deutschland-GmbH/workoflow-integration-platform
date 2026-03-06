@@ -98,8 +98,10 @@ The platform provides 85+ tools across 10 user integrations:
 
 **SharePoint (6 tools)**
 - Document search with KQL
+- Site discovery (list accessible sites with IDs)
 - File reading (PDF, Word, Excel, PowerPoint) with optional `full` mode for complete document extraction (up to 500k chars)
-- File listings and downloads
+- File and folder listings with auto-resolved site names
+- SharePoint list item retrieval
 
 **Outlook Mail (4 tools)** *(experimental)*
 - Email search with KQL (sender, subject, keywords)

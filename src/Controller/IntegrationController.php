@@ -455,14 +455,6 @@ class IntegrationController extends AbstractController
                 $this->connectionStatusService->markReconnected($config);
             }
 
-            // Auto-disable less useful tools for SharePoint
-            if ($type === 'sharepoint' && !$instanceId) {
-                $toolsToDisable = ['sharepoint_list_files', 'sharepoint_download_file', 'sharepoint_get_list_items'];
-                foreach ($toolsToDisable as $toolName) {
-                    $config->disableTool($toolName);
-                }
-            }
-
             $this->entityManager->persist($config);
             $this->entityManager->flush();
 

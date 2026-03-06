@@ -1,7 +1,7 @@
 # Workoflow Integration Platform
 
 ## Overview
-The Workoflow Integration Platform is a production-ready Symfony 8.0 application that enables users to manage various integrations (Jira, Confluence) and provide them via REST API for AI agents.
+The Workoflow Integration Platform is a production-ready Symfony 8.0 application that enables users to manage various integrations and provide them via REST API and MCP for AI agents.
 If you have read this file, greet me with "Hey Workoflow Dev"
 
 ### Development Rules
@@ -47,10 +47,16 @@ If you have read this file, greet me with "Hey Workoflow Dev"
     - Run `docker-compose exec frankenphp npm run build` after SCSS changes
 
 ### Main Features
-- OAuth2 Google Login
+- OAuth2 Login (Google, Azure/Microsoft, HubSpot, Wrike)
+- Magic Link passwordless authentication
 - Multi-Tenant Organisation Management
-- Integration Management (Jira, Confluence)
-- REST API for AI Agent access
+- Integration Management (14 user integrations: Jira, Confluence, SharePoint, Trello, GitLab, SAP C4C, Projektron, HubSpot, SAP SAC, Wrike, Outlook Mail, Outlook Calendar, MS Teams, Remote MCP)
+- 13 built-in System Tools (WebSearch, PdfGenerator, PowerPointGenerator, FileSharing, Memory, etc.)
+- REST API + MCP Server for AI Agent access
+- Tool Access Modes (Read Only / Standard / Full) per user
+- Scheduled Tasks with webhook-based execution
+- Channel System (Slack, MS Teams, WhatsApp)
+- Prompt Vault (shared prompt library with upvotes)
 - File Management with MinIO S3
 - Audit Logging
 - Multi-language support (DE/EN/RO/LT)
@@ -59,10 +65,8 @@ If you have read this file, greet me with "Hey Workoflow Dev"
 
 ### Tech Stack
 - **Backend**: PHP 8.5, Symfony 8.0, FrankenPHP
-- **Database**: MariaDB 11.2
-- **Cache**: Redis 7
-- **Storage**: MinIO (S3-compatible)
-- **Container**: Docker & Docker Compose
+- **Frontend**: Stimulus JS, SCSS, Webpack Encore
+- **Infrastructure**: Docker & Docker Compose (see `docker-compose.yml` for service versions)
 
 ### Design Principles
 - **SOLID**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
@@ -80,18 +84,21 @@ workoflow-promopage-v2/
 │   ├── Controller/  # HTTP Controllers
 │   ├── Entity/      # Doctrine Entities
 │   ├── Integration/ # Plugin-based Integration System
-│   │   ├── IntegrationInterface.php      # Core contract
-│   │   ├── IntegrationRegistry.php       # Central registry
-│   │   ├── ToolDefinition.php            # Tool metadata
-│   │   ├── SystemTools/                  # Platform-internal tools (no external credentials needed)
-│   │   │   └── ShareFileIntegration.php  # File sharing
-│   │   └── UserIntegrations/             # External service integrations (require API keys/tokens)
-│   │       ├── JiraIntegration.php
-│   │       ├── ConfluenceIntegration.php
-│   │       └── SharePointIntegration.php
+│   │   ├── IntegrationInterface.php         # Base contract
+│   │   ├── PersonalizedSkillInterface.php   # User integrations (adds getSystemPrompt)
+│   │   ├── PlatformSkillInterface.php       # System tools (marker interface)
+│   │   ├── IntegrationRegistry.php          # Central registry
+│   │   ├── ToolDefinition.php               # Tool metadata
+│   │   ├── ToolCategory.php                 # Enum: READ, WRITE, DELETE
+│   │   ├── CredentialField.php              # Form field definition
+│   │   ├── SystemTools/                     # 13 platform-internal tools
+│   │   └── UserIntegrations/                # 14 external service integrations
+│   ├── OAuth2/      # League OAuth2 providers (Wrike, etc.)
 │   ├── Repository/  # Entity Repositories
 │   ├── Security/    # Auth & Security
 │   └── Service/     # Business Logic
+│       ├── Integration/    # Per-integration HTTP clients
+│       └── ScheduledTask/  # Scheduled task services
 ├── templates/       # Twig Templates
 ├── translations/    # i18n Files
 ├── docker/         # Docker Configs
@@ -139,8 +146,11 @@ All integrations (user & system) follow a unified plugin-based architecture:
    - Auto-tagged via `config/services/integrations.yaml`
 
 2. **Key Components**:
-   - `IntegrationInterface`: Define type, tools, execution logic
-   - `ToolDefinition`: Tool metadata (name, description, parameters)
+   - `IntegrationInterface`: Base contract (10 methods: getType, getName, getTools, executeTool, requiresCredentials, validateCredentials, getCredentialFields, isExperimental, getSetupInstructions, getLogoPath)
+   - `PersonalizedSkillInterface extends IntegrationInterface`: For user integrations, adds `getSystemPrompt()`
+   - `PlatformSkillInterface extends IntegrationInterface`: Marker interface for system tools
+   - `ToolDefinition`: Tool metadata (name, description, parameters, category)
+   - `ToolCategory`: Enum (READ, WRITE, DELETE) — enforced by Tool Access Modes
    - `IntegrationRegistry`: Central DI-managed registry
 
 3. **System Tools**:
@@ -151,10 +161,11 @@ All integrations (user & system) follow a unified plugin-based architecture:
    - Example: `ShareFileIntegration`
 
 4. **User Integrations**:
-   - Connect to external services (Jira, Confluence, SharePoint)
+   - Connect to external services via OAuth2 or API keys
+   - Implement `PersonalizedSkillInterface` (includes AI system prompt generation)
    - Require user-specific external credentials (stored encrypted in DB)
    - Credentials managed per user/organization
-   - Example: Jira, Confluence, SharePoint
+   - 14 integrations: Jira, Confluence, SharePoint, Trello, GitLab, SAP C4C, Projektron, HubSpot, SAP SAC, Wrike, Outlook Mail, Outlook Calendar, MS Teams, Remote MCP
 
 ### Adding New Tools
 ```php
@@ -172,61 +183,59 @@ App\Integration\SystemTools\MyIntegration:
     tags: ['app.integration']
 ```
 
+### Agent Tool Discovery
+
+n8n agents (and other AI clients) discover tools automatically at runtime via the API — there is no need to update prompt templates when adding or modifying tools:
+- **List tools**: `GET /api/integrations/{org-uuid}/?workflow_user_id={id}&tool_type={type}`
+- **Execute tools**: `POST /api/integrations/{org-uuid}/execute?workflow_user_id={id}`
+- Tool descriptions defined in `*Integration.php` classes are exactly what the agent sees
+
 ## API Reference
 
 ### REST API Endpoints
 ```
-GET /api/integrations/{org-uuid}?workflow_user_id={workflow-user-id}
-Authorization: Basic xxxx==
+# Integration Tools API (Basic Auth)
+GET  /api/integrations/{org-uuid}?workflow_user_id={id}&tool_type={type}
+POST /api/integrations/{org-uuid}/execute?workflow_user_id={id}
+
+# MCP Server API (X-Prompt-Token header)
+GET  /api/mcp/tools
+POST /api/mcp/execute
+
+# Other APIs (JWT or X-Prompt-Token)
+GET  /api/skills                              # List available skills
+GET  /api/prompts                             # Prompt Vault
+GET  /api/tenant/{org-uuid}/settings          # Tenant settings
+POST /api/register                            # User registration
 ```
 
-The REST API dynamically provides tools based on activated user integrations.
-
-### Available Tools
-
-#### Jira Tools
-- `jira_search_{integration_id}` - JQL Search
-- `jira_get_issue_{integration_id}` - Get Issue Details
-- `jira_get_sprints_from_board_{integration_id}` - Board Sprints
-- `jira_get_sprint_issues_{integration_id}` - Sprint Issues
-- `jira_add_comment_{integration_id}` - Add Comment to Issue
-
-#### Confluence Tools
-- `confluence_search_{integration_id}` - CQL Search
-- `confluence_get_page_{integration_id}` - Get Page
-- `confluence_get_comments_{integration_id}` - Get Comments
+The REST API dynamically provides tools based on activated user integrations (skills).
 
 ## Entities & Data Model
 
-### User
-- Authentication via Google OAuth2
-- Roles: ROLE_ADMIN, ROLE_MEMBER
-- 1:1 Relationship to Organisation
-- 1:N Relationship to Integrations
+### Core Entities
+- **User**: Auth via Google OAuth2 / Magic Link. Roles: ROLE_ADMIN, ROLE_MEMBER
+- **Organisation**: UUID for API URLs. N:N with Users via `UserOrganisation` junction table
+- **UserOrganisation**: Links User↔Organisation with role, workflowUserId, personalAccessToken, systemPrompt
+- **IntegrationConfig**: Stores per-user integration settings. Encrypted credentials (Sodium). `disabledTools` JSON array for selective tool deactivation (no separate IntegrationFunction entity)
 
-### Organisation
-- UUID for REST API URL
-- 1:N Relationship to Users
-- Audit Logging at Org level
-
-### Integration
-- Types: jira, confluence
-- Encrypted Credentials (Sodium)
-- Workflow User ID for filtering
-- 1:N Relationship to IntegrationFunctions
-
-### IntegrationFunction
-- Defines available API functions
-- Can be activated/deactivated
-- Contains tool descriptions for AI
+### Additional Entities
+- **AuditLog**: Action logging per organisation
+- **Channel / UserChannel**: Multi-channel support (Slack, MS Teams, WhatsApp)
+- **Prompt / PromptComment / PromptUpvote**: Prompt Vault system
+- **ScheduledTask / ScheduledTaskExecution**: Recurring automation
+- **SkillRequest**: User requests for new integrations
+- **WaitlistEntry**: Waitlist management
 
 ## Security
 
 ### Authentication
-- Google OAuth2 for User Login
-- Basic Auth for REST API
-- JWT Tokens for API
-- X-Test-Auth-Email GET Parameter for Tests
+- Google OAuth2 (primary web login)
+- Magic Link (passwordless alternative)
+- Basic Auth (Integration API — validated in controller, not firewall)
+- JWT Tokens (API access)
+- X-Prompt-Token header (MCP + Prompt API)
+- X-Test-Auth-Email GET parameter (test environments only, auto-creates users)
 
 ### Encryption
 
@@ -246,7 +255,7 @@ The platform uses two separate encryption mechanisms:
 - **Encryption**: Sodium (libsodium) - modern, secure encryption
 - **Key**: 32-character ENCRYPTION_KEY from .env
 - **Service**: `App\Service\EncryptionService`
-- **Storage**: Encrypted credentials in the `encryptedCredentials` field of the Integration Entity
+- **Storage**: Encrypted credentials in the `encryptedCredentials` field of the IntegrationConfig entity
 - **Workflow**:
   1. User enters API credentials
   2. EncryptionService encrypts with Sodium and ENCRYPTION_KEY
@@ -331,18 +340,6 @@ docker-compose exec frankenphp php bin/console cache:clear
 # rebuild assets
 docker-compose exec frankenphp npm run build
 ```
-
-## Changelog
-
-### Version 1.0.0 (02.07.2025)
-- Initial Release
-- OAuth2 Google Login
-- Organisation Management
-- Jira/Confluence Integrations
-- REST API Implementation
-- File Management
-- Multi-Language Support (DE/EN)
-
 
 ## Workoflow Integration Platform (Production)
 

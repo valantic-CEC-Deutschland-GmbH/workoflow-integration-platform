@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - **Full document reading for SharePoint** — Read entire contracts and documents without character truncation using the new `full` mode. Supports documents up to 25 MB and 500,000 characters, ideal for analyzing complete contracts, policies, and reports
+- **SharePoint site discovery restored** — AI agents can now discover available SharePoint sites and their IDs, enabling folder browsing and list access
+
+### Fixed
+- **SharePoint folder browsing now works** — AI agents can list files and folders in SharePoint directories without errors
+- **SharePoint tools accept site names** — Passing a site display name (e.g. "Marketing") is now auto-resolved to the correct ID, preventing "Invalid hostname" errors
+- **All SharePoint tools enabled by default** — New and existing SharePoint setups now have all tools enabled, so agents can browse files and lists immediately
+
+### Removed
+- **SharePoint file download tool removed** — The download tool only returned URLs that AI agents couldn't use; use the document reader instead
 
 ## 2026-03-04
 
