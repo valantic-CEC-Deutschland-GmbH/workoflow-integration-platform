@@ -362,8 +362,9 @@
                                    id="webhook_auth_header"
                                    name="webhook_auth_header"
                                    value=""
-                                   placeholder="Authorization: Bearer your-token (leave empty to keep current)"
+                                   placeholder="Basic <credentials> or Bearer <token> (leave empty to keep current)"
                                    {% if not app.user.isAdmin() %}readonly{% endif %}>
+                            <small class="form-text text-muted">Enter the value for the Authorization header. For N8N webhooks, use <code>Basic &lt;base64&gt;</code>. For Common (ADK), use <code>Bearer &lt;token&gt;</code>.</small>
                         </div>
                     </div>
 

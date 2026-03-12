@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-12
+
+### Fixed
+- **Webhook auth header placeholder corrected** — The tenant settings page now shows the correct format hint (`Basic <credentials>` or `Bearer <token>`) instead of the misleading `Authorization: Bearer your-token`, which caused a double "Authorization:" prefix when entered as-is
+- **Auth format guidance for different orchestrators** — Added helper text explaining which auth format to use: Basic for N8N webhooks, Bearer for Common (ADK)
+
 ## 2026-03-11
 
 ### Added
