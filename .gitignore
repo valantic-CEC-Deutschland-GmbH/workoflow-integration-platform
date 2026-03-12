@@ -55,7 +55,13 @@ composer.phar
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 /.phpunit.cache/
-.playwright-mcp
+.playwright-mcp/
+.phpactor.json
 
-customer_screenshots
-tickets_val_it
+# Screenshots
+dashboard-page.png
+login-page.png
+skills-page.png
+
+customer_screenshots/
+tickets_val_it/

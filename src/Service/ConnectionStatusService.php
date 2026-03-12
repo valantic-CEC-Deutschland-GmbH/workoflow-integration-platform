@@ -193,6 +193,20 @@ class ConnectionStatusService
             return false;
         }
 
+        // Remote MCP: 403 with auth error patterns
+        if ($integrationType === 'remote_mcp') {
+            if (
+                str_contains($message, 'unauthorized') ||
+                str_contains($message, 'forbidden') ||
+                str_contains($message, 'invalid token') ||
+                str_contains($message, 'invalid api key')
+            ) {
+                return true;
+            }
+
+            return false;
+        }
+
         // Default: 403 alone is NOT enough to disconnect
         return false;
     }

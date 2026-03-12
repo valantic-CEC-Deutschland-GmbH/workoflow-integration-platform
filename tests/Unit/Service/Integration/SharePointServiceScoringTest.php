@@ -12,7 +12,7 @@ class SharePointServiceScoringTest extends TestCase
 
     protected function setUp(): void
     {
-        $httpClient = $this->createMock(HttpClientInterface::class);
+        $httpClient = $this->createStub(HttpClientInterface::class);
         $this->service = new SharePointService($httpClient);
     }
 

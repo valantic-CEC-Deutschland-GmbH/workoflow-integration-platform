@@ -18,3 +18,11 @@ services:
         resource: '../src/DataFixtures/'
         autowire: true
         autoconfigure: true
+
+    # Mock HTTP client for tests - replaces real HTTP calls to external services
+    App\Tests\Mock\TestHttpClientFactory:
+        arguments:
+            $fixturesDir: '%kernel.project_dir%/tests/Fixtures/HttpResponses'
+
+    Symfony\Contracts\HttpClient\HttpClientInterface:
+        factory: ['@App\Tests\Mock\TestHttpClientFactory', 'create']

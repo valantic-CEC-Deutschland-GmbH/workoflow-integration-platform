@@ -523,4 +523,9 @@ class SapSacIntegration implements PersonalizedSkillInterface
 </div>
 HTML;
     }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/SAP-Logo.svg';
+    }
 }

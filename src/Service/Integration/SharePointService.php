@@ -252,54 +252,8 @@ class SharePointService
         try {
             error_log('Reading SharePoint page - SiteID: ' . $siteId . ', PageID: ' . $pageId);
 
-            // Check if siteId looks like a name rather than a proper ID
-            // A proper site ID contains commas and GUIDs, or is in hostname:path format
-            if (!str_contains($siteId, ',') && !str_contains($siteId, '.sharepoint.com')) {
-                error_log('SiteID appears to be a name, attempting to resolve to actual site ID');
-
-                // Search for the site by name
-                $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
-                    'auth_bearer' => $credentials['access_token'],
-                    'query' => [
-                        'search' => $siteId,
-                        '$top' => 10
-                    ]
-                ]);
-
-                $sites = $sitesResponse->toArray();
-
-                if (isset($sites['value']) && count($sites['value']) > 0) {
-                    // Try to find exact match first
-                    $resolvedSiteId = null;
-                    foreach ($sites['value'] as $site) {
-                        if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                        if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['name'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                    }
-
-                    // If no exact match, use the first result
-                    if (!$resolvedSiteId && isset($sites['value'][0]['id'])) {
-                        $resolvedSiteId = $sites['value'][0]['id'];
-                        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
-                        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedSiteId);
-                    }
-
-                    if ($resolvedSiteId) {
-                        $siteId = $resolvedSiteId;
-                    } else {
-                        throw new \Exception('Could not resolve site name "' . $siteId . '" to a valid site ID');
-                    }
-                } else {
-                    throw new \Exception('No sites found matching "' . $siteId . '"');
-                }
-            }
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
 
             // Check if pageId looks like a name/title rather than a GUID
             // A proper page ID is a GUID format like "7b6fd3e8-80ad-4392-9643-6bab61be81e0"
@@ -413,6 +367,9 @@ class SharePointService
     public function listFiles(array $credentials, string $siteId, string $path = ''): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             $endpoint = $path
                 ? "/sites/{$siteId}/drive/root:/{$path}:/children"
                 : "/sites/{$siteId}/drive/root/children";
@@ -495,6 +452,9 @@ class SharePointService
     public function getListItems(array $credentials, string $siteId, string $listId, array $filters = []): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             error_log('Getting SharePoint list items - SiteID: ' . $siteId . ', ListID: ' . $listId);
 
             $query = [
@@ -590,6 +550,59 @@ class SharePointService
     }
 
     /**
+     * Resolve a site name or display name to a proper Graph API site ID.
+     *
+     * A proper site ID contains commas (hostname,guid,guid) or .sharepoint.com.
+     * If the provided siteId doesn't match that pattern, search for the site by name.
+     *
+     * @param array<string, mixed> $credentials Authentication credentials
+     * @param string $siteId Site ID or display name to resolve
+     * @return string Resolved site ID
+     */
+    private function resolveSiteId(array $credentials, string $siteId): string
+    {
+        // Already a proper site ID
+        if (str_contains($siteId, ',') || str_contains($siteId, '.sharepoint.com')) {
+            return $siteId;
+        }
+
+        error_log('SiteID appears to be a name, attempting to resolve to actual site ID: ' . $siteId);
+
+        $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
+            'auth_bearer' => $credentials['access_token'],
+            'query' => [
+                'search' => $siteId,
+                '$top' => 10
+            ]
+        ]);
+
+        $sites = $sitesResponse->toArray();
+
+        if (!isset($sites['value']) || count($sites['value']) === 0) {
+            throw new \Exception('No sites found matching "' . $siteId . '"');
+        }
+
+        // Try exact match first
+        foreach ($sites['value'] as $site) {
+            if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+            if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['name'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+        }
+
+        // Use first result as fallback
+        $resolvedId = $sites['value'][0]['id'];
+        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
+        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedId);
+
+        return $resolvedId;
+    }
+
+    /**
      * Get site information by site ID
      *
      * @param array $credentials The authentication credentials
@@ -618,12 +631,17 @@ class SharePointService
      * @param string $siteId Site ID
      * @param string $itemId Document item ID
      * @param int $maxLength Maximum content length to return (default 5000)
+     * @param string|null $driveId Optional drive ID for direct access
+     * @param bool $full When true, bypass truncation limits (up to 500k chars, 25MB file size)
      * @return array Document content and metadata
      */
-    public function readDocument(array $credentials, string $siteId, string $itemId, int $maxLength = 5000, ?string $driveId = null): array
+    public function readDocument(array $credentials, string $siteId, string $itemId, int $maxLength = 5000, ?string $driveId = null, bool $full = false): array
     {
         try {
-            error_log('Reading SharePoint document content - SiteID: ' . $siteId . ', ItemID: ' . $itemId . ($driveId ? ', DriveID: ' . $driveId : ''));
+            $effectiveMaxLength = $full ? 500000 : $maxLength;
+            $fileSizeLimit = $full ? 26214400 : 10485760; // 25MB vs 10MB
+
+            error_log('Reading SharePoint document content - SiteID: ' . $siteId . ', ItemID: ' . $itemId . ($driveId ? ', DriveID: ' . $driveId : '') . ($full ? ', FULL MODE' : ''));
 
             // Prioritize driveId-based access if provided (more reliable from search results)
             if (!empty($driveId)) {
@@ -702,14 +720,15 @@ class SharePointService
             error_log('Document details: ' . $fileName . ' (' . $mimeType . ', ' . $size . ' bytes)');
 
             // For very large files, provide metadata only with size warning
-            if ($size > 10485760) { // 10MB
+            if ($size > $fileSizeLimit) {
                 return [
                     'warning' => 'Document is very large (' . round($size / 1048576, 1) . ' MB). Content extraction limited to first part of document.',
                     'metadata' => $metadata,
-                    'content' => $this->extractFirstPartOfLargeDocument($credentials, $driveEndpoint, $itemId, $maxLength),
-                    'contentLength' => $maxLength,
+                    'content' => $this->extractFirstPartOfLargeDocument($credentials, $driveEndpoint, $itemId, $effectiveMaxLength),
+                    'contentLength' => $effectiveMaxLength,
                     'truncated' => true,
-                    'fullSize' => $size
+                    'fullSize' => $size,
+                    'fullMode' => $full
                 ];
             }
 
@@ -755,8 +774,8 @@ class SharePointService
 
                 // Truncate if needed
                 $truncated = false;
-                if (strlen($content) > $maxLength) {
-                    $content = substr($content, 0, $maxLength);
+                if (strlen($content) > $effectiveMaxLength) {
+                    $content = substr($content, 0, $effectiveMaxLength);
                     $truncated = true;
                 }
 
@@ -765,7 +784,8 @@ class SharePointService
                     'content' => $content,
                     'contentLength' => strlen($content),
                     'truncated' => $truncated,
-                    'mimeType' => $mimeType
+                    'mimeType' => $mimeType,
+                    'fullMode' => $full
                 ];
             }
 
@@ -783,13 +803,13 @@ class SharePointService
                 // Process based on mime type
                 if (str_contains($mimeType, 'application/pdf')) {
                     // Extract text from PDF
-                    $content = $this->extractTextFromPdf($binaryContent, $maxLength);
+                    $content = $this->extractTextFromPdf($binaryContent, $effectiveMaxLength);
                 } elseif (str_contains($mimeType, 'spreadsheetml.sheet') || str_contains($mimeType, 'application/vnd.ms-excel')) {
                     // Extract text from XLSX/XLS
-                    $content = $this->extractTextFromSpreadsheet($binaryContent, $maxLength);
+                    $content = $this->extractTextFromSpreadsheet($binaryContent, $effectiveMaxLength);
                 } elseif (str_contains($mimeType, 'wordprocessingml.document') || str_contains($mimeType, 'application/msword')) {
                     // Extract text from DOCX/DOC
-                    $content = $this->extractTextFromWord($binaryContent, $maxLength);
+                    $content = $this->extractTextFromWord($binaryContent, $effectiveMaxLength);
                 } else {
                     // Try the old format=text approach for other Office formats
                     try {
@@ -831,8 +851,8 @@ class SharePointService
 
                 // Truncate if needed
                 $truncated = false;
-                if (strlen($content) > $maxLength) {
-                    $content = substr($content, 0, $maxLength);
+                if (strlen($content) > $effectiveMaxLength) {
+                    $content = substr($content, 0, $effectiveMaxLength);
                     $truncated = true;
                 }
 
@@ -843,7 +863,8 @@ class SharePointService
                     'content' => $content,
                     'contentLength' => strlen($content),
                     'truncated' => $truncated,
-                    'mimeType' => $mimeType
+                    'mimeType' => $mimeType,
+                    'fullMode' => $full
                 ];
             } catch (\Exception $e) {
                 error_log('Document extraction failed: ' . $e->getMessage());

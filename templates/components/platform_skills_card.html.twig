@@ -16,6 +16,13 @@
         </div>
     </div>
 
+    {% if this.isCommonOrchestrator %}
+    <div class="orchestrator-info-banner">
+        <i class="fas fa-info-circle"></i>
+        <span>{{ 'integration.common_orchestrator_info'|trans|default('This organisation uses the ADK orchestrator. Employee tools (such as People Finder) are handled natively by the orchestrator and do not require separate platform configuration.') }}</span>
+    </div>
+    {% endif %}
+
     <div class="table-container">
         <table class="skills-table platform-skills-table">
             <thead>

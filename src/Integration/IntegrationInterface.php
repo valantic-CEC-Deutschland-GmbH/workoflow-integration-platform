@@ -60,4 +60,9 @@ interface IntegrationInterface
      * @return string|null HTML content for setup instructions
      */
     public function getSetupInstructions(): ?string;
+
+    /**
+     * Get the path to the integration's logo image
+     */
+    public function getLogoPath(): string;
 }

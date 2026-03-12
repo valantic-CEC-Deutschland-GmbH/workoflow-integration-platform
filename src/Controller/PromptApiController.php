@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
+use App\Integration\IntegrationRegistry;
+use App\Integration\PersonalizedSkillInterface;
 use App\Repository\PromptRepository;
 use App\Repository\UserOrganisationRepository;
 use App\Service\AuditLogService;
@@ -19,6 +22,7 @@ class PromptApiController extends AbstractController
         private PromptRepository $promptRepository,
         private UserOrganisationRepository $userOrganisationRepository,
         private AuditLogService $auditLogService,
+        private IntegrationRegistry $integrationRegistry,
     ) {
     }
 
@@ -55,6 +59,8 @@ class PromptApiController extends AbstractController
 
         $scope = $request->query->get('scope');
         $category = $request->query->get('category');
+        $skill = $request->query->get('skill');
+        $platform = $request->query->get('platform');
         $uuid = $request->query->get('uuid');
 
         // Validate scope parameter
@@ -73,12 +79,38 @@ class PromptApiController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Validate skill parameter
+        if ($skill !== null) {
+            $validSkills = [];
+            foreach ($this->integrationRegistry->all() as $integration) {
+                if ($integration instanceof PersonalizedSkillInterface) {
+                    $validSkills[] = $integration->getType();
+                }
+            }
+            if (!in_array($skill, $validSkills, true)) {
+                return $this->json([
+                    'error' => 'Invalid skill parameter',
+                    'valid_values' => $validSkills,
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // Validate platform parameter
+        if ($platform !== null && PromptPlatform::tryFrom($platform) === null) {
+            return $this->json([
+                'error' => 'Invalid platform parameter',
+                'valid_values' => array_column(PromptPlatform::cases(), 'value'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
         $prompts = $this->promptRepository->findForApi(
             $user,
             $organisation,
             $scope,
             $category,
-            $uuid
+            $uuid,
+            $skill,
+            $platform
         );
 
         $this->auditLogService->logWithOrganisation(
@@ -88,6 +120,8 @@ class PromptApiController extends AbstractController
             [
                 'scope' => $scope,
                 'category' => $category,
+                'skill' => $skill,
+                'platform' => $platform,
                 'uuid' => $uuid,
                 'result_count' => count($prompts),
             ]
@@ -99,6 +133,8 @@ class PromptApiController extends AbstractController
                 'total' => count($prompts),
                 'scope' => $scope,
                 'category' => $category,
+                'skill' => $skill,
+                'platform' => $platform,
             ],
         ]);
     }
@@ -138,6 +174,8 @@ class PromptApiController extends AbstractController
                 'content' => $prompt->getContent(),
                 'description' => $prompt->getDescription(),
                 'category' => $prompt->getCategory(),
+                'skill' => $prompt->getSkill(),
+                'platform' => $prompt->getPlatform(),
                 'scope' => $prompt->getScope(),
                 'owner' => [
                     'name' => $prompt->getOwner()?->getName(),

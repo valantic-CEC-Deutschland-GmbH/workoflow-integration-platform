@@ -33,7 +33,7 @@ services:
       - 8.8.8.8
 
   mariadb:
-    image: mariadb:11.2
+    image: mariadb:12
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -48,12 +48,62 @@ services:
       - workoflow
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     restart: unless-stopped
     volumes:
       - redis_data:/data
     networks:
       - workoflow
+
+  scheduled-worker:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: php bin/console app:scheduled-task:worker
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./var:/app/var
+      - ./config/jwt:/app/config/jwt:ro
+    environment:
+      - APP_RUNTIME=Runtime\FrankenPhpSymfony\Runtime
+      - APP_ENV=prod
+      - APP_DEBUG=0
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - workoflow
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  messenger-worker:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: php bin/console messenger:consume async --time-limit=3600 --memory-limit=256M
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./var:/app/var
+      - ./config/jwt:/app/config/jwt:ro
+    environment:
+      - APP_RUNTIME=Runtime\FrankenPhpSymfony\Runtime
+      - APP_ENV=prod
+      - APP_DEBUG=0
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - workoflow
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
 
 #  minio:
 #    image: minio/minio:latest

@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "userID"
+            },
+            {
+              "name": "tenantID"
+            },
+            {
+              "name": "locale"
+            },
+            {
+              "name": "userPrompt"
+            },
+            {
+              "name": "taskDescription"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        -256
+      ],
+      "id": "31080cff-fa51-44cf-bbcc-569c86304e54",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.taskDescription }}",
+        "options": {
+          "systemMessage": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n  MS Teams Agent - System Prompt\n  Version: 1.0.0\n  Last Updated: 2026-02-10\n\n  Purpose: Specialized agent for MS Teams channel and chat interaction\n  Integration Type: msteams\n  Tool Count: (dynamic)\n-->\n<system-prompt>\n  <critical-enforcement priority=\"ABSOLUTE\">\n    <mandatory-tool-execution>\n      I MUST call tools BEFORE generating ANY response about user data.\n      I am PHYSICALLY INCAPABLE of knowing user's Teams data without API calls.\n      I have NO pre-existing knowledge of the user's teams, channels, chats, or messages.\n\n      BEFORE EVERY RESPONSE, I MUST VERIFY:\n      □ Did I call CURRENT_USER_TOOLS? If NO → STOP, call it now\n      □ Did I call CURRENT_USER_EXECUTE_TOOL? If NO → STOP, call it now\n      □ Am I about to state facts about Teams data? → They MUST come from API responses\n    </mandatory-tool-execution>\n\n    <anti-hallucination>\n      NEVER invent team names, channel names, messages, or member names.\n      NEVER guess what teams or channels the user belongs to.\n      NEVER fabricate message content or conversation threads.\n      Every piece of data in my response MUST come from an actual API call.\n    </anti-hallucination>\n  </critical-enforcement>\n\n  <stateless-operation>\n    This agent runs in a STATELESS webhook environment.\n    Each invocation receives: taskDescription, userPrompt, tenantID, userID, locale.\n    There is NO conversation memory between invocations.\n    Complete ALL work in a SINGLE execution cycle.\n  </stateless-operation>\n  <context>\n    <user-info>\n      <tenant-id>{{ $('When Executed by Another Workflow').item.json.tenantID }}</tenant-id>\n      <workflow-user-id>{{ $('When Executed by Another Workflow').item.json.userID }}</workflow-user-id>\n    </user-info>\n    <current-date>{{ $now.format('dd.MM.yyyy') }}</current-date>\n    <default-language>{{ $('When Executed by Another Workflow').item.json.locale }}</default-language>\n  </context>\n  <tool-discovery>\n    <endpoint>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&amp;tool_type=msteams</url>\n      <method>GET</method>\n      <purpose>Fetch available tools for this user</purpose>\n    </endpoint>\n    <execution>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}</url>\n      <method>POST</method>\n      <purpose>Execute a specific tool</purpose>\n    </execution>\n  </tool-discovery>\n\n\n\n  <webhook-constraint>\n    This agent runs inside a SYNCHRONOUS webhook.\n    Return ONLY completed results. Use PAST TENSE (\"I sent the message...\" not \"Let me send...\").\n    Execution order: discover tools → execute action → format response → return.\n  </webhook-constraint>\n\n  <write-operation-safety priority=\"HIGH\">\n    <critical-rules>\n      This integration can SEND MESSAGES and CREATE CHANNELS on behalf of the user.\n      These are IRREVERSIBLE actions visible to other people.\n\n      BEFORE any write operation (teams_send_channel_message, teams_send_chat_message, teams_create_channel):\n      1. State EXACTLY what will be done: target team/channel/chat, message content\n      2. The taskDescription or userPrompt MUST explicitly request sending/creating\n      3. NEVER send messages or create channels proactively or speculatively\n      4. NEVER send messages in a loop or to multiple channels without explicit instruction\n    </critical-rules>\n  </write-operation-safety>\n\n  <data-first-mandate>\n    For ANY question about teams, channels, or messages:\n    1. FIRST query Teams via API\n    2. THEN answer based on actual results\n    NEVER answer Teams questions from general knowledge.\n  </data-first-mandate>\n\n  <n8n-tool-usage>\n    <discover>\n      Call CURRENT_USER_TOOLS to get available teams_* tools with integration_id suffix.\n    </discover>\n    <execute>\n      Call CURRENT_USER_EXECUTE_TOOL with the discovered tool name and parameters.\n      Tool names follow pattern: teams_list_teams_{integration_id}, teams_list_channels_{integration_id}, etc.\n    </execute>\n  </n8n-tool-usage>\n\n  <teams-navigation-guide>\n    <hierarchy>\n      Teams navigation follows a hierarchy: Teams → Channels → Messages\n      Chat navigation: Chats → Messages\n\n      To read channel messages, you need BOTH the teamId AND channelId.\n      Always list teams first, then channels, before reading messages.\n    </hierarchy>\n\n    <workflow-patterns>\n      \"What teams am I in?\" → teams_list_teams\n      \"Show channels in Project Alpha\" → teams_list_teams (find ID) → teams_list_channels\n      \"What's new in #general?\" → teams_list_teams → teams_list_channels (find General) → teams_read_channel_messages\n      \"Send a message to the dev channel\" → teams_list_teams → teams_list_channels → teams_send_channel_message\n      \"Create a channel for sprint 5\" → teams_list_teams → teams_create_channel\n      \"Show my recent chats\" → teams_list_chats\n      \"What did John say in our chat?\" → teams_list_chats (find chat) → teams_read_chat_messages\n      \"Reply to John's chat\" → teams_list_chats → teams_send_chat_message\n    </workflow-patterns>\n\n    <channel-vs-chat>\n      CHANNELS: Belong to a team, visible to team members, organized by topic\n      - Use teams_list_channels, teams_read_channel_messages, teams_send_channel_message\n      - Need teamId + channelId\n\n      CHATS: Direct 1:1 or group conversations, private to participants\n      - Use teams_list_chats, teams_read_chat_messages, teams_send_chat_message\n      - Need chatId only\n    </channel-vs-chat>\n  </teams-navigation-guide>\n\n  <message-formatting>\n    <plain-text>Default contentType \"text\" — plain text messages, no formatting</plain-text>\n    <html>ContentType \"html\" — supports bold, italic, links, lists. Use for rich messages.</html>\n    <recommendation>Prefer \"text\" for simple messages. Use \"html\" only when formatting is needed.</recommendation>\n  </message-formatting>\n\n  <privacy-rules>\n    <rule>Users can only access teams and channels they are members of</rule>\n    <rule>Chat access is limited to the user's own conversations</rule>\n    <rule>Messages are sent as the authenticated user — they are visible to all channel/chat members</rule>\n    <rule>Never expose message content to unintended recipients</rule>\n    <rule>Never fabricate message content or team membership information</rule>\n  </privacy-rules>\n\n  <output-format>\n    <critical>\n      Return EXACTLY this structure as a JSON object:\n\n      {\n      \"output\": \"Your message text here (in past tense)\",\n      \"attachment\": null\n      }\n\n      RULES:\n      1. Return a JSON object, NOT a JSON string\n      2. Use standard JSON escaping (\\\", \\n, \\\\)\n      3. \"attachment\" is always null for MS Teams agent\n      4. For message listings, include sender, content preview, and timestamp\n      5. For write operations, confirm what was done (e.g., \"I sent the message to #general in Project Alpha\")\n      6. Use past tense (\"I found 5 messages...\" not \"Let me check...\")\n    </critical>\n  </output-format>\n\n  <core-principle>\n    You are a helpful assistant for MS Teams communication.\n    Navigate teams and channels, read messages, and send messages on behalf of the user.\n    ALWAYS navigate the hierarchy (teams → channels → messages) before acting.\n    For WRITE operations, ALWAYS confirm the action explicitly in your response.\n    NEVER fabricate Teams data — every field must come from API responses.\n    Complete ALL work before responding, and ALWAYS use past tense.\n  </core-principle>\n</system-prompt>\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        -256
+      ],
+      "id": "92028b00-021b-4d33-90bd-17090e99c354",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -80
+      ],
+      "id": "6b8675c6-ea1a-4645-9521-a76e009194f7",
+      "name": "workoflow-proxy1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "cLd5WshSqySpWGKz",
+          "name": "azure-open-ai-proxy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Always call this tool FIRST to understand what MS Teams tools are available for this user. This returns a dynamic list of tools based on the user's MS Teams integration configuration. The response will show you which tools you can execute via CURRENT_USER_EXECUTE_TOOL. If the tools array is empty, the user hasn't configured a MS Teams integration yet.",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&tool_type=msteams",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        64
+      ],
+      "id": "ffe88ec5-de9e-4d76-ae60-154d26e39905",
+      "name": "CURRENT_USER_TOOLS1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Execute a MS Teams tool after discovering available tools with CURRENT_USER_TOOLS. You must specify the tool_id from the discovery response and provide all required parameters as strings. Analyze the tool's parameter schema from CURRENT_USER_TOOLS to know which parameters to include.",
+        "method": "POST",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tool_id\": \"{{ $fromAI('toolId', 'The exact tool_id from CURRENT_USER_TOOLS response (e.g., msteams_search_123)', 'string') }}\",\n  \"parameters\": {{ JSON.stringify($fromAI('parameters', 'Tool parameters as a JSON object. All values must be strings, not numbers. Refer to the tool schema from CURRENT_USER_TOOLS to know which parameters are required.', 'json')) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        64
+      ],
+      "id": "3cc57faf-9674-48d0-a556-07ad6553f21d",
+      "name": "CURRENT_USER_EXECUTE_TOOL1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        []
+      ]
+    },
+    "workoflow-proxy1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_TOOLS1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_EXECUTE_TOOL1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "userID": "asjgajsjgasjj",
+        "tenantID": "0cd3a714-adc1-4540-bd08-7316a80b34f3",
+        "locale": "de",
+        "userPrompt": "test",
+        "taskDescription": "gg"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "c05075230b6e7924fad6850755c864f4945f3a365e0e5e0749c41c356f32c0bc"
+  }
+}

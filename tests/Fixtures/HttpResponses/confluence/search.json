@@ -1,0 +1,20 @@
+{
+    "results": [
+        {
+            "id": "12345",
+            "type": "page",
+            "status": "current",
+            "title": "Test Confluence Page",
+            "space": {
+                "key": "TEST",
+                "name": "Test Space"
+            },
+            "_links": {
+                "webui": "/spaces/TEST/pages/12345/Test+Confluence+Page"
+            }
+        }
+    ],
+    "start": 0,
+    "limit": 25,
+    "size": 1
+}

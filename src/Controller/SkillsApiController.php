@@ -9,6 +9,7 @@ use App\Integration\PersonalizedSkillInterface;
 use App\Repository\IntegrationConfigRepository;
 use App\Repository\OrganisationRepository;
 use App\Service\AuditLogService;
+use App\Service\OrchestratorCapabilitiesService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -25,6 +26,7 @@ class SkillsApiController extends AbstractController
         private IntegrationConfigRepository $integrationConfigRepository,
         private IntegrationRegistry $integrationRegistry,
         private AuditLogService $auditLogService,
+        private OrchestratorCapabilitiesService $orchestratorCapabilitiesService,
         #[Autowire(service: 'monolog.logger.integration_api')]
         private LoggerInterface $logger,
         private string $apiAuthUser,
@@ -62,9 +64,15 @@ class SkillsApiController extends AbstractController
             $skills = array_merge($skills, $this->getUserIntegrationSkills($organisation, $workflowUserId, $toolTypes));
         }
 
-        // Include system integrations if requested
+        // Include system-level skills
         if (empty($toolTypes) || in_array('system', $toolTypes, true) || $this->hasSystemTypeInFilter($toolTypes)) {
-            $skills = array_merge($skills, $this->getSystemIntegrationSkills($toolTypes));
+            if ($organisation && $organisation->getWebhookType() === 'COMMON') {
+                // Common orchestrator: return enabled orchestrator agents instead of static system tools
+                $skills = array_merge($skills, $this->getOrchestratorAgentSkills($organisation, $workflowUserId));
+            } else {
+                // N8N or no org: return static system integrations
+                $skills = array_merge($skills, $this->getSystemIntegrationSkills($toolTypes));
+            }
         }
 
         // Log API access with execution_id
@@ -181,6 +189,51 @@ class SkillsApiController extends AbstractController
             }
 
             $skills[] = $skillData;
+        }
+
+        return $skills;
+    }
+
+    /**
+     * Return orchestrator agent skills that are enabled for this organisation/user.
+     *
+     * Agents are stored in a single IntegrationConfig with type "orchestrator".
+     * The disabledTools array contains the agent types that have been disabled.
+     */
+    private function getOrchestratorAgentSkills(\App\Entity\Organisation $organisation, ?string $workflowUserId): array
+    {
+        // Find the orchestrator config for this user (stores disabled agents)
+        $configs = $this->integrationConfigRepository->findByOrganisationAndWorkflowUser(
+            $organisation,
+            $workflowUserId
+        );
+
+        $disabledAgents = [];
+        foreach ($configs as $config) {
+            if ($config->getIntegrationType() === 'orchestrator') {
+                $disabledAgents = $config->getDisabledTools();
+                break;
+            }
+        }
+
+        // Fetch capabilities from orchestrator
+        $agents = $this->orchestratorCapabilitiesService->fetchCapabilities($organisation);
+
+        $skills = [];
+        foreach ($agents as $agent) {
+            $agentType = $agent['type'] ?? '';
+
+            // Skip disabled agents
+            if (in_array($agentType, $disabledAgents, true)) {
+                continue;
+            }
+
+            $skills[] = [
+                'type' => $agentType,
+                'name' => $agent['name'] ?? $agentType,
+                'instance_id' => null,
+                'instance_name' => null,
+            ];
         }
 
         return $skills;

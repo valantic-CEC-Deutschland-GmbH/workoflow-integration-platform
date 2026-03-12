@@ -3,6 +3,9 @@
 namespace App\Command;
 
 use App\Entity\Prompt;
+use App\Enum\PromptPlatform;
+use App\Integration\IntegrationRegistry;
+use App\Integration\PersonalizedSkillInterface;
 use App\Repository\OrganisationRepository;
 use App\Repository\PromptRepository;
 use App\Repository\UserOrganisationRepository;
@@ -25,7 +28,8 @@ class ImportPromptsCommand extends Command
         private OrganisationRepository $organisationRepository,
         private UserOrganisationRepository $userOrganisationRepository,
         private PromptRepository $promptRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private IntegrationRegistry $integrationRegistry
     ) {
         parent::__construct();
     }
@@ -121,13 +125,41 @@ class ImportPromptsCommand extends Command
                 continue;
             }
 
-            // Validate category
-            if (!in_array($promptData['category'], $validCategories, true)) {
+            // Validate category (only if non-empty)
+            if (!empty($promptData['category']) && !in_array($promptData['category'], $validCategories, true)) {
                 $errors[] = sprintf(
                     'Line %d: Invalid category "%s". Valid: %s',
                     $lineNumber,
                     $promptData['category'],
                     implode(', ', $validCategories)
+                );
+                $skipped++;
+                continue;
+            }
+
+            // Validate skill (only if non-empty)
+            $skillValue = !empty($promptData['skill']) ? $promptData['skill'] : null;
+            if ($skillValue !== null) {
+                $integration = $this->integrationRegistry->get($skillValue);
+                if ($integration === null || !$integration instanceof PersonalizedSkillInterface) {
+                    $errors[] = sprintf(
+                        'Line %d: Invalid skill "%s"',
+                        $lineNumber,
+                        $promptData['skill']
+                    );
+                    $skipped++;
+                    continue;
+                }
+            }
+
+            // Validate platform (only if non-empty)
+            $platformValue = !empty($promptData['platform']) ? $promptData['platform'] : null;
+            if ($platformValue !== null && PromptPlatform::tryFrom($platformValue) === null) {
+                $errors[] = sprintf(
+                    'Line %d: Invalid platform "%s". Valid: %s',
+                    $lineNumber,
+                    $promptData['platform'],
+                    implode(', ', array_column(PromptPlatform::cases(), 'value'))
                 );
                 $skipped++;
                 continue;
@@ -144,7 +176,9 @@ class ImportPromptsCommand extends Command
                 $existingPrompt->setTitle($promptData['title']);
                 $existingPrompt->setContent($promptData['content']);
                 $existingPrompt->setDescription($promptData['description'] ?: null);
-                $existingPrompt->setCategory($promptData['category']);
+                $existingPrompt->setCategory($promptData['category'] ?: null);
+                $existingPrompt->setSkill($skillValue);
+                $existingPrompt->setPlatform($platformValue);
                 $updated++;
                 $io->text(sprintf('  [UPDATE] %s', $promptData['title']));
             } else {
@@ -154,7 +188,9 @@ class ImportPromptsCommand extends Command
                 $prompt->setTitle($promptData['title']);
                 $prompt->setContent($promptData['content']);
                 $prompt->setDescription($promptData['description'] ?: null);
-                $prompt->setCategory($promptData['category']);
+                $prompt->setCategory($promptData['category'] ?: null);
+                $prompt->setSkill($skillValue);
+                $prompt->setPlatform($platformValue);
                 $prompt->setScope(Prompt::SCOPE_ORGANISATION);
                 $prompt->setOwner($owner);
                 $prompt->setOrganisation($organisation);
@@ -207,7 +243,7 @@ class ImportPromptsCommand extends Command
 
     /**
      * Parse CSV file and return array of prompt data
-     * @return array<int, array{import_key: string, title: string, content: string, description: string, category: string}>
+     * @return array<int, array{import_key: string, title: string, content: string, description: string, category: string, skill: string, platform: string}>
      */
     private function parseCsv(string $filePath): array
     {
@@ -242,6 +278,8 @@ class ImportPromptsCommand extends Command
                 'content' => trim($row[$headerMap['content'] ?? -1] ?? ''),
                 'description' => trim($row[$headerMap['description'] ?? $headerMap['desc'] ?? -1] ?? ''),
                 'category' => trim($row[$headerMap['category'] ?? -1] ?? ''),
+                'skill' => trim($row[$headerMap['skill'] ?? -1] ?? ''),
+                'platform' => trim($row[$headerMap['platform'] ?? -1] ?? ''),
             ];
         }
 

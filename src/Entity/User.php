@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\UserOrganisation;
+use App\Integration\ToolCategory;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -69,6 +70,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(targetEntity: UserChannel::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private Collection $userChannels;
+
+    #[ORM\Column(length: 20, options: ['default' => 'standard'])]
+    private string $toolAccessMode = 'read_only';
 
     public function __construct()
     {
@@ -429,5 +433,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return $channels;
+    }
+
+    public function getToolAccessMode(): string
+    {
+        return $this->toolAccessMode;
+    }
+
+    public function setToolAccessMode(string $toolAccessMode): static
+    {
+        $this->toolAccessMode = $toolAccessMode;
+        return $this;
+    }
+
+    /**
+     * @return ToolCategory[]
+     */
+    public function getAllowedToolCategories(): array
+    {
+        return match ($this->toolAccessMode) {
+            'read_only' => [ToolCategory::READ],
+            'standard' => [ToolCategory::READ, ToolCategory::WRITE],
+            'full' => [ToolCategory::READ, ToolCategory::WRITE, ToolCategory::DELETE],
+            default => [ToolCategory::READ],
+        };
     }
 }

@@ -1,0 +1,125 @@
+{# @var \App\Twig\Components\RemoteMcpTableComponent this #}
+
+<div class="skills-table-section remote-mcp-section" data-controller="skills-table">
+    <div class="section-header-with-actions">
+        <div class="section-header-content">
+            <h2><i class="fas fa-server"></i> {{ 'integration.remote_mcp_servers'|trans|default('Remote MCP Servers') }}</h2>
+            <p class="section-description">{{ 'integration.remote_mcp_description'|trans|default('Connect to vendor-provided MCP servers and proxy their tools through your Workoflow endpoint') }}</p>
+        </div>
+
+        <div class="section-actions">
+            <a href="{{ path('app_tool_setup', {type: 'remote_mcp'}) }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> {{ 'integration.add_remote_mcp'|trans|default('Add Remote MCP Server') }}
+            </a>
+        </div>
+    </div>
+
+    {% if this.hasConfiguredIntegrations %}
+        <div class="table-container">
+            <table class="skills-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'integration.instance_name'|trans|default('Instance Name') }}</th>
+                        <th>{{ 'integration.type'|trans|default('Type') }}</th>
+                        <th>{{ 'integration.status'|trans|default('Status') }}</th>
+                        <th class="hide-mobile">{{ 'integration.last_accessed'|trans|default('Last Accessed') }}</th>
+                        <th>{{ 'integration.actions'|trans|default('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody data-skills-table-target="tableBody">
+                    {% for integration in this.getRemoteMcpIntegrations %}
+                        <tr class="table-row" data-skills-table-target="row">
+                            {# Instance Name #}
+                            <td class="table-cell-primary">
+                                <div class="cell-with-logo">
+                                    <img src="{{ integration.logoPath }}" alt="Remote MCP" class="integration-logo-small">
+                                    <span class="integration-name">{{ integration.instanceName|default(integration.name) }}</span>
+                                </div>
+                            </td>
+
+                            {# Type Badge #}
+                            <td>
+                                <span class="badge badge-type" title="{{ 'status.experimental'|trans|default('Experimental') }}">
+                                    <i class="fas fa-flask"></i> MCP
+                                </span>
+                            </td>
+
+                            {# Status Badge #}
+                            <td>
+                                {% if integration.hasCredentials %}
+                                    {% if not integration.isConnected %}
+                                        <span class="badge badge-disconnected" title="{{ integration.disconnectReason|default('')|e('html_attr') }}">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {{ 'status.disconnected'|trans|default('Disconnected') }}
+                                        </span>
+                                    {% elseif integration.active %}
+                                        <span class="badge badge-connected">
+                                            <i class="fas fa-check-circle"></i>
+                                            {{ 'status.connected'|trans|default('Connected') }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-inactive">
+                                            <i class="fas fa-pause-circle"></i>
+                                            {{ 'status.inactive'|trans|default('Inactive') }}
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-disconnected">
+                                        <i class="fas fa-times-circle"></i>
+                                        {{ 'status.not_connected'|trans|default('Not Connected') }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            {# Last Accessed #}
+                            <td class="hide-mobile text-secondary">
+                                {% if integration.lastAccessedAt %}
+                                    <i class="fas fa-clock"></i>
+                                    {{ integration.lastAccessedAt|date('d.m.Y H:i') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            {# Actions #}
+                            <td class="table-actions">
+                                <div class="action-group">
+                                    <a
+                                        href="{{ path('app_tool_setup', {type: 'remote_mcp', instance: integration.instanceId}) }}"
+                                        class="btn btn-sm btn-secondary"
+                                        title="{{ 'action.edit'|trans|default('Edit') }}"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                        <span class="btn-text">{{ 'action.edit'|trans|default('Edit') }}</span>
+                                    </a>
+
+                                    <button
+                                        class="btn btn-sm btn-secondary"
+                                        data-type="remote_mcp"
+                                        data-instance="{{ integration.instanceId }}"
+                                        data-action="click->skills-table#testConnection"
+                                        title="{{ 'integration.test_connection'|trans|default('Test Connection') }}"
+                                    >
+                                        <i class="fas fa-plug"></i>
+                                        <span class="btn-text">{{ 'integration.test_connection'|trans|default('Test') }}</span>
+                                    </button>
+
+                                    <button
+                                        class="btn btn-sm btn-danger"
+                                        data-instance-id="{{ integration.instanceId }}"
+                                        data-instance-name="{{ integration.instanceName|default(integration.name) }}"
+                                        data-action="click->skills-table#deleteIntegration"
+                                        title="{{ 'action.delete'|trans|default('Delete') }}"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                        <span class="btn-text">{{ 'action.delete'|trans|default('Delete') }}</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>

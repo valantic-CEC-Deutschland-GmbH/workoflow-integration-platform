@@ -109,7 +109,7 @@ class MagicLinkAuthenticator extends AbstractAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('app_general'));
+        return new RedirectResponse($this->router->generate('app_my_agent'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

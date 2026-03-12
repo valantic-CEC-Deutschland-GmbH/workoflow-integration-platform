@@ -18,6 +18,7 @@ parameters:
 
 imports:
     - { resource: services/integrations.yaml }
+    - { resource: services/scheduled_tasks.yaml }
 
 services:
     _defaults:
@@ -32,6 +33,7 @@ services:
             - '../src/Kernel.php'
             - '../src/Integration/SystemTools/'
             - '../src/Integration/UserIntegrations/'
+            - '../src/Service/ScheduledTask/'
 
     App\Controller\:
         resource: '../src/Controller/'
@@ -63,6 +65,11 @@ services:
             $auditLogService: '@App\Service\AuditLogService'
             $router: '@router'
             $logger: '@logger'
+
+    App\Controller\TenantApiController:
+        arguments:
+            $apiAuthUser: '%app.api_auth_user%'
+            $apiAuthPassword: '%app.api_auth_password%'
 
     App\Controller\RegisterApiController:
         arguments:
