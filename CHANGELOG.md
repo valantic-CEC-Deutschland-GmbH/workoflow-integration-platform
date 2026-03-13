@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-13
+
+### Fixed
+- **Execution history now shows only your own tasks** — Previously, the Scheduled Tasks page displayed execution history from all users in the organisation; now it only shows executions for tasks you created
+- **Execution details restricted to task owner** — Viewing output, status, and deleting executions is now limited to the user who owns the task
+
 ## 2026-03-12
 
 ### Fixed

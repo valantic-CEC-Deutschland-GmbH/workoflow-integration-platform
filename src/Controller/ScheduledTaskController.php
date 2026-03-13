@@ -51,7 +51,7 @@ class ScheduledTaskController extends AbstractController
         }
 
         $tasks = $this->taskRepository->findByOrganisationAndUser($organisation, $user);
-        $executions = $this->executionRepository->findByOrganisation($organisation, 50);
+        $executions = $this->executionRepository->findByOrganisationAndUser($organisation, $user, 50);
 
         return $this->render('scheduled_task/index.html.twig', [
             'tasks' => $tasks,
@@ -211,7 +211,7 @@ class ScheduledTaskController extends AbstractController
 
         $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
 
-        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation || $execution->getScheduledTask()->getUser() !== $user) {
             throw $this->createNotFoundException('Execution not found');
         }
 
@@ -311,7 +311,7 @@ class ScheduledTaskController extends AbstractController
 
         $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
 
-        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation || $execution->getScheduledTask()->getUser() !== $user) {
             return new JsonResponse(['error' => 'Execution not found'], Response::HTTP_NOT_FOUND);
         }
 
@@ -338,7 +338,7 @@ class ScheduledTaskController extends AbstractController
 
         $execution = $this->entityManager->getRepository(ScheduledTaskExecution::class)->find($id);
 
-        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation) {
+        if (!$execution || $execution->getScheduledTask()->getOrganisation() !== $organisation || $execution->getScheduledTask()->getUser() !== $user) {
             return new JsonResponse(['error' => 'Execution not found'], Response::HTTP_NOT_FOUND);
         }
 
