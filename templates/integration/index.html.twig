@@ -143,8 +143,8 @@
                         <div class="mcp-client-pane" id="mcp-pane-claude-code">
                             <div class="api-helper-item">
                                 <label><i class="fas fa-terminal"></i> Claude Code</label>
-                                <p class="mcp-hint">Add this to your Claude Code settings file:</p>
-                                <p class="mcp-path"><code>~/.claude/settings.json</code></p>
+                                <p class="mcp-hint">Add the <code>mcpServers</code> key to your Claude Code config file:</p>
+                                <p class="mcp-path"><code>~/.claude.json</code> (global)</p>
                                 <div class="curl-command-wrapper">
                                     <pre><code id="mcpClaudeCode">{
   "mcpServers": {
@@ -158,6 +158,13 @@
   }
 }</code></pre>
                                     <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpClaudeCode')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p class="mcp-hint" style="margin-top: 1rem;">Or use this CLI command (recommended):</p>
+                                <div class="curl-command-wrapper">
+                                    <pre><code id="mcpClaudeCodeCli">claude mcp add --transport http -H "X-Prompt-Token: {{ userOrganisation.personalAccessToken }}" -s user workoflow https://workoflow-mcp.vcec.cloud/mcp</code></pre>
+                                    <button type="button" class="btn btn-copy btn-sm" onclick="copySkillsCurl(this, 'mcpClaudeCodeCli')">
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
@@ -219,7 +226,7 @@
                             <div class="api-helper-item">
                                 <label><i class="fas fa-wind"></i> Windsurf</label>
                                 <p class="mcp-hint">Add this to your Windsurf MCP config:</p>
-                                <p class="mcp-path"><code>~/.codeium/windsurf/mcp_config.json</code></p>
+                                <p class="mcp-path"><code>~/.codeium/mcp_config.json</code></p>
                                 <div class="curl-command-wrapper">
                                     <pre><code id="mcpWindsurf">{
   "mcpServers": {

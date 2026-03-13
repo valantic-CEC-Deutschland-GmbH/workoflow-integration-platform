@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-13
+
+### Fixed
+- **Claude Code MCP config path corrected** — The MCP Server Configuration page now shows the correct config file path (`~/.claude.json`) instead of `~/.claude/settings.json`, which silently ignored MCP settings
+- **Windsurf MCP config path corrected** — Updated the Windsurf config path from `~/.codeium/windsurf/mcp_config.json` to `~/.codeium/mcp_config.json`
+
+### Added
+- **Claude Code CLI setup command** — Added a recommended one-line `claude mcp add` command as an alternative to manually editing the JSON config file
+
 ## 2026-03-12
 
 ### Fixed
