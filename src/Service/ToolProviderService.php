@@ -21,6 +21,7 @@ use App\Service\Integration\RemoteMcpService;
  * - Disabled tool filtering
  * - Tool formatting for API responses
  * - Tool access mode filtering (read/write/delete)
+ * - Orchestrator native agent tools (for COMMON tenants)
  */
 class ToolProviderService
 {
@@ -29,6 +30,7 @@ class ToolProviderService
         private readonly IntegrationConfigRepository $configRepository,
         private readonly EncryptionService $encryptionService,
         private readonly RemoteMcpService $remoteMcpService,
+        private readonly OrchestratorCapabilitiesService $orchestratorCapabilitiesService,
     ) {
     }
 
@@ -83,88 +85,103 @@ class ToolProviderService
             }
         }
 
-        // Include organisation-wide MCP server tools
-        $orgMcpTools = $this->buildOrgMcpTools($organisation, $criteria, $allowedCategories);
-        $tools = array_merge($tools, $orgMcpTools);
+        // Include orchestrator native agent tools (for COMMON tenants)
+        if ($organisation->getWebhookType() === 'COMMON') {
+            $orchestratorTools = $this->buildOrchestratorNativeTools($organisation, $criteria, $allowedCategories);
+            $tools = array_merge($tools, $orchestratorTools);
+        }
 
         return $tools;
     }
 
     /**
-     * Build tools from organisation-wide MCP server
+     * Build tools from orchestrator native agents (People Finder, Web Agent, etc.)
+     *
+     * Uses OrchestratorCapabilitiesService (cached 5 min) to discover agents and their tools.
+     * Respects per-agent disabled tools from IntegrationConfig(type="orchestrator.*").
+     * Only includes tools marked as mcp_exposed=true by the orchestrator.
      *
      * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
-    private function buildOrgMcpTools(
+    private function buildOrchestratorNativeTools(
         Organisation $organisation,
         ToolFilterCriteria $criteria,
         ?array $allowedCategories = null
     ): array {
-        $orgMcpUrl = $organisation->getOrgMcpServerUrl();
-        if (!$orgMcpUrl) {
-            return [];
-        }
-
         // Skip if filter specifies only system tools
         if ($criteria->includesOnlySystemTools()) {
             return [];
         }
 
-        // Skip if filter specifies types and remote_mcp is not included
-        if ($criteria->hasToolTypeFilter() && !$criteria->includesSpecificType('remote_mcp')) {
+        $agents = $this->orchestratorCapabilitiesService->fetchCapabilities($organisation);
+        if (empty($agents)) {
             return [];
         }
 
-        // Build credentials from organisation fields
-        $customHeaders = '';
-        $encryptedAuthHeader = $organisation->getEncryptedOrgMcpAuthHeader();
-        if ($encryptedAuthHeader) {
-            try {
-                $customHeaders = $this->encryptionService->decrypt($encryptedAuthHeader);
-            } catch (\Exception) {
-                // If decryption fails, proceed without auth header
+        // Load orchestrator IntegrationConfigs for disabled-tools check
+        $configs = $this->configRepository->findByOrganisationAndWorkflowUser(
+            $organisation,
+            $criteria->getWorkflowUserId()
+        );
+        $orchestratorConfigs = [];
+        foreach ($configs as $config) {
+            if (str_starts_with($config->getIntegrationType(), 'orchestrator.')) {
+                $orchestratorConfigs[$config->getIntegrationType()] = $config;
             }
-        }
-
-        $credentials = [
-            'server_url' => $orgMcpUrl,
-            'auth_type' => 'none',
-            'custom_headers' => $customHeaders,
-        ];
-
-        try {
-            $mcpTools = $this->remoteMcpService->discoverTools($credentials);
-        } catch (\Exception) {
-            return [];
         }
 
         $tools = [];
-        foreach ($mcpTools as $mcpTool) {
-            $toolName = $mcpTool['name'] ?? '';
-            if ($toolName === '') {
+        foreach ($agents as $agent) {
+            $agentType = $agent['type'] ?? '';
+            $agentTools = $agent['tools'] ?? [];
+
+            if ($agentType === '' || empty($agentTools)) {
                 continue;
             }
 
-            // All remote MCP tools are treated as READ by default
-            if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+            // Check if agent is disabled
+            $agentConfig = $orchestratorConfigs[$agentType] ?? null;
+            if ($agentConfig !== null && !$agentConfig->isActive()) {
                 continue;
             }
 
-            $description = $mcpTool['description'] ?? 'Remote MCP tool';
-            $description .= ' (via Org MCP: ' . $orgMcpUrl . ')';
+            $disabledTools = $agentConfig?->getDisabledTools() ?? [];
 
-            $parameters = $this->convertMcpInputSchema($mcpTool['inputSchema'] ?? []);
+            foreach ($agentTools as $agentTool) {
+                $toolName = $agentTool['name'] ?? '';
+                if ($toolName === '') {
+                    continue;
+                }
 
-            $tools[] = [
-                'type' => 'function',
-                'function' => [
-                    'name' => $toolName . '_org',
-                    'tool_id' => $toolName . '_org',
-                    'description' => $description,
-                    'parameters' => $parameters,
-                ],
-            ];
+                // Skip tools not exposed for MCP
+                if (!($agentTool['mcp_exposed'] ?? true)) {
+                    continue;
+                }
+
+                // Skip disabled tools
+                if (in_array($toolName, $disabledTools, true)) {
+                    continue;
+                }
+
+                // All orchestrator tools are treated as READ by default
+                if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+                    continue;
+                }
+
+                $description = $agentTool['description'] ?? 'Orchestrator tool';
+                $parameters = $this->convertMcpInputSchema($agentTool['parameters'] ?? []);
+
+                $tools[] = [
+                    'type' => 'function',
+                    'function' => [
+                        'name' => 'orchestrator.' . $toolName,
+                        'tool_id' => 'orchestrator.' . $toolName,
+                        'description' => $description,
+                        'parameters' => $parameters,
+                    ],
+                ];
+            }
         }
 
         return $tools;

@@ -39,6 +39,11 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
     
+    App\Controller\McpApiController:
+        arguments:
+            $apiAuthUser: '%app.api_auth_user%'
+            $apiAuthPassword: '%app.api_auth_password%'
+
     App\Controller\IntegrationApiController:
         arguments:
             $apiAuthUser: '%app.api_auth_user%'

@@ -7,12 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 2026-03-13
 
 ### Added
+- **Orchestrator native tools now available via MCP** — People Finder (employee search/profile), Web Agent (web search/read) tools from the orchestrator are now automatically discoverable and executable through the MCP server and Integration API for COMMON tenants
 - **Workoflow Orchestrator added to Release Notes** — The Release Notes page now includes a dedicated tab for the Workoflow Orchestrator changelog
 - **Workoflow Orchestrator added to footer** — Open Source section in the footer now links to the Orchestrator GitHub repository
 - **Claude Code CLI setup command** — Added a recommended one-line `claude mcp add` command as an alternative to manually editing the JSON config file
 
 ### Changed
 - **Files page hidden from navigation** — The Files link is no longer shown in the Workspace menu
+
+### Removed
+- **Remote MCP Server configuration removed from tenant settings** — The organisation-wide MCP server configuration (URL, auth header, test connection) has been removed. Orchestrator native tools replace this functionality for COMMON tenants
 
 ### Fixed
 - **Execution history now shows only your own tasks** — Previously, the Scheduled Tasks page displayed execution history from all users in the organisation; now it only shows executions for tasks you created

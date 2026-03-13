@@ -124,32 +124,26 @@ class IntegrationApiController extends AbstractController
             'workflow_user_id' => $workflowUserId
         ]);
 
-        // Parse tool ID (might have _configId suffix for user integrations or _org suffix for org MCP)
-        $parts = explode('_', $toolId);
-        $configId = null;
-        $toolName = $toolId;
-        $isOrgMcp = false;
-
-        // Check if this is an org-wide MCP tool (ends with _org)
-        if (count($parts) > 1 && end($parts) === 'org') {
-            $isOrgMcp = true;
-            array_pop($parts);
-            $toolName = implode('_', $parts);
-        } elseif (count($parts) > 1 && is_numeric(end($parts))) {
-            // Check if this is a user integration tool with config ID
-            $configId = (int) array_pop($parts);
-            $toolName = implode('_', $parts);
-        }
-
-        // Handle org-wide MCP tool execution
-        if ($isOrgMcp) {
-            return $this->executeOrgMcpTool(
+        // Handle orchestrator native agent tools (prefixed with "orchestrator.")
+        if (str_starts_with($toolId, 'orchestrator.')) {
+            return $this->executeOrchestratorTool(
                 $organisation,
-                $toolName,
+                $toolId,
                 $parameters,
                 $workflowUserId,
                 $executionId
             );
+        }
+
+        // Parse tool ID (might have _configId suffix for user integrations)
+        $parts = explode('_', $toolId);
+        $configId = null;
+        $toolName = $toolId;
+
+        if (count($parts) > 1 && is_numeric(end($parts))) {
+            // Check if this is a user integration tool with config ID
+            $configId = (int) array_pop($parts);
+            $toolName = implode('_', $parts);
         }
 
         try {
@@ -376,38 +370,29 @@ class IntegrationApiController extends AbstractController
     }
 
     /**
-     * Execute a tool on the organisation-wide MCP server.
+     * Execute an orchestrator native agent tool.
+     * Routes to the orchestrator's POST /api/tools/execute endpoint.
      */
-    private function executeOrgMcpTool(
+    private function executeOrchestratorTool(
         Organisation $organisation,
-        string $toolName,
+        string $toolId,
         array $parameters,
         ?string $workflowUserId,
         ?string $executionId
     ): JsonResponse {
-        $orgMcpUrl = $organisation->getOrgMcpServerUrl();
-        if (!$orgMcpUrl) {
-            return $this->json(['error' => 'Organisation MCP server not configured'], Response::HTTP_BAD_REQUEST);
+        if ($organisation->getWebhookType() !== 'COMMON') {
+            return $this->json(['error' => 'Orchestrator tools are only available for COMMON tenants'], Response::HTTP_BAD_REQUEST);
         }
 
-        $customHeaders = '';
-        $encryptedAuthHeader = $organisation->getEncryptedOrgMcpAuthHeader();
-        if ($encryptedAuthHeader) {
-            try {
-                $customHeaders = $this->encryptionService->decrypt($encryptedAuthHeader);
-            } catch (\Exception) {
-                return $this->json(['error' => 'Failed to decrypt org MCP auth header'], Response::HTTP_BAD_REQUEST);
-            }
+        $orchestratorApiUrl = $organisation->getOrchestratorApiUrl();
+        if (!$orchestratorApiUrl) {
+            return $this->json(['error' => 'Orchestrator API URL not configured'], Response::HTTP_BAD_REQUEST);
         }
 
-        $credentials = [
-            'server_url' => $orgMcpUrl,
-            'auth_type' => 'none',
-            'custom_headers' => $customHeaders,
-        ];
+        // Strip "orchestrator." prefix to get bare tool name
+        $toolName = substr($toolId, strlen('orchestrator.'));
 
-        $toolId = $toolName . '_org';
-
+        // Log execution start
         $this->auditLogService->logWithOrganisation(
             'tool_execution.started',
             $organisation,
@@ -415,7 +400,7 @@ class IntegrationApiController extends AbstractController
             [
                 'tool_id' => $toolId,
                 'tool_name' => $toolName,
-                'integration_type' => 'remote_mcp_org',
+                'integration_type' => 'orchestrator',
                 'workflow_user_id' => $workflowUserId,
                 'request_payload' => $this->auditLogService->sanitizeData($parameters),
             ],
@@ -423,11 +408,24 @@ class IntegrationApiController extends AbstractController
         );
 
         try {
-            $forwardParams = array_diff_key($parameters, array_flip([
-                'organisationId', 'organisationUuid', 'workflowUserId', 'configId',
-            ]));
+            $url = rtrim($orchestratorApiUrl, '/') . '/api/tools/execute';
 
-            $result = $this->remoteMcpService->executeTool($credentials, $toolName, $forwardParams);
+            /** @var \Symfony\Contracts\HttpClient\HttpClientInterface $httpClient */
+            $httpClient = \Symfony\Component\HttpClient\HttpClient::create();
+            $response = $httpClient->request('POST', $url, [
+                'json' => [
+                    'tool_name' => $toolName,
+                    'parameters' => $parameters,
+                ],
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode(
+                        $this->apiAuthUser . ':' . $this->apiAuthPassword
+                    ),
+                ],
+                'timeout' => 30,
+            ]);
+
+            $result = $response->toArray();
 
             $this->auditLogService->logWithOrganisation(
                 'tool_execution.completed',
@@ -436,7 +434,7 @@ class IntegrationApiController extends AbstractController
                 [
                     'tool_id' => $toolId,
                     'tool_name' => $toolName,
-                    'integration_type' => 'remote_mcp_org',
+                    'integration_type' => 'orchestrator',
                     'workflow_user_id' => $workflowUserId,
                     'success' => true,
                     'response_data' => $this->auditLogService->truncateData($result, 5000),
@@ -444,7 +442,7 @@ class IntegrationApiController extends AbstractController
                 $executionId
             );
 
-            return $this->json(['success' => true, 'result' => $result]);
+            return $this->json(['success' => true, 'result' => $result['result'] ?? $result]);
         } catch (\Exception $e) {
             $errorDetails = $this->formatExceptionDetails($e);
 
@@ -455,7 +453,7 @@ class IntegrationApiController extends AbstractController
                 [
                     'tool_id' => $toolId,
                     'tool_name' => $toolName,
-                    'integration_type' => 'remote_mcp_org',
+                    'integration_type' => 'orchestrator',
                     'workflow_user_id' => $workflowUserId,
                     'success' => false,
                     'error' => $errorDetails['message'],
@@ -471,7 +469,7 @@ class IntegrationApiController extends AbstractController
                 'context' => [
                     'tool_id' => $toolId,
                     'tool_name' => $toolName,
-                    'integration_type' => 'remote_mcp_org',
+                    'integration_type' => 'orchestrator',
                 ],
                 'hint' => $errorDetails['hint'],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
