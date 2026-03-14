@@ -181,6 +181,10 @@
             --n8n-workflow-min-height: 800px;
         }
 
+        .channel-grid--full {
+            grid-template-columns: 1fr;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -235,7 +239,7 @@
         {% endif %}
 
         <form method="post" action="{{ path('app_tenant_update') }}" id="channel-form" data-action="submit->channel#submitForm">
-            <div class="channel-grid">
+            <div class="channel-grid{% if organisation.tenantType == 'common' %} channel-grid--full{% endif %}">
                 <!-- Left Column -->
                 <div class="left-column">
                     <!-- Organisation Properties -->
@@ -374,6 +378,7 @@
                 </div>
 
                 <!-- Right Column -->
+                {% if organisation.tenantType != 'common' %}
                 <div class="right-column" id="workflow-column" data-channel-target="workflowColumn" {% if organisation.webhookType != 'N8N' %}class="hidden"{% endif %}>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                         <h2 class="section-title" style="margin-bottom: 0;">{{ 'channel.workflow_visualization'|trans }}</h2>
@@ -418,9 +423,11 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </form>
 
+        {% if organisation.tenantType != 'common' %}
         <!-- Fullscreen Workflow Modal -->
         <div id="workflow-modal" class="modal modal-fullscreen" data-channel-target="workflowModal">
             <div class="modal-content modal-fullscreen-content">
@@ -439,6 +446,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
