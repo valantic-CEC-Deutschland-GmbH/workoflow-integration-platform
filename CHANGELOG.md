@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Jira "issue not found" errors now include which Jira instance was checked** — When a Jira ticket can't be found, the error message now shows which Jira URL was queried (e.g. `https://valanticgroup.atlassian.net`), making it obvious when a ticket belongs to a different Jira instance.
 - **SharePoint searches no longer fail on temporary Microsoft throttling** — When Microsoft's servers are busy and return a "too many requests" response, the platform now automatically waits and retries instead of failing with an error. This applies to all SharePoint operations (search, file access, site listing, etc.)
 - **Integration URLs with trailing slashes no longer cause connection failures** — Entering a URL like `https://example.atlassian.net/` instead of `https://example.atlassian.net` now works correctly for all integrations (Jira, Confluence, GitLab, SAP C4C, Projektron, Remote MCP, SAP SAC, SharePoint)
+- **Worker containers no longer show as "unhealthy"** — The scheduled-task and messenger workers incorrectly inherited a web-server healthcheck from the FrankenPHP base image. They now correctly report no health status instead of a misleading "unhealthy".
 
 ## 2026-03-14
 

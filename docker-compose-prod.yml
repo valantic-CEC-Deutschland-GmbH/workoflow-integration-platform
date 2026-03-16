@@ -79,6 +79,8 @@ services:
     dns:
       - 1.1.1.1
       - 8.8.8.8
+    healthcheck:
+      disable: true
 
   messenger-worker:
     build: .
@@ -104,6 +106,8 @@ services:
     dns:
       - 1.1.1.1
       - 8.8.8.8
+    healthcheck:
+      disable: true
 
 #  minio:
 #    image: minio/minio:latest
