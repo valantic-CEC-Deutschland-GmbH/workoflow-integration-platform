@@ -587,7 +587,7 @@ class JiraService
 
             $suggestion = '';
             if ($statusCode === 404) {
-                $suggestion = " - Verify issue key '{$issueKey}' exists and you have permission to view it";
+                $suggestion = " - Verify issue key '{$issueKey}' exists on {$url} and you have permission to view it";
             } elseif (stripos($errorText, 'permission') !== false) {
                 $suggestion = ' - Check that your API token has permission to access this issue';
             }
@@ -634,7 +634,7 @@ class JiraService
 
             $suggestion = '';
             if ($statusCode === 404) {
-                $suggestion = " - Verify issue key '{$issueKey}' exists and you have permission to view it";
+                $suggestion = " - Verify issue key '{$issueKey}' exists on {$url} and you have permission to view it";
             } elseif (stripos($errorText, 'permission') !== false) {
                 $suggestion = ' - Check that your API token has permission to access this issue';
             }

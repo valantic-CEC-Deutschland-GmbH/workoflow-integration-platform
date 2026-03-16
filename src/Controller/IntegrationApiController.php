@@ -365,7 +365,7 @@ class IntegrationApiController extends AbstractController
                     'integration_type' => $targetIntegration?->getType() ?? 'unknown',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
     }
 
@@ -472,7 +472,7 @@ class IntegrationApiController extends AbstractController
                     'integration_type' => 'orchestrator',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
     }
 
@@ -594,8 +594,17 @@ class IntegrationApiController extends AbstractController
                     'integration_type' => 'remote_mcp',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
+    }
+
+    /**
+     * Map an exception error code to an appropriate HTTP status code.
+     * Returns the code as-is if it's a valid 4xx/5xx, otherwise defaults to 500.
+     */
+    private function resolveHttpStatusCode(int $code): int
+    {
+        return ($code >= 400 && $code < 600) ? $code : Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 
     private function validateBasicAuth(Request $request): bool
