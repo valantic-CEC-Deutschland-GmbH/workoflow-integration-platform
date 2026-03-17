@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-17
+
+### Fixed
+- **Scheduled tasks now use the correct internal orchestrator URL** — Manually running a scheduled prompt no longer fails with a "could not resolve host" error. The platform now correctly uses the internal Orchestrator API URL instead of the external Webhook URL.
+
 ## 2026-03-16
 
 ### Fixed

@@ -81,9 +81,9 @@ class ScheduledTaskExecutor
                 throw new \RuntimeException('Task has no organisation or user');
             }
 
-            $webhookUrl = $org->getWebhookUrl();
+            $webhookUrl = $org->getOrchestratorApiUrl() ?: $org->getWebhookUrl();
             if (empty($webhookUrl)) {
-                throw new \RuntimeException('Organisation has no webhook URL configured');
+                throw new \RuntimeException('Organisation has no orchestrator API URL or webhook URL configured');
             }
 
             $tenantType = $org->getTenantType();
