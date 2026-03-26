@@ -340,7 +340,7 @@ class McpApiController extends AbstractController
                     'integration_type' => $targetIntegration?->getType() ?? 'unknown',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
     }
 
@@ -464,7 +464,7 @@ class McpApiController extends AbstractController
                     'integration_type' => 'remote_mcp',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
     }
 
@@ -573,7 +573,7 @@ class McpApiController extends AbstractController
                     'integration_type' => 'orchestrator',
                 ],
                 'hint' => $errorDetails['hint'],
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], $this->resolveHttpStatusCode($errorDetails['code']));
         }
     }
 
@@ -712,5 +712,10 @@ class McpApiController extends AbstractController
             'code' => $e->getCode() ?: 500,
             'hint' => $hint,
         ];
+    }
+
+    private function resolveHttpStatusCode(int $code): int
+    {
+        return ($code >= 400 && $code < 600) ? $code : Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 }

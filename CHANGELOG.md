@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - **Links in scheduled prompt responses are now clickable** — URLs in scheduled task outputs were previously shown as plain text. They are now rendered as proper hyperlinks that open in a new tab. This applies to both markdown-formatted links and bare URLs.
 
+## 2026-03-24
+
+### Fixed
+- **MCP API now returns the correct error status code instead of always 500** — When an integration (e.g. Jira) returns a validation error (400) or "not found" (404), the MCP endpoint now forwards that status code to AI agents. Previously, all errors were returned as 500, preventing agents from understanding what went wrong and self-correcting.
+- **Jira issue creation with many custom fields no longer crashes with a server error** — When custom field preparation fails (e.g. invalid project, unknown issue type, or malformed field values), the error message now explains the problem and suggests creating with minimal fields first, then updating with the full content.
+
 ## 2026-03-18
 
 ### Fixed

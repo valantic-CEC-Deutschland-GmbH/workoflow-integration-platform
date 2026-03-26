@@ -1785,20 +1785,29 @@ class JiraService
 
         // Add custom fields with auto-formatting
         if (isset($issueData['customFields']) && is_array($issueData['customFields'])) {
-            // Get field metadata to determine proper formatting
-            $fieldMetadata = $this->getCreateFieldMetadata(
-                $credentials,
-                $issueData['projectKey'],
-                $issueData['issueTypeId']
-            );
-            $schemaMap = [];
-            foreach ($fieldMetadata['fields'] ?? [] as $field) {
-                $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
-            }
+            try {
+                // Get field metadata to determine proper formatting
+                $fieldMetadata = $this->getCreateFieldMetadata(
+                    $credentials,
+                    $issueData['projectKey'],
+                    $issueData['issueTypeId']
+                );
+                $schemaMap = [];
+                foreach ($fieldMetadata['fields'] ?? [] as $field) {
+                    $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                }
 
-            foreach ($issueData['customFields'] as $fieldId => $value) {
-                $schema = $schemaMap[$fieldId] ?? [];
-                $fields[$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                foreach ($issueData['customFields'] as $fieldId => $value) {
+                    $schema = $schemaMap[$fieldId] ?? [];
+                    $fields[$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                }
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'Failed to prepare custom fields: ' . $e->getMessage()
+                    . '. Suggestion: Try creating the issue with only required fields (summary, issueTypeId, projectKey, customfield_13211), then use jira_update_issue to add remaining fields.',
+                    400,
+                    $e
+                );
             }
         }
 
@@ -1932,22 +1941,30 @@ class JiraService
 
         // Handle custom fields with auto-formatting
         if (isset($updates['customFields']) && is_array($updates['customFields'])) {
-            // Get issue details to determine project and issue type for field metadata
-            $issue = $this->getIssueRaw($credentials, $issueKey, ['project', 'issuetype']);
-            $projectKey = $issue['fields']['project']['key'] ?? null;
-            $issueTypeId = $issue['fields']['issuetype']['id'] ?? null;
+            try {
+                // Get issue details to determine project and issue type for field metadata
+                $issue = $this->getIssueRaw($credentials, $issueKey, ['project', 'issuetype']);
+                $projectKey = $issue['fields']['project']['key'] ?? null;
+                $issueTypeId = $issue['fields']['issuetype']['id'] ?? null;
 
-            $schemaMap = [];
-            if ($projectKey && $issueTypeId) {
-                $fieldMetadata = $this->getCreateFieldMetadata($credentials, $projectKey, $issueTypeId);
-                foreach ($fieldMetadata['fields'] ?? [] as $field) {
-                    $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                $schemaMap = [];
+                if ($projectKey && $issueTypeId) {
+                    $fieldMetadata = $this->getCreateFieldMetadata($credentials, $projectKey, $issueTypeId);
+                    foreach ($fieldMetadata['fields'] ?? [] as $field) {
+                        $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                    }
                 }
-            }
 
-            foreach ($updates['customFields'] as $fieldId => $value) {
-                $schema = $schemaMap[$fieldId] ?? [];
-                $updatePayload['fields'][$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                foreach ($updates['customFields'] as $fieldId => $value) {
+                    $schema = $schemaMap[$fieldId] ?? [];
+                    $updatePayload['fields'][$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                }
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'Failed to prepare custom fields for update: ' . $e->getMessage(),
+                    400,
+                    $e
+                );
             }
         }
 
