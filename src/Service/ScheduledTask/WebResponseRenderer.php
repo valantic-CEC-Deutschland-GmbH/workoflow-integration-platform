@@ -2,18 +2,33 @@
 
 namespace App\Service\ScheduledTask;
 
-use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\Autolink\AutolinkExtension;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
+use League\CommonMark\MarkdownConverter;
 
 class WebResponseRenderer implements ResponseRendererInterface
 {
-    private CommonMarkConverter $markdownConverter;
+    private MarkdownConverter $markdownConverter;
 
     public function __construct()
     {
-        $this->markdownConverter = new CommonMarkConverter([
+        $environment = new Environment([
             'html_input' => 'strip',
-            'allow_unsafe_links' => false,
+            'allow_unsafe_links' => true,
+            'external_link' => [
+                'open_in_new_window' => true,
+                'nofollow' => 'external',
+                'noopener' => 'external',
+                'noreferrer' => 'external',
+            ],
         ]);
+        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new AutolinkExtension());
+        $environment->addExtension(new ExternalLinkExtension());
+
+        $this->markdownConverter = new MarkdownConverter($environment);
     }
 
     public function supports(string $tenantType): bool
