@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal', 'organisationType', 'msteamsConfigSection'];
+    static targets = ['webhookType', 'webhookUrl', 'workflowUrl', 'workflowColumn', 'workflowContainer', 'n8nApiKeyGroup', 'workflowUrlGroup', 'workflowModal'];
 
     connect() {
         console.log('Channel controller connected');
@@ -29,6 +29,12 @@ export default class extends Controller {
     onWebhookTypeChange(event) {
         const webhookType = event.target.value;
 
+        // Orchestrator API URL field (Common only)
+        const orchestratorGroup = document.getElementById('orchestrator-api-url-group');
+        if (orchestratorGroup) {
+            orchestratorGroup.style.display = webhookType === 'COMMON' ? 'block' : 'none';
+        }
+
         if (webhookType === 'N8N') {
             this.showWorkflowVisualization();
             // Show N8N API key field and workflow URL field
@@ -46,23 +52,6 @@ export default class extends Controller {
             }
             if (this.hasWorkflowUrlGroupTarget) {
                 this.workflowUrlGroupTarget.style.display = 'none';
-            }
-        }
-    }
-
-    // Called when organisation type changes
-    onOrganisationTypeChange(event) {
-        const organisationType = event.target.value;
-
-        if (organisationType === 'MS Teams') {
-            // Show MS Teams configuration section
-            if (this.hasMsteamsConfigSectionTarget) {
-                this.msteamsConfigSectionTarget.style.display = 'block';
-            }
-        } else {
-            // Hide MS Teams configuration section
-            if (this.hasMsteamsConfigSectionTarget) {
-                this.msteamsConfigSectionTarget.style.display = 'none';
             }
         }
     }
@@ -122,7 +111,7 @@ export default class extends Controller {
             }
 
             // Fetch workflow from API
-            const response = await fetch(`/channel/api/n8n-workflow/${orgId}`);
+            const response = await fetch(`/tenant/api/n8n-workflow/${orgId}`);
             const data = await response.json();
 
             if (data.error || !data.workflow) {

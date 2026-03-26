@@ -1,0 +1,65 @@
+{
+    "issues": [
+        {
+            "id": "10001",
+            "key": "TEST-1",
+            "self": "https://test.atlassian.net/rest/api/3/issue/10001",
+            "fields": {
+                "summary": "Test Issue Summary",
+                "status": {
+                    "name": "To Do",
+                    "statusCategory": {
+                        "name": "To Do"
+                    }
+                },
+                "assignee": {
+                    "displayName": "Test User",
+                    "accountId": "123456789"
+                },
+                "reporter": {
+                    "displayName": "Reporter User"
+                },
+                "priority": {
+                    "name": "Medium"
+                },
+                "issuetype": {
+                    "name": "Story"
+                },
+                "project": {
+                    "key": "TEST"
+                },
+                "created": "2025-01-01T10:00:00.000+0000",
+                "updated": "2025-01-02T14:30:00.000+0000"
+            }
+        },
+        {
+            "id": "10002",
+            "key": "TEST-2",
+            "self": "https://test.atlassian.net/rest/api/3/issue/10002",
+            "fields": {
+                "summary": "Another Test Issue",
+                "status": {
+                    "name": "In Progress",
+                    "statusCategory": {
+                        "name": "In Progress"
+                    }
+                },
+                "assignee": null,
+                "reporter": {
+                    "displayName": "Reporter User"
+                },
+                "priority": {
+                    "name": "High"
+                },
+                "issuetype": {
+                    "name": "Bug"
+                },
+                "project": {
+                    "key": "TEST"
+                },
+                "created": "2025-01-03T09:00:00.000+0000",
+                "updated": "2025-01-04T11:00:00.000+0000"
+            }
+        }
+    ]
+}

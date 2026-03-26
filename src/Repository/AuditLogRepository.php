@@ -245,4 +245,195 @@ class AuditLogRepository extends ServiceEntityRepository
             'per_page' => $limit,
         ];
     }
+
+    public function countDistinctExecutionIds(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since
+    ): int {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(DISTINCT a.executionId)')
+            ->andWhere('a.organisation = :org')
+            ->andWhere('a.createdAt >= :since')
+            ->setParameter('org', $orgId)
+            ->setParameter('since', $since);
+
+        $this->applyUserScope($qb, $userId, $workflowUserId);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @return array{started: int, completed: int, failed: int}
+     */
+    public function countToolExecutions(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since
+    ): array {
+        $qb = $this->createQueryBuilder('a')
+            ->select("a.action, COUNT(a.id) as cnt")
+            ->andWhere('a.organisation = :org')
+            ->andWhere('a.createdAt >= :since')
+            ->andWhere('a.action IN (:actions)')
+            ->setParameter('org', $orgId)
+            ->setParameter('since', $since)
+            ->setParameter('actions', [
+                'tool_execution.started',
+                'tool_execution.completed',
+                'tool_execution.failed',
+            ])
+            ->groupBy('a.action');
+
+        $this->applyUserScope($qb, $userId, $workflowUserId);
+
+        $results = $qb->getQuery()->getResult();
+
+        $counts = ['started' => 0, 'completed' => 0, 'failed' => 0];
+        foreach ($results as $row) {
+            $key = str_replace('tool_execution.', '', (string) $row['action']);
+            if (isset($counts[$key])) {
+                $counts[$key] = (int) $row['cnt'];
+            }
+        }
+
+        return $counts;
+    }
+
+    public function countApiCalls(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since
+    ): int {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->andWhere('a.organisation = :org')
+            ->andWhere('a.createdAt >= :since')
+            ->andWhere('a.action IN (:actions)')
+            ->setParameter('org', $orgId)
+            ->setParameter('since', $since)
+            ->setParameter('actions', [
+                'api.get_tools',
+                'api.get_skills',
+                'api.mcp.get_tools',
+                'api.prompts.list',
+            ]);
+
+        $this->applyUserScope($qb, $userId, $workflowUserId);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countPromptActivity(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since
+    ): int {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->andWhere('a.organisation = :org')
+            ->andWhere('a.createdAt >= :since')
+            ->andWhere('a.action IN (:actions)')
+            ->setParameter('org', $orgId)
+            ->setParameter('since', $since)
+            ->setParameter('actions', [
+                'prompt.created',
+                'prompt.updated',
+                'prompt.upvote.added',
+                'prompt.upvote.removed',
+                'prompt.comment.added',
+                'prompt.comment.deleted',
+            ]);
+
+        $this->applyUserScope($qb, $userId, $workflowUserId);
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function countUniqueToolTypes(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since
+    ): int {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT COUNT(DISTINCT JSON_UNQUOTE(JSON_EXTRACT(data, \'$.integration_type\'))) as cnt
+                FROM audit_log
+                WHERE organisation_id = :orgId
+                  AND created_at >= :since
+                  AND action LIKE \'tool_execution.%\'
+                  AND JSON_EXTRACT(data, \'$.integration_type\') IS NOT NULL
+                  AND (user_id = :userId OR JSON_UNQUOTE(JSON_EXTRACT(data, \'$.workflow_user_id\')) = :workflowUserId)';
+
+        /** @var array{cnt: string} $result */
+        $result = $conn->fetchAssociative($sql, [
+            'orgId' => $orgId,
+            'since' => $since->format('Y-m-d H:i:s'),
+            'userId' => $userId,
+            'workflowUserId' => $workflowUserId ?? '',
+        ]);
+
+        return (int) ($result['cnt'] ?? 0);
+    }
+
+    /**
+     * @return array<int, array{tool_name: string, count: int}>
+     */
+    public function findTopTools(
+        int $orgId,
+        int $userId,
+        ?string $workflowUserId,
+        \DateTimeInterface $since,
+        int $limit = 3
+    ): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT JSON_UNQUOTE(JSON_EXTRACT(data, \'$.tool_name\')) as tool_name,
+                       COUNT(*) as cnt
+                FROM audit_log
+                WHERE organisation_id = :orgId
+                  AND created_at >= :since
+                  AND action = \'tool_execution.started\'
+                  AND JSON_EXTRACT(data, \'$.tool_name\') IS NOT NULL
+                  AND (user_id = :userId OR JSON_UNQUOTE(JSON_EXTRACT(data, \'$.workflow_user_id\')) = :workflowUserId)
+                GROUP BY tool_name
+                ORDER BY cnt DESC
+                LIMIT :lim';
+
+        /** @var array<int, array{tool_name: string, cnt: string}> $rows */
+        $rows = $conn->fetchAllAssociative($sql, [
+            'orgId' => $orgId,
+            'since' => $since->format('Y-m-d H:i:s'),
+            'userId' => $userId,
+            'workflowUserId' => $workflowUserId ?? '',
+            'lim' => $limit,
+        ], [
+            'lim' => \Doctrine\DBAL\ParameterType::INTEGER,
+        ]);
+
+        return array_map(fn (array $row) => [
+            'tool_name' => (string) $row['tool_name'],
+            'count' => (int) $row['cnt'],
+        ], $rows);
+    }
+
+    private function applyUserScope(
+        \Doctrine\ORM\QueryBuilder $qb,
+        int $userId,
+        ?string $workflowUserId
+    ): void {
+        if ($workflowUserId !== null) {
+            $qb->andWhere('(a.user = :userId OR (a.user IS NULL AND a.data LIKE :wfuidPattern))')
+                ->setParameter('userId', $userId)
+                ->setParameter('wfuidPattern', '%"workflow_user_id":"' . $workflowUserId . '"%');
+        } else {
+            $qb->andWhere('a.user = :userId')
+                ->setParameter('userId', $userId);
+        }
+    }
 }

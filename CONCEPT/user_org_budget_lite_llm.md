@@ -2,7 +2,7 @@
 
 > **Status**: Planned (not yet implemented)
 > **Created**: 2026-01-22
-> **Related Projects**: workoflow-promopage-v2, workoflow-bot, workoflow-ai-setup
+> **Related Projects**: workoflow-integration-platform, workoflow-bot, workoflow-hosting
 
 ## Overview
 Implement per-user and per-organization token/cost limits using LiteLLM's virtual key system. Users will have their own LiteLLM API keys with budget constraints (e.g., 5€/month), which are passed through the MS Teams → workoflow-bot → n8n → LiteLLM flow.
@@ -48,17 +48,17 @@ Implement per-user and per-organization token/cost limits using LiteLLM's virtua
 - **Budget Scope**: Both per-user AND per-organization levels
 - **Budget Reset**: Monthly (30 days, automatic)
 - **n8n Integration**: HTTP Request nodes with dynamic X-Litellm-Key header injection
-- **LiteLLM Deployment**: Separate deployment (workoflow-ai-setup, port 4000)
+- **LiteLLM Deployment**: Separate deployment (workoflow-hosting, port 4000)
 
 ## Implementation Plan
 
-### Phase 1: LiteLLM Configuration (workoflow-ai-setup)
+### Phase 1: LiteLLM Configuration (workoflow-hosting)
 
 **File: `litellm_config.yaml`**
 - Add `litellm_key_header_name: "X-Litellm-Key"` to `general_settings`
 - This allows accepting virtual keys via custom header alongside Authorization
 
-### Phase 2: Backend Service (workoflow-promopage-v2)
+### Phase 2: Backend Service (workoflow-integration-platform)
 
 #### 2.1 Create LiteLLM Service
 **New file: `src/Service/LiteLLMService.php`**
@@ -207,7 +207,7 @@ n8n should catch this and return a user-friendly message:
 
 ## Files to Modify
 
-### workoflow-promopage-v2
+### workoflow-integration-platform
 | File | Changes |
 |------|---------|
 | `src/Service/LiteLLMService.php` | NEW - LiteLLM API client |
@@ -221,7 +221,7 @@ n8n should catch this and return a user-friendly message:
 | `config/services.yaml` | Configure LiteLLMService with env vars |
 | `.env.dist` | Add LITELLM_* env vars |
 
-### workoflow-ai-setup
+### workoflow-hosting
 | File | Changes |
 |------|---------|
 | `litellm_config.yaml` | Add `litellm_key_header_name` |

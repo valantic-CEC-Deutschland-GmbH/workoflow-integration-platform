@@ -13,7 +13,7 @@
 </head>
 <body class="min-h-screen flex flex-col">
     {# Hide global header on homepage for non-logged-in users (marketing nav is used instead) #}
-    {% if not (app.request.get('_route') == 'app_home' and not app.user) %}
+    {% if not (app.request.attributes.get('_route') == 'app_home' and not app.user) %}
         {% include '_partials/header.html.twig' %}
     {% endif %}
 

@@ -3,6 +3,7 @@
 namespace App\Service\Integration;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Smalot\PdfParser\Parser as PdfParser;
 use PhpOffice\PhpSpreadsheet\IOFactory as SpreadsheetIOFactory;
@@ -11,17 +12,47 @@ use PhpOffice\PhpWord\IOFactory as WordIOFactory;
 class SharePointService
 {
     private const GRAPH_API_BASE = 'https://graph.microsoft.com/v1.0';
+    private const MAX_RETRY_AFTER_SECONDS = 30;
 
     public function __construct(
         private HttpClientInterface $httpClient
     ) {
     }
 
+    /**
+     * Execute a Microsoft Graph API request with automatic 429 (Too Many Requests) retry.
+     *
+     * On HTTP 429, reads the Retry-After header, sleeps (capped at MAX_RETRY_AFTER_SECONDS),
+     * and retries once. This handles transient Microsoft-side throttling transparently.
+     *
+     * @param string $method  HTTP method (GET, POST, etc.)
+     * @param string $url     Full Graph API URL
+     * @param array  $options Symfony HttpClient request options
+     * @return \Symfony\Contracts\HttpClient\ResponseInterface
+     */
+    private function graphRequest(string $method, string $url, array $options = []): \Symfony\Contracts\HttpClient\ResponseInterface
+    {
+        $response = $this->httpClient->request($method, $url, $options);
+
+        if ($response->getStatusCode() !== 429) {
+            return $response;
+        }
+
+        $retryAfterHeaders = $response->getHeaders(false)['retry-after'] ?? [];
+        $retryAfter = !empty($retryAfterHeaders) ? (int) $retryAfterHeaders[0] : 5;
+        $retryAfter = min($retryAfter, self::MAX_RETRY_AFTER_SECONDS);
+
+        error_log(sprintf('Microsoft Graph API 429 throttled, retrying after %d seconds (url: %s)', $retryAfter, $url));
+        sleep($retryAfter);
+
+        return $this->httpClient->request($method, $url, $options);
+    }
+
     public function testConnection(array $credentials): bool
     {
         try {
             error_log('Testing SharePoint connection with token: ' . substr($credentials['access_token'], 0, 20) . '...');
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/me', [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . '/me', [
                 'auth_bearer' => $credentials['access_token'],
             ]);
             error_log('Test connection successful, status: ' . $response->getStatusCode());
@@ -67,7 +98,7 @@ class SharePointService
 
             error_log('Attempting Microsoft Graph Search API with KQL query: ' . json_encode($searchRequest));
 
-            $searchResponse = $this->httpClient->request('POST', self::GRAPH_API_BASE . '/search/query', [
+            $searchResponse = $this->graphRequest('POST', self::GRAPH_API_BASE . '/search/query', [
                 'auth_bearer' => $credentials['access_token'],
                 'json' => $searchRequest
             ]);
@@ -112,7 +143,7 @@ class SharePointService
                         ]
                     ];
 
-                    $broadenedResponse = $this->httpClient->request('POST', self::GRAPH_API_BASE . '/search/query', [
+                    $broadenedResponse = $this->graphRequest('POST', self::GRAPH_API_BASE . '/search/query', [
                         'auth_bearer' => $credentials['access_token'],
                         'json' => $broadenedRequest
                     ]);
@@ -162,7 +193,7 @@ class SharePointService
                 'boilerplateTerms' => $boilerplateTerms,
             ];
         } catch (\Exception $e) {
-            error_log('SharePoint Pages Search Error: ' . $e->getMessage());
+            error_log('SharePoint search error: ' . $e->getMessage());
             error_log('Error trace: ' . $e->getTraceAsString());
 
             // Return detailed error message for better debugging
@@ -197,7 +228,7 @@ class SharePointService
             $search = $searchQuery ?? '*';
             error_log('Listing SharePoint sites with search: ' . $search);
 
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . '/sites', [
                 'auth_bearer' => $credentials['access_token'],
                 'query' => [
                     'search' => $search,
@@ -252,54 +283,8 @@ class SharePointService
         try {
             error_log('Reading SharePoint page - SiteID: ' . $siteId . ', PageID: ' . $pageId);
 
-            // Check if siteId looks like a name rather than a proper ID
-            // A proper site ID contains commas and GUIDs, or is in hostname:path format
-            if (!str_contains($siteId, ',') && !str_contains($siteId, '.sharepoint.com')) {
-                error_log('SiteID appears to be a name, attempting to resolve to actual site ID');
-
-                // Search for the site by name
-                $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
-                    'auth_bearer' => $credentials['access_token'],
-                    'query' => [
-                        'search' => $siteId,
-                        '$top' => 10
-                    ]
-                ]);
-
-                $sites = $sitesResponse->toArray();
-
-                if (isset($sites['value']) && count($sites['value']) > 0) {
-                    // Try to find exact match first
-                    $resolvedSiteId = null;
-                    foreach ($sites['value'] as $site) {
-                        if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                        if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
-                            $resolvedSiteId = $site['id'];
-                            error_log('Found exact site match: ' . $site['name'] . ' -> ' . $resolvedSiteId);
-                            break;
-                        }
-                    }
-
-                    // If no exact match, use the first result
-                    if (!$resolvedSiteId && isset($sites['value'][0]['id'])) {
-                        $resolvedSiteId = $sites['value'][0]['id'];
-                        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
-                        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedSiteId);
-                    }
-
-                    if ($resolvedSiteId) {
-                        $siteId = $resolvedSiteId;
-                    } else {
-                        throw new \Exception('Could not resolve site name "' . $siteId . '" to a valid site ID');
-                    }
-                } else {
-                    throw new \Exception('No sites found matching "' . $siteId . '"');
-                }
-            }
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
 
             // Check if pageId looks like a name/title rather than a GUID
             // A proper page ID is a GUID format like "7b6fd3e8-80ad-4392-9643-6bab61be81e0"
@@ -307,7 +292,7 @@ class SharePointService
                 error_log('PageID appears to be a name/title, attempting to resolve to actual page ID');
 
                 // Get all pages from the site and find the one matching the name/title
-                $pagesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/pages", [
+                $pagesResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/pages", [
                     'auth_bearer' => $credentials['access_token'],
                     'query' => [
                         '$top' => 100  // Get more pages to find the right one
@@ -372,7 +357,7 @@ class SharePointService
             }
 
             // Expand canvasLayout to get page content
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/pages/{$pageId}/microsoft.graph.sitePage", [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/pages/{$pageId}/microsoft.graph.sitePage", [
                 'auth_bearer' => $credentials['access_token'],
                 'query' => [
                     '$expand' => 'canvasLayout'
@@ -413,13 +398,16 @@ class SharePointService
     public function listFiles(array $credentials, string $siteId, string $path = ''): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             $endpoint = $path
                 ? "/sites/{$siteId}/drive/root:/{$path}:/children"
                 : "/sites/{$siteId}/drive/root/children";
 
             error_log('Listing SharePoint files - SiteID: ' . $siteId . ', Path: ' . ($path ?: 'root'));
 
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . $endpoint, [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . $endpoint, [
                 'auth_bearer' => $credentials['access_token'],
                 'query' => [
                     '$select' => 'id,name,size,lastModifiedDateTime,file,folder,webUrl',
@@ -452,14 +440,14 @@ class SharePointService
             error_log('Downloading SharePoint file - SiteID: ' . $siteId . ', ItemID: ' . $itemId);
 
             // Get file metadata first
-            $metadataResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}", [
+            $metadataResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}", [
                 'auth_bearer' => $credentials['access_token'],
             ]);
 
             $metadata = $metadataResponse->toArray();
 
             // Get download URL
-            $downloadResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}/content", [
+            $downloadResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}/content", [
                 'auth_bearer' => $credentials['access_token'],
                 'max_redirects' => 0,
             ]);
@@ -495,6 +483,9 @@ class SharePointService
     public function getListItems(array $credentials, string $siteId, string $listId, array $filters = []): array
     {
         try {
+            // Resolve site name to actual site ID if needed
+            $siteId = $this->resolveSiteId($credentials, $siteId);
+
             error_log('Getting SharePoint list items - SiteID: ' . $siteId . ', ListID: ' . $listId);
 
             $query = [
@@ -511,7 +502,7 @@ class SharePointService
                 $query['$orderby'] = $filters['orderby'];
             }
 
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/lists/{$listId}/items", [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/lists/{$listId}/items", [
                 'auth_bearer' => $credentials['access_token'],
                 'query' => $query
             ]);
@@ -578,7 +569,7 @@ class SharePointService
                 $endpoint = "/sites/{$hostname}";
             }
 
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . $endpoint, [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . $endpoint, [
                 'auth_bearer' => $credentials['access_token'],
             ]);
 
@@ -587,6 +578,59 @@ class SharePointService
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * Resolve a site name or display name to a proper Graph API site ID.
+     *
+     * A proper site ID contains commas (hostname,guid,guid) or .sharepoint.com.
+     * If the provided siteId doesn't match that pattern, search for the site by name.
+     *
+     * @param array<string, mixed> $credentials Authentication credentials
+     * @param string $siteId Site ID or display name to resolve
+     * @return string Resolved site ID
+     */
+    private function resolveSiteId(array $credentials, string $siteId): string
+    {
+        // Already a proper site ID
+        if (str_contains($siteId, ',') || str_contains($siteId, '.sharepoint.com')) {
+            return $siteId;
+        }
+
+        error_log('SiteID appears to be a name, attempting to resolve to actual site ID: ' . $siteId);
+
+        $sitesResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . '/sites', [
+            'auth_bearer' => $credentials['access_token'],
+            'query' => [
+                'search' => $siteId,
+                '$top' => 10
+            ]
+        ]);
+
+        $sites = $sitesResponse->toArray();
+
+        if (!isset($sites['value']) || count($sites['value']) === 0) {
+            throw new \Exception('No sites found matching "' . $siteId . '"');
+        }
+
+        // Try exact match first
+        foreach ($sites['value'] as $site) {
+            if (isset($site['displayName']) && strcasecmp($site['displayName'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['displayName'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+            if (isset($site['name']) && strcasecmp($site['name'], $siteId) === 0) {
+                error_log('Found exact site match: ' . $site['name'] . ' -> ' . $site['id']);
+                return $site['id'];
+            }
+        }
+
+        // Use first result as fallback
+        $resolvedId = $sites['value'][0]['id'];
+        $siteName = $sites['value'][0]['displayName'] ?? $sites['value'][0]['name'] ?? 'Unknown';
+        error_log('Using first site match: ' . $siteName . ' -> ' . $resolvedId);
+
+        return $resolvedId;
     }
 
     /**
@@ -599,7 +643,7 @@ class SharePointService
     private function getSiteInfo(array $credentials, string $siteId): array
     {
         try {
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites/' . $siteId, [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . '/sites/' . $siteId, [
                 'auth_bearer' => $credentials['access_token'],
             ]);
 
@@ -618,12 +662,17 @@ class SharePointService
      * @param string $siteId Site ID
      * @param string $itemId Document item ID
      * @param int $maxLength Maximum content length to return (default 5000)
+     * @param string|null $driveId Optional drive ID for direct access
+     * @param bool $full When true, bypass truncation limits (up to 500k chars, 25MB file size)
      * @return array Document content and metadata
      */
-    public function readDocument(array $credentials, string $siteId, string $itemId, int $maxLength = 5000, ?string $driveId = null): array
+    public function readDocument(array $credentials, string $siteId, string $itemId, int $maxLength = 5000, ?string $driveId = null, bool $full = false): array
     {
         try {
-            error_log('Reading SharePoint document content - SiteID: ' . $siteId . ', ItemID: ' . $itemId . ($driveId ? ', DriveID: ' . $driveId : ''));
+            $effectiveMaxLength = $full ? 500000 : $maxLength;
+            $fileSizeLimit = $full ? 26214400 : 10485760; // 25MB vs 10MB
+
+            error_log('Reading SharePoint document content - SiteID: ' . $siteId . ', ItemID: ' . $itemId . ($driveId ? ', DriveID: ' . $driveId : '') . ($full ? ', FULL MODE' : ''));
 
             // Prioritize driveId-based access if provided (more reliable from search results)
             if (!empty($driveId)) {
@@ -646,7 +695,7 @@ class SharePointService
 
                         // Try to resolve the site name to a proper site ID
                         try {
-                            $sitesResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . '/sites', [
+                            $sitesResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . '/sites', [
                                 'auth_bearer' => $credentials['access_token'],
                                 'query' => [
                                     'search' => $siteId,
@@ -690,7 +739,7 @@ class SharePointService
             }
 
             // First get file metadata to understand what we're dealing with
-            $metadataResponse = $this->httpClient->request('GET', $apiEndpoint, [
+            $metadataResponse = $this->graphRequest('GET', $apiEndpoint, [
                 'auth_bearer' => $credentials['access_token'],
             ]);
 
@@ -702,14 +751,15 @@ class SharePointService
             error_log('Document details: ' . $fileName . ' (' . $mimeType . ', ' . $size . ' bytes)');
 
             // For very large files, provide metadata only with size warning
-            if ($size > 10485760) { // 10MB
+            if ($size > $fileSizeLimit) {
                 return [
                     'warning' => 'Document is very large (' . round($size / 1048576, 1) . ' MB). Content extraction limited to first part of document.',
                     'metadata' => $metadata,
-                    'content' => $this->extractFirstPartOfLargeDocument($credentials, $driveEndpoint, $itemId, $maxLength),
-                    'contentLength' => $maxLength,
+                    'content' => $this->extractFirstPartOfLargeDocument($credentials, $driveEndpoint, $itemId, $effectiveMaxLength),
+                    'contentLength' => $effectiveMaxLength,
                     'truncated' => true,
-                    'fullSize' => $size
+                    'fullSize' => $size,
+                    'fullMode' => $full
                 ];
             }
 
@@ -747,7 +797,7 @@ class SharePointService
 
             // For text files, we can get content directly
             if (str_contains($mimeType, 'text/')) {
-                $contentResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
+                $contentResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
                     'auth_bearer' => $credentials['access_token'],
                 ]);
 
@@ -755,8 +805,8 @@ class SharePointService
 
                 // Truncate if needed
                 $truncated = false;
-                if (strlen($content) > $maxLength) {
-                    $content = substr($content, 0, $maxLength);
+                if (strlen($content) > $effectiveMaxLength) {
+                    $content = substr($content, 0, $effectiveMaxLength);
                     $truncated = true;
                 }
 
@@ -765,7 +815,8 @@ class SharePointService
                     'content' => $content,
                     'contentLength' => strlen($content),
                     'truncated' => $truncated,
-                    'mimeType' => $mimeType
+                    'mimeType' => $mimeType,
+                    'fullMode' => $full
                 ];
             }
 
@@ -773,7 +824,7 @@ class SharePointService
             // since Microsoft Graph doesn't support direct text extraction for all formats
             try {
                 // Download the file content
-                $contentResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
+                $contentResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
                     'auth_bearer' => $credentials['access_token'],
                 ]);
 
@@ -783,17 +834,17 @@ class SharePointService
                 // Process based on mime type
                 if (str_contains($mimeType, 'application/pdf')) {
                     // Extract text from PDF
-                    $content = $this->extractTextFromPdf($binaryContent, $maxLength);
+                    $content = $this->extractTextFromPdf($binaryContent, $effectiveMaxLength);
                 } elseif (str_contains($mimeType, 'spreadsheetml.sheet') || str_contains($mimeType, 'application/vnd.ms-excel')) {
                     // Extract text from XLSX/XLS
-                    $content = $this->extractTextFromSpreadsheet($binaryContent, $maxLength);
+                    $content = $this->extractTextFromSpreadsheet($binaryContent, $effectiveMaxLength);
                 } elseif (str_contains($mimeType, 'wordprocessingml.document') || str_contains($mimeType, 'application/msword')) {
                     // Extract text from DOCX/DOC
-                    $content = $this->extractTextFromWord($binaryContent, $maxLength);
+                    $content = $this->extractTextFromWord($binaryContent, $effectiveMaxLength);
                 } else {
                     // Try the old format=text approach for other Office formats
                     try {
-                        $contentResponse = $this->httpClient->request('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}/content", [
+                        $contentResponse = $this->graphRequest('GET', self::GRAPH_API_BASE . "/sites/{$siteId}/drive/items/{$itemId}/content", [
                             'auth_bearer' => $credentials['access_token'],
                             'query' => [
                                 'format' => 'text'
@@ -831,8 +882,8 @@ class SharePointService
 
                 // Truncate if needed
                 $truncated = false;
-                if (strlen($content) > $maxLength) {
-                    $content = substr($content, 0, $maxLength);
+                if (strlen($content) > $effectiveMaxLength) {
+                    $content = substr($content, 0, $effectiveMaxLength);
                     $truncated = true;
                 }
 
@@ -843,7 +894,8 @@ class SharePointService
                     'content' => $content,
                     'contentLength' => strlen($content),
                     'truncated' => $truncated,
-                    'mimeType' => $mimeType
+                    'mimeType' => $mimeType,
+                    'fullMode' => $full
                 ];
             } catch (\Exception $e) {
                 error_log('Document extraction failed: ' . $e->getMessage());
@@ -967,7 +1019,7 @@ class SharePointService
         try {
             // For large files, we can try to get just the first part using Range headers
             // This is a best-effort approach - not all file types support partial content extraction
-            $response = $this->httpClient->request('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
+            $response = $this->graphRequest('GET', self::GRAPH_API_BASE . "{$driveEndpoint}/items/{$itemId}/content", [
                 'auth_bearer' => $credentials['access_token'],
                 'headers' => [
                     'Range' => 'bytes=0-524288', // Get first 512KB only

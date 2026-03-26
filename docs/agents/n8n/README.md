@@ -407,7 +407,7 @@ When you modify a system prompt XML file (e.g., `sharepoint_agent.xml`), follow 
 For large XML files or multiple agents, you can use this Python script:
 
 ```bash
-cd /home/patrickjaja/development/workoflow-promopage-v2/docs/agents/n8n
+cd /workoflow-integration-platform/docs/agents/n8n
 
 python3 << 'PYTHON_EOF'
 import json
@@ -517,7 +517,7 @@ To add a new user integration agent:
 - **Documentation**: `/docs/agents/system_prompts/README.md`
 - **Architecture**: `workflow_design.md`
 - **Integration Platform**: https://subscribe-workflows.vcec.cloud
-- **Repository**: /home/patrickjaja/development/workoflow-promopage-v2
+- **Repository**: /workoflow-integration-platform
 
 ## Next Steps
 

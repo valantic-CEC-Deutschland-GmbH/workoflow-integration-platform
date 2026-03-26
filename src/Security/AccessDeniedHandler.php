@@ -28,7 +28,7 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
 
         // Redirect to dashboard (or login if not authenticated)
         $route = $request->getSession()->has('_security_main')
-            ? 'app_general'
+            ? 'app_my_agent'
             : 'app_login';
 
         return new RedirectResponse($this->urlGenerator->generate($route));

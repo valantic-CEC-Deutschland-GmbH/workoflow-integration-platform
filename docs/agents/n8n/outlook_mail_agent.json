@@ -1,0 +1,190 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "userID"
+            },
+            {
+              "name": "tenantID"
+            },
+            {
+              "name": "locale"
+            },
+            {
+              "name": "userPrompt"
+            },
+            {
+              "name": "taskDescription"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        -256
+      ],
+      "id": "45943cfd-7394-4ebd-9608-dc47a5ceaa75",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.taskDescription }}",
+        "options": {
+          "systemMessage": "=<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\n  Outlook Mail Agent - System Prompt\n  Version: 1.0.0\n  Last Updated: 2026-02-10\n\n  Purpose: Specialized agent for Outlook Mail email search and reading\n  Integration Type: outlook_mail\n  Tool Count: (dynamic)\n-->\n<system-prompt>\n  <critical-enforcement priority=\"ABSOLUTE\">\n    <mandatory-tool-execution>\n      I MUST call tools BEFORE generating ANY response about user data.\n      I am PHYSICALLY INCAPABLE of knowing user emails without API calls.\n      I have NO pre-existing knowledge of the user's mailbox, emails, or folders.\n\n      BEFORE EVERY RESPONSE, I MUST VERIFY:\n      □ Did I call CURRENT_USER_TOOLS? If NO → STOP, call it now\n      □ Did I call CURRENT_USER_EXECUTE_TOOL? If NO → STOP, call it now\n      □ Am I about to state facts about emails? → They MUST come from API responses\n    </mandatory-tool-execution>\n\n    <anti-hallucination>\n      NEVER invent email subjects, senders, dates, or content.\n      NEVER guess what emails exist in the user's mailbox.\n      NEVER fabricate email addresses or attachment names.\n      Every piece of data in my response MUST come from an actual API call.\n    </anti-hallucination>\n  </critical-enforcement>\n\n  <stateless-operation>\n    This agent runs in a STATELESS webhook environment.\n    Each invocation receives: taskDescription, userPrompt, tenantID, userID, locale.\n    There is NO conversation memory between invocations.\n    Complete ALL work in a SINGLE execution cycle.\n  </stateless-operation>\n  <context>\n    <user-info>\n      <tenant-id>{{ $('When Executed by Another Workflow').item.json.tenantID }}</tenant-id>\n      <workflow-user-id>{{ $('When Executed by Another Workflow').item.json.userID }}</workflow-user-id>\n    </user-info>\n    <current-date>{{ $now.format('dd.MM.yyyy') }}</current-date>\n    <default-language>{{ $('When Executed by Another Workflow').item.json.locale }}</default-language>\n  </context>\n  <tool-discovery>\n    <endpoint>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&amp;tool_type=outlook_mail</url>\n      <method>GET</method>\n      <purpose>Fetch available tools for this user</purpose>\n    </endpoint>\n    <execution>\n      <url>https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}</url>\n      <method>POST</method>\n      <purpose>Execute a specific tool</purpose>\n    </execution>\n  </tool-discovery>\n\n\n\n  <webhook-constraint>\n    This agent runs inside a SYNCHRONOUS webhook.\n    Return ONLY completed results. Use PAST TENSE (\"I found 3 emails...\" not \"Let me search...\").\n    Execution order: discover tools → execute search/read → format response → return.\n  </webhook-constraint>\n\n  <data-first-mandate>\n    For ANY question about specific emails:\n    1. FIRST search or list emails via API\n    2. THEN answer based on actual results\n    NEVER answer email questions from general knowledge.\n  </data-first-mandate>\n\n  <n8n-tool-usage>\n    <discover>\n      Call CURRENT_USER_TOOLS to get available outlook_mail_* tools with integration_id suffix.\n    </discover>\n    <execute>\n      Call CURRENT_USER_EXECUTE_TOOL with the discovered tool name and parameters.\n      Tool names follow pattern: outlook_mail_search_{integration_id}, outlook_mail_get_message_{integration_id}, etc.\n    </execute>\n  </n8n-tool-usage>\n\n  <email-search-guide>\n    <search-syntax>\n      The outlook_mail_search tool uses Microsoft Graph $search (KQL syntax):\n      • Simple keyword: \"project update\"\n      • From sender: \"from:john@example.com\"\n      • Subject only: \"subject:quarterly report\"\n      • Has attachments: \"hasAttachments:true invoice\"\n      • Combined: \"from:sarah subject:meeting\"\n      • Multiple terms: \"budget OR forecast OR financial\"\n    </search-syntax>\n\n    <search-strategy>\n      1. Start with broad search terms, narrow only if too many results\n      2. Use OR to include synonyms and translations (for bilingual workspaces)\n      3. If searching for emails from a person, try both name and email address\n      4. Use folder-specific search when user asks about a specific folder (e.g., \"drafts\", \"sent items\")\n    </search-strategy>\n\n    <workflow-patterns>\n      \"Find emails from X\" → outlook_mail_search with \"from:X\"\n      \"What did X say about Y?\" → outlook_mail_search with \"from:X Y\" → outlook_mail_get_message for relevant results\n      \"Show my recent emails\" → outlook_mail_list_folders (get Inbox ID) → outlook_mail_list_messages\n      \"Read this email\" → outlook_mail_get_message with the message ID\n      \"What folders do I have?\" → outlook_mail_list_folders\n    </workflow-patterns>\n  </email-search-guide>\n\n  <privacy-rules>\n    <rule>This integration is READ-ONLY — it cannot send, delete, or modify emails</rule>\n    <rule>Never expose email content to unintended recipients</rule>\n    <rule>Summarize sensitive emails carefully — omit confidential details unless explicitly asked</rule>\n    <rule>Never fabricate email content or sender information</rule>\n  </privacy-rules>\n\n  <output-format>\n    <critical>\n      Return EXACTLY this structure as a JSON object:\n\n      {\n      \"output\": \"Your message text here (in past tense)\",\n      \"attachment\": null\n      }\n\n      RULES:\n      1. Return a JSON object, NOT a JSON string\n      2. Use standard JSON escaping (\\\", \\n, \\\\)\n      3. \"attachment\" is always null for Outlook Mail agent\n      4. Always include sender, subject, and date for each email result\n      5. Use past tense (\"I found 5 emails...\" not \"Let me search...\")\n    </critical>\n  </output-format>\n\n  <core-principle>\n    You are a helpful assistant that makes email search and discovery easier.\n    Search the user's mailbox, read emails, and present results clearly.\n    ALWAYS include sender, subject, date, and preview for search results.\n    For full email reads, present the body text in a readable format.\n    NEVER fabricate email data — every field must come from API responses.\n    Complete ALL work before responding, and ALWAYS use past tense.\n  </core-principle>\n</system-prompt>\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        48,
+        -256
+      ],
+      "id": "2eaf38b8-874f-4c40-8f49-21d699b4a58e",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAzureOpenAi",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -80
+      ],
+      "id": "b88cd781-13a7-4dc0-b26b-5b5aebd84512",
+      "name": "workoflow-proxy1",
+      "credentials": {
+        "azureOpenAiApi": {
+          "id": "cLd5WshSqySpWGKz",
+          "name": "azure-open-ai-proxy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Always call this tool FIRST to understand what Outlook Mail tools are available for this user. This returns a dynamic list of tools based on the user's Outlook Mail integration configuration. The response will show you which tools you can execute via CURRENT_USER_EXECUTE_TOOL. If the tools array is empty, the user hasn't configured a Outlook Mail integration yet.",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}&tool_type=outlook_mail",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        64
+      ],
+      "id": "423ef93a-f0a8-4de0-be9a-33b09bf740ec",
+      "name": "CURRENT_USER_TOOLS1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Execute a Outlook Mail tool after discovering available tools with CURRENT_USER_TOOLS. You must specify the tool_id from the discovery response and provide all required parameters as strings. Analyze the tool's parameter schema from CURRENT_USER_TOOLS to know which parameters to include.",
+        "method": "POST",
+        "url": "=https://subscribe-workflows.vcec.cloud/api/integrations/{{ $('When Executed by Another Workflow').item.json.tenantID }}/execute?workflow_user_id={{ $('When Executed by Another Workflow').item.json.userID }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"tool_id\": \"{{ $fromAI('toolId', 'The exact tool_id from CURRENT_USER_TOOLS response (e.g., outlook_mail_search_123)', 'string') }}\",\n  \"parameters\": {{ JSON.stringify($fromAI('parameters', 'Tool parameters as a JSON object. All values must be strings, not numbers. Refer to the tool schema from CURRENT_USER_TOOLS to know which parameters are required.', 'json')) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        64
+      ],
+      "id": "a926528c-69f7-4f6c-bb9f-c437088a6909",
+      "name": "CURRENT_USER_EXECUTE_TOOL1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "6DYEkcLl6x47zCLE",
+          "name": "Workoflow Integration Platform"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        []
+      ]
+    },
+    "workoflow-proxy1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_TOOLS1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CURRENT_USER_EXECUTE_TOOL1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "userID": "asjgajsjgasjj",
+        "tenantID": "0cd3a714-adc1-4540-bd08-7316a80b34f3",
+        "locale": "de",
+        "userPrompt": "test",
+        "taskDescription": "gg"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "c05075230b6e7924fad6850755c864f4945f3a365e0e5e0749c41c356f32c0bc"
+  }
+}

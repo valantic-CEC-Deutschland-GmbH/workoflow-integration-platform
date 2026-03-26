@@ -18,7 +18,7 @@ class PromptCommentType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['min' => 1, 'max' => 5000]),
+                    new Assert\Length(min: 1, max: 5000),
                 ],
                 'attr' => [
                     'rows' => 3,

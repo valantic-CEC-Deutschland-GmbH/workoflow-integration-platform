@@ -658,7 +658,7 @@ The n8n folder contains ready-to-import workflow JSON files with:
 
 For questions or issues:
 - **Integration Platform:** https://subscribe-workflows.vcec.cloud
-- **Repository:** /home/patrickjaja/development/workoflow-promopage-v2
+- **Repository:** /workoflow-integration-platform
 - **System Prompts:** `/docs/agents/system_prompts/`
 - **n8n Workflows:** `/docs/agents/n8n/`
 

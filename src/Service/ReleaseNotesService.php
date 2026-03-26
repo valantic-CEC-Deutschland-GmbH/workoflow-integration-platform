@@ -65,6 +65,13 @@ class ReleaseNotesService
             'github' => 'https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-metrics',
             'icon' => 'fa-chart-line',
         ],
+        'orchestrator' => [
+            'name' => 'release_notes.projects.orchestrator.name',
+            'description' => 'release_notes.projects.orchestrator.description',
+            'url' => 'https://raw.githubusercontent.com/valantic-CEC-Deutschland-GmbH/workoflow-orchestrator/main/CHANGELOG.md',
+            'github' => 'https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-orchestrator',
+            'icon' => 'fa-project-diagram',
+        ],
     ];
 
     public function __construct(

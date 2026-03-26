@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Service\AuditLogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -77,6 +78,34 @@ class ProfileController extends AbstractController
         $this->addFlash('success', $this->translator->trans('profile.token_generated'));
 
         return $this->redirectToRoute('app_profile');
+    }
+
+    #[Route('/tool-mode', name: 'app_profile_tool_mode', methods: ['POST'])]
+    public function updateToolMode(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('tool-mode', $request->request->get('_csrf_token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
+        $mode = $request->request->get('mode');
+        $allowedModes = ['read_only', 'standard', 'full'];
+
+        if (!in_array($mode, $allowedModes, true)) {
+            return new JsonResponse(['error' => 'Invalid mode'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user->setToolAccessMode($mode);
+        $this->entityManager->flush();
+
+        $this->auditLogService->log('user.tool_mode_changed', $user, ['mode' => $mode]);
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $this->translator->trans('profile.mode_updated'),
+        ]);
     }
 
     #[Route('/delete', name: 'app_profile_delete', methods: ['POST'])]

@@ -1,0 +1,21 @@
+name: Updater Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      major:
+        description: 'Include major version updates'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    uses: valantic-CEC-Deutschland-GmbH/claude-code-marketplace/.github/workflows/updater-agent.yml@main
+    with:
+      major: ${{ inputs.major }}
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

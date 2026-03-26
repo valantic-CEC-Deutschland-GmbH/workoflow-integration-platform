@@ -4,6 +4,7 @@ namespace App\Integration\UserIntegrations;
 
 use App\Entity\IntegrationConfig;
 use App\Integration\PersonalizedSkillInterface;
+use App\Integration\ToolCategory;
 use App\Integration\ToolDefinition;
 use App\Integration\CredentialField;
 use App\Service\Integration\SapC4cService;
@@ -215,7 +216,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional SAP C4C lead fields (for custom fields or other standard fields not listed above)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_get_lead',
@@ -311,7 +313,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional SAP C4C lead fields to update (for custom fields or other standard fields not listed above)'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_list_leads',
@@ -381,7 +384,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with SAP C4C field names from metadata. Use c4c_get_entity_metadata to discover correct field names. IMPORTANT: Date fields MUST use ISO 8601 format "YYYY-MM-DDTHH:mm:ss" (e.g., "2026-03-03T00:00:00"), NOT "YYYY-MM-DD". Examples: SalesCyclePhaseCode for sales phase, ExpectedProcessingEndDate for closing date.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_get_opportunity',
@@ -483,7 +487,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with SAP C4C field names from metadata. Use c4c_get_entity_metadata to discover correct field names. IMPORTANT: Date fields MUST use ISO 8601 format "YYYY-MM-DDTHH:mm:ss" (e.g., "2026-03-03T00:00:00"), NOT "YYYY-MM-DD". Examples: SalesCyclePhaseCode for sales phase, LifeCycleStatusCode for status.'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_list_opportunities',
@@ -583,7 +588,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional SAP C4C account fields'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_get_account',
@@ -703,7 +709,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional fields to update'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_list_accounts',
@@ -785,7 +792,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional SAP C4C contact fields'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_get_contact',
@@ -887,7 +895,8 @@ class SapC4cIntegration implements PersonalizedSkillInterface
                         'required' => false,
                         'description' => 'JSON object with additional fields to update'
                     ]
-                ]
+                ],
+                ToolCategory::WRITE
             ),
             new ToolDefinition(
                 'c4c_list_contacts',
@@ -1559,6 +1568,11 @@ class SapC4cIntegration implements PersonalizedSkillInterface
     <p class="docs-link"><a href="https://help.sap.com/docs/sap-cloud-for-customer/odata-services/sap-cloud-for-customer-odata-api" target="_blank" rel="noopener">SAP C4C OData API Documentation</a></p>
 </div>
 HTML;
+    }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/SAP-Logo.svg';
     }
 
     public function getSystemPrompt(?IntegrationConfig $config = null): string

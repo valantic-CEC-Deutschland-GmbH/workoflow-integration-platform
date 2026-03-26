@@ -10,7 +10,11 @@
             <div class="header-content">
                 <h1>{{ 'integration.platform_skills_edit'|trans|default('Manage Platform Skills') }}</h1>
                 <p class="page-description">
-                    {{ 'integration.platform_skills_edit_description'|trans|default('Enable or disable platform tools that are available to all users in your organization') }}
+                    {% if isCommonOrchestrator|default(false) %}
+                        Enable or disable platform agents provided by the ADK orchestrator
+                    {% else %}
+                        {{ 'integration.platform_skills_edit_description'|trans|default('Enable or disable platform tools that are available to all users in your organization') }}
+                    {% endif %}
                 </p>
             </div>
             <a href="{{ path('app_skills') }}" class="btn btn-secondary">
@@ -18,6 +22,64 @@
             </a>
         </div>
 
+        {% if isCommonOrchestrator|default(false) %}
+        {# --- Common (ADK) orchestrator: show agents --- #}
+        <div class="orchestrator-info-banner" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.08); border-left: 3px solid #3b82f6; color: #93bbfc; font-size: 0.85rem; margin-bottom: 1rem; border-radius: 0 6px 6px 0;">
+            <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+            <span>This organisation uses the ADK orchestrator. The agents below are provided by the orchestrator and can be enabled or disabled per user.</span>
+        </div>
+
+        <div class="table-container">
+            <table class="skills-table platform-tools-table">
+                <thead>
+                    <tr>
+                        <th class="col-tool">Agent</th>
+                        <th class="col-description hide-tablet">{{ 'integration.description'|trans|default('Description') }}</th>
+                        <th class="col-toggle">{{ 'integration.enabled'|trans|default('Enabled') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for agent in platformSkills %}
+                        <tr class="tool-row">
+                            <td class="col-tool">
+                                <strong>{{ agent.name }}</strong>
+                                <div class="tool-description-mobile show-tablet">{{ agent.description|length > 80 ? agent.description|slice(0, 80) ~ '...' : agent.description }}</div>
+                                {% if agent.tools|length > 0 %}
+                                    <div style="margin-top: 0.25rem;">
+                                        {% for tool in agent.tools %}
+                                            <code class="tool-name" style="font-size: 0.7rem; margin-right: 0.25rem;">{{ tool.name }}</code>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td class="col-description hide-tablet">
+                                <span class="tool-description" title="{{ agent.description }}">{{ agent.description|length > 120 ? agent.description|slice(0, 120) ~ '...' : agent.description }}</span>
+                            </td>
+                            <td class="col-toggle">
+                                <label class="tool-toggle">
+                                    <input type="checkbox"
+                                           {% if agent.enabled %}checked{% endif %}
+                                           data-integration="{{ agent.type }}"
+                                           data-instance="{{ agent.instanceId|default('') }}"
+                                           data-tool="{{ agent.agentType }}"
+                                           onchange="toggleTool(this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if platformSkills is empty %}
+        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            <p>No agents available. Make sure the orchestrator is running and the <strong>Orchestrator API URL</strong> is configured in <a href="{{ path('app_tenant') }}">Tenant Settings</a>.</p>
+        </div>
+        {% endif %}
+
+        {% else %}
+        {# --- Legacy (N8N) orchestrator: show individual tools --- #}
         <div class="table-container">
             <table class="skills-table platform-tools-table">
                 <thead>
@@ -59,6 +121,7 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
 
         <div class="form-actions">
             <a href="{{ path('app_skills') }}" class="btn btn-primary">

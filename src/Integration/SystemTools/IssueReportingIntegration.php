@@ -4,6 +4,7 @@ namespace App\Integration\SystemTools;
 
 use App\Integration\PlatformSkillInterface;
 use App\Integration\ToolDefinition;
+use App\Integration\ToolCategory;
 use App\Integration\CredentialField;
 
 class IssueReportingIntegration implements PlatformSkillInterface
@@ -24,7 +25,8 @@ class IssueReportingIntegration implements PlatformSkillInterface
             new ToolDefinition(
                 'report_issue_tool',
                 'Use this tool to report issues or problems encountered by the user.',
-                []  // No parameters required based on screenshot
+                [],  // No parameters required based on screenshot
+                ToolCategory::WRITE
             )
         ];
     }
@@ -64,5 +66,10 @@ class IssueReportingIntegration implements PlatformSkillInterface
     public function getSetupInstructions(): ?string
     {
         return null;
+    }
+
+    public function getLogoPath(): string
+    {
+        return '/images/logos/workoflow-logo.png';
     }
 }

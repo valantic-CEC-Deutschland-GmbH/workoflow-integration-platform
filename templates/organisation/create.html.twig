@@ -25,6 +25,20 @@
                     <div class="form-help">{{ 'organisation.create.help'|trans }}</div>
                 </div>
 
+                <div class="form-group">
+                    <label for="tenant_type" class="form-label">{{ 'organisation.create.tenant_type'|trans }}</label>
+                    <select class="form-input"
+                            id="tenant_type"
+                            name="tenant_type"
+                            required>
+                        <option value="">{{ 'organisation.create.tenant_type_placeholder'|trans }}</option>
+                        {% for label, value in tenantTypeChoices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-help">{{ 'organisation.create.tenant_type_help'|trans }}</div>
+                </div>
+
                 <button type="submit" class="submit-button">
                     {{ 'organisation.create.submit'|trans }}
                 </button>

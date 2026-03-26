@@ -6,13 +6,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use InvalidArgumentException;
-use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Psr7\UriNormalizer;
+use App\Service\UrlNormalizer;
 
 class SapC4cService
 {
     public function __construct(
-        private HttpClientInterface $httpClient
+        private HttpClientInterface $httpClient,
+        private UrlNormalizer $urlNormalizer,
     ) {
     }
 
@@ -21,46 +21,17 @@ class SapC4cService
      */
     private function validateAndNormalizeUrl(string $url): string
     {
-        try {
-            $uri = new Uri($url);
-            $uri = UriNormalizer::normalize(
-                $uri,
-                UriNormalizer::REMOVE_DEFAULT_PORT | UriNormalizer::REMOVE_DUPLICATE_SLASHES
-            );
+        $normalized = $this->urlNormalizer->normalize($url);
 
-            // Validate scheme
-            $scheme = $uri->getScheme();
-            if (!in_array($scheme, ['http', 'https'], true)) {
-                throw new InvalidArgumentException(
-                    "SAP C4C URL must use HTTP or HTTPS protocol. Got: '{$scheme}'"
-                );
-            }
-
-            // Validate host
-            $host = $uri->getHost();
-            if (empty($host)) {
-                throw new InvalidArgumentException("SAP C4C URL must include a valid domain name");
-            }
-
-            // Require HTTPS for production SAP domains
-            if ($scheme !== 'https' && str_contains($host, '.crm.ondemand.com')) {
-                throw new InvalidArgumentException(
-                    "SAP C4C URL must use HTTPS for security. Got: '{$url}'. " .
-                    "Please use 'https://' instead of '{$scheme}://'"
-                );
-            }
-
-            // Always remove trailing slash to prevent double-slash URLs when concatenating paths
-            return rtrim((string) $uri, '/');
-        } catch (InvalidArgumentException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
+        // Require HTTPS for SAP production domains
+        $host = parse_url($normalized, PHP_URL_HOST) ?? '';
+        if (str_contains($host, '.crm.ondemand.com') && !str_starts_with($normalized, 'https://')) {
             throw new InvalidArgumentException(
-                "Invalid SAP C4C URL format: '{$url}'. " .
-                "Please provide a valid URL like 'https://myXXXXXX.crm.ondemand.com'. " .
-                "Error: " . $e->getMessage()
+                sprintf('SAP C4C URL must use HTTPS for security. Got: "%s"', $url)
             );
         }
+
+        return $normalized;
     }
 
     /**

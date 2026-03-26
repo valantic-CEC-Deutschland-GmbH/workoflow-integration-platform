@@ -10,6 +10,8 @@ class PlatformSkillsCardComponent
     /** @var array<int, array<string, mixed>> */
     public array $integrations = [];
 
+    public ?string $webhookType = null;
+
     /**
      * Filter and return only system integrations
      *
@@ -21,6 +23,14 @@ class PlatformSkillsCardComponent
             $this->integrations,
             fn($integration) => $integration['isSystem'] ?? false
         ));
+    }
+
+    /**
+     * Check if the organisation uses the common (ADK) orchestrator
+     */
+    public function isCommonOrchestrator(): bool
+    {
+        return $this->webhookType === 'COMMON';
     }
 
     /**

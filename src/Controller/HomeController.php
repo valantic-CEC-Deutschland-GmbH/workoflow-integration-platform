@@ -19,7 +19,7 @@ class HomeController extends AbstractController
     {
         // If user is already authenticated, redirect to dashboard
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_general');
+            return $this->redirectToRoute('app_my_agent');
         }
 
         return $this->render('home/index.html.twig');

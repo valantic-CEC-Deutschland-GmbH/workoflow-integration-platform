@@ -132,7 +132,7 @@ docker-compose -f docker-compose-prod.yml up -d
 ## Generated Files & Directories
 
 ```
-workoflow-promopage-v2/
+workoflow-integration-platform/
 ├── .env                      # Environment configuration (from .env.dist)
 ├── config/
 │   └── jwt/

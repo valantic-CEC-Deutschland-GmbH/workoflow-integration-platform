@@ -1,0 +1,231 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'scheduled_task.page_title'|trans }} - Workoflow{% endblock %}
+
+{% block body %}
+<div class="scheduled-tasks-page" data-controller="scheduled-task">
+    <div class="scheduled-tasks-container">
+        <div class="scheduled-tasks-header">
+            <h1>{{ 'scheduled_task.page_title'|trans }}</h1>
+            <div class="scheduled-tasks-explanation">
+                <p>{{ 'scheduled_task.explanation'|trans }}</p>
+            </div>
+        </div>
+
+        {% if not organisation.webhookUrl %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ 'scheduled_task.no_webhook_warning'|trans }}
+                {% if app.user.isAdmin() %}
+                    <a href="{{ path('app_tenant') }}">{{ 'scheduled_task.configure_webhook'|trans }}</a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="scheduled-tasks-actions">
+            <a href="{{ path('app_scheduled_task_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> {{ 'scheduled_task.create'|trans }}
+            </a>
+        </div>
+
+        {# Tasks Table #}
+        {% if tasks|length > 0 %}
+            <div class="table-responsive">
+                <table class="data-table scheduled-tasks-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'scheduled_task.name'|trans }}</th>
+                            <th>{{ 'scheduled_task.frequency'|trans }}</th>
+                            <th>{{ 'scheduled_task.next_execution'|trans }}</th>
+                            <th>{{ 'scheduled_task.status'|trans }}</th>
+                            <th>{{ 'scheduled_task.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                            <tr data-scheduled-task-target="row">
+                                <td data-label="{{ 'scheduled_task.name'|trans }}">
+                                    <strong>{{ task.name }}</strong>
+                                    {% if task.description %}
+                                        <br><small class="text-muted">{{ task.description|u.truncate(80) }}</small>
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.frequency'|trans }}">
+                                    <span class="badge badge-frequency badge-{{ task.frequency }}">
+                                        {{ ('scheduled_task.freq_' ~ task.frequency)|trans }}
+                                    </span>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.next_execution'|trans }}">
+                                    {% if task.nextExecutionAt %}
+                                        {{ task.nextExecutionAt|date('Y-m-d H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.status'|trans }}">
+                                    <button type="button"
+                                            class="btn btn-sm btn-toggle {{ task.active ? 'active' : '' }}"
+                                            data-action="click->scheduled-task#toggleActive"
+                                            data-uuid="{{ task.uuid }}"
+                                            title="{{ task.active ? 'scheduled_task.deactivate'|trans : 'scheduled_task.activate'|trans }}">
+                                        <i class="fas {{ task.active ? 'fa-toggle-on' : 'fa-toggle-off' }}"></i>
+                                        {{ task.active ? 'scheduled_task.active'|trans : 'scheduled_task.inactive'|trans }}
+                                    </button>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.actions'|trans }}" class="actions-cell">
+                                    <button type="button" class="btn btn-sm btn-outline"
+                                            data-action="click->scheduled-task#testTask"
+                                            data-uuid="{{ task.uuid }}"
+                                            title="{{ 'scheduled_task.test'|trans }}">
+                                        <i class="fas fa-vial"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline"
+                                            data-action="click->scheduled-task#runNow"
+                                            data-uuid="{{ task.uuid }}"
+                                            title="{{ 'scheduled_task.run_now'|trans }}">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <a href="{{ path('app_scheduled_task_edit', {uuid: task.uuid}) }}" class="btn btn-sm btn-outline"
+                                       title="{{ 'scheduled_task.edit'|trans }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_scheduled_task_delete', {uuid: task.uuid}) }}"
+                                          data-action="submit->scheduled-task#confirmDelete">
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete-task-' ~ task.uuid) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline btn-danger"
+                                                title="{{ 'scheduled_task.delete'|trans }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-clock"></i></div>
+                <h3>{{ 'scheduled_task.no_tasks'|trans }}</h3>
+                <p>{{ 'scheduled_task.no_tasks_description'|trans }}</p>
+                <a href="{{ path('app_scheduled_task_new') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> {{ 'scheduled_task.create'|trans }}
+                </a>
+            </div>
+        {% endif %}
+
+        {# Execution History — always rendered so JS can insert rows #}
+        <div class="execution-history-section" id="execution-history-section" {% if executions|length == 0 %}style="display:none"{% endif %}>
+            <h2>{{ 'scheduled_task.execution_history'|trans }}</h2>
+            <div class="table-responsive">
+                <table class="data-table executions-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'scheduled_task.task_name'|trans }}</th>
+                            <th>{{ 'scheduled_task.trigger'|trans }}</th>
+                            <th>{{ 'scheduled_task.exec_status'|trans }}</th>
+                            <th>{{ 'scheduled_task.executed_at'|trans }}</th>
+                            <th>{{ 'scheduled_task.duration'|trans }}</th>
+                            <th>{{ 'scheduled_task.output'|trans }}</th>
+                            <th>{{ 'scheduled_task.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="executions-tbody">
+                        {% for execution in executions %}
+                            <tr {% if execution.status == 'pending' %}id="execution-row-{{ execution.id }}" data-pending-execution-id="{{ execution.id }}"{% endif %}>
+                                <td data-label="{{ 'scheduled_task.task_name'|trans }}">{{ execution.scheduledTask.name }}</td>
+                                <td data-label="{{ 'scheduled_task.trigger'|trans }}">
+                                    <span class="badge badge-trigger badge-{{ execution.trigger }}">
+                                        {{ execution.trigger }}
+                                    </span>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.exec_status'|trans }}">
+                                    <span class="badge badge-status badge-{{ execution.status }}">
+                                        {% if execution.status == 'pending' %}
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                        {% endif %}
+                                        {{ execution.status }}
+                                    </span>
+                                </td>
+                                <td data-label="{{ 'scheduled_task.executed_at'|trans }}">{{ execution.executedAt|date('Y-m-d H:i:s') }}</td>
+                                <td data-label="{{ 'scheduled_task.duration'|trans }}">
+                                    {% if execution.duration %}
+                                        {{ (execution.duration / 1000)|number_format(1) }}s
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.output'|trans }}">
+                                    {% if execution.status == 'pending' %}
+                                        <span class="text-muted"><i class="fas fa-spinner fa-spin"></i></span>
+                                    {% elseif execution.output or execution.errorMessage %}
+                                        <button type="button" class="btn btn-sm btn-outline"
+                                                data-action="click->scheduled-task#viewOutput"
+                                                data-execution-id="{{ execution.id }}"
+                                                data-output="{{ (execution.output ?? execution.errorMessage)|e('html_attr') }}"
+                                                data-exec-status="{{ execution.status }}"
+                                                data-task-name="{{ execution.scheduledTask.name }}">
+                                            <i class="fas fa-eye"></i> {{ 'scheduled_task.view'|trans }}
+                                        </button>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td data-label="{{ 'scheduled_task.actions'|trans }}" class="actions-cell">
+                                    <form method="post" action="{{ path('app_scheduled_task_execution_delete', {id: execution.id}) }}"
+                                          data-action="submit->scheduled-task#confirmDeleteExecution">
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete-execution-' ~ execution.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline btn-danger"
+                                                title="{{ 'scheduled_task.delete'|trans }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Output Modal #}
+<div id="scheduledTaskModal" class="modal" role="dialog" aria-labelledby="stModalTitle" aria-modal="true">
+    <div class="modal-container">
+        <div class="modal-content" id="stModalContentWrapper">
+            <div class="modal-header">
+                <div class="modal-icon" id="stModalIcon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <button type="button" class="modal-close" onclick="document.getElementById('scheduledTaskModal').classList.remove('show')" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="stModalTitle" class="modal-title"></h3>
+                <div id="stModalMessage" class="modal-message"></div>
+                <div id="stModalOutput" class="modal-details scheduled-task-output"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="stModalCloseBtn" onclick="document.getElementById('scheduledTaskModal').classList.remove('show')">
+                    {{ 'common.close'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('scheduledTaskModal')?.classList.remove('show');
+    }
+});
+document.getElementById('scheduledTaskModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.remove('show');
+    }
+});
+</script>
+{% endblock %}

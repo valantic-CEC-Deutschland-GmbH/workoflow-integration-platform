@@ -31,6 +31,10 @@ application.register('json-modal', jsonModalController);
 import navDropdownController from './controllers/nav_dropdown_controller';
 application.register('nav-dropdown', navDropdownController);
 
+// Register the scheduled task controller
+import scheduledTaskController from './controllers/scheduled_task_controller';
+application.register('scheduled-task', scheduledTaskController);
+
 // Export for debugging
 window.Stimulus = application;
 

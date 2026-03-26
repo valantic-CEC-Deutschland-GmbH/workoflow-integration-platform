@@ -33,6 +33,20 @@
             </div>
 
             <div class="form-group">
+                {{ form_label(form.skill) }}
+                {{ form_widget(form.skill) }}
+                {{ form_errors(form.skill) }}
+                <small class="form-help">{{ 'prompt.skill_help'|trans }}</small>
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.platform) }}
+                {{ form_widget(form.platform) }}
+                {{ form_errors(form.platform) }}
+                <small class="form-help">{{ 'prompt.platform_help'|trans }}</small>
+            </div>
+
+            <div class="form-group">
                 {{ form_label(form.scope) }}
                 <div class="scope-options">
                     {{ form_widget(form.scope) }}

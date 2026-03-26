@@ -4,56 +4,21 @@ namespace App\Service\Integration;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use InvalidArgumentException;
-use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Psr7\UriNormalizer;
+use App\Service\UrlNormalizer;
 use Psr\Log\LoggerInterface;
 
 class ProjektronService
 {
     public function __construct(
         private HttpClientInterface $httpClient,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private UrlNormalizer $urlNormalizer
     ) {
     }
 
     private function validateAndNormalizeUrl(string $url): string
     {
-        try {
-            $uri = new Uri($url);
-            $uri = UriNormalizer::normalize($uri, UriNormalizer::REMOVE_DEFAULT_PORT | UriNormalizer::REMOVE_DUPLICATE_SLASHES);
-
-            $path = $uri->getPath();
-            if ($path !== '/' && str_ends_with($path, '/')) {
-                $uri = $uri->withPath(rtrim($path, '/'));
-            }
-
-            $scheme = $uri->getScheme();
-            if (!in_array($scheme, ['http', 'https'], true)) {
-                throw new InvalidArgumentException("Projektron URL must use HTTP or HTTPS protocol. Got: '{$scheme}'");
-            }
-
-            $host = $uri->getHost();
-            if (empty($host)) {
-                throw new InvalidArgumentException("Projektron URL must include a valid domain name");
-            }
-
-            if ($scheme !== 'https') {
-                throw new InvalidArgumentException(
-                    "Projektron URL must use HTTPS for security. Got: '{$url}'. " .
-                    "Please use 'https://' instead of '{$scheme}://'"
-                );
-            }
-
-            return (string) $uri;
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            throw new InvalidArgumentException(
-                "Invalid Projektron URL format: '{$url}'. " .
-                "Please provide a valid URL like 'https://projektron.valantic.com'. " .
-                "Error: " . $e->getMessage()
-            );
-        }
+        return $this->urlNormalizer->normalize($url, requireHttps: true);
     }
 
     private function buildCookieHeader(string $jsessionid, ?string $csrfToken = null): string

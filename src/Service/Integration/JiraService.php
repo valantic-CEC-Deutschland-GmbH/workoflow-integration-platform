@@ -3,9 +3,8 @@
 namespace App\Service\Integration;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Service\UrlNormalizer;
 use InvalidArgumentException;
-use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Psr7\UriNormalizer;
 use Psr\Log\LoggerInterface;
 
 class JiraService
@@ -75,7 +74,8 @@ class JiraService
 
     public function __construct(
         private HttpClientInterface $httpClient,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private UrlNormalizer $urlNormalizer
     ) {
     }
 
@@ -347,52 +347,7 @@ class JiraService
 
     private function validateAndNormalizeUrl(string $url): string
     {
-        try {
-            // Use PSR-7 Uri for proper URL handling
-            $uri = new Uri($url);
-
-            // Normalize the URI (removes default ports, duplicate slashes, etc.)
-            $uri = UriNormalizer::normalize($uri, UriNormalizer::REMOVE_DEFAULT_PORT | UriNormalizer::REMOVE_DUPLICATE_SLASHES);
-
-            // Remove trailing slash manually
-            $path = $uri->getPath();
-            if ($path !== '/' && str_ends_with($path, '/')) {
-                $uri = $uri->withPath(rtrim($path, '/'));
-            }
-
-            // Validate scheme
-            $scheme = $uri->getScheme();
-            if (!in_array($scheme, ['http', 'https'], true)) {
-                throw new InvalidArgumentException("Jira URL must use HTTP or HTTPS protocol. Got: '{$scheme}'");
-            }
-
-            // Validate host exists
-            $host = $uri->getHost();
-            if (empty($host)) {
-                throw new InvalidArgumentException("Jira URL must include a valid domain name");
-            }
-
-            // Require HTTPS for all hosted Atlassian products
-            if ($scheme !== 'https') {
-                throw new InvalidArgumentException(
-                    "Jira URL must use HTTPS for security. Got: '{$url}'. " .
-                    "Please use 'https://' instead of '{$scheme}://'"
-                );
-            }
-
-            // Return the normalized URL as string
-            return (string) $uri;
-        } catch (\InvalidArgumentException $e) {
-            // Re-throw our custom messages
-            throw $e;
-        } catch (\Throwable $e) {
-            // Catch any PSR-7 parsing errors
-            throw new InvalidArgumentException(
-                "Invalid Jira URL format: '{$url}'. " .
-                "Please provide a valid URL like 'https://your-domain.atlassian.net'. " .
-                "Error: " . $e->getMessage()
-            );
-        }
+        return $this->urlNormalizer->normalize($url, requireHttps: true);
     }
 
     public function testConnection(array $credentials): bool
@@ -632,7 +587,7 @@ class JiraService
 
             $suggestion = '';
             if ($statusCode === 404) {
-                $suggestion = " - Verify issue key '{$issueKey}' exists and you have permission to view it";
+                $suggestion = " - Verify issue key '{$issueKey}' exists on {$url} and you have permission to view it";
             } elseif (stripos($errorText, 'permission') !== false) {
                 $suggestion = ' - Check that your API token has permission to access this issue';
             }
@@ -679,7 +634,7 @@ class JiraService
 
             $suggestion = '';
             if ($statusCode === 404) {
-                $suggestion = " - Verify issue key '{$issueKey}' exists and you have permission to view it";
+                $suggestion = " - Verify issue key '{$issueKey}' exists on {$url} and you have permission to view it";
             } elseif (stripos($errorText, 'permission') !== false) {
                 $suggestion = ' - Check that your API token has permission to access this issue';
             }
@@ -1830,20 +1785,29 @@ class JiraService
 
         // Add custom fields with auto-formatting
         if (isset($issueData['customFields']) && is_array($issueData['customFields'])) {
-            // Get field metadata to determine proper formatting
-            $fieldMetadata = $this->getCreateFieldMetadata(
-                $credentials,
-                $issueData['projectKey'],
-                $issueData['issueTypeId']
-            );
-            $schemaMap = [];
-            foreach ($fieldMetadata['fields'] ?? [] as $field) {
-                $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
-            }
+            try {
+                // Get field metadata to determine proper formatting
+                $fieldMetadata = $this->getCreateFieldMetadata(
+                    $credentials,
+                    $issueData['projectKey'],
+                    $issueData['issueTypeId']
+                );
+                $schemaMap = [];
+                foreach ($fieldMetadata['fields'] ?? [] as $field) {
+                    $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                }
 
-            foreach ($issueData['customFields'] as $fieldId => $value) {
-                $schema = $schemaMap[$fieldId] ?? [];
-                $fields[$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                foreach ($issueData['customFields'] as $fieldId => $value) {
+                    $schema = $schemaMap[$fieldId] ?? [];
+                    $fields[$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                }
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'Failed to prepare custom fields: ' . $e->getMessage()
+                    . '. Suggestion: Try creating the issue with only required fields (summary, issueTypeId, projectKey, customfield_13211), then use jira_update_issue to add remaining fields.',
+                    400,
+                    $e
+                );
             }
         }
 
@@ -1977,22 +1941,30 @@ class JiraService
 
         // Handle custom fields with auto-formatting
         if (isset($updates['customFields']) && is_array($updates['customFields'])) {
-            // Get issue details to determine project and issue type for field metadata
-            $issue = $this->getIssueRaw($credentials, $issueKey, ['project', 'issuetype']);
-            $projectKey = $issue['fields']['project']['key'] ?? null;
-            $issueTypeId = $issue['fields']['issuetype']['id'] ?? null;
+            try {
+                // Get issue details to determine project and issue type for field metadata
+                $issue = $this->getIssueRaw($credentials, $issueKey, ['project', 'issuetype']);
+                $projectKey = $issue['fields']['project']['key'] ?? null;
+                $issueTypeId = $issue['fields']['issuetype']['id'] ?? null;
 
-            $schemaMap = [];
-            if ($projectKey && $issueTypeId) {
-                $fieldMetadata = $this->getCreateFieldMetadata($credentials, $projectKey, $issueTypeId);
-                foreach ($fieldMetadata['fields'] ?? [] as $field) {
-                    $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                $schemaMap = [];
+                if ($projectKey && $issueTypeId) {
+                    $fieldMetadata = $this->getCreateFieldMetadata($credentials, $projectKey, $issueTypeId);
+                    foreach ($fieldMetadata['fields'] ?? [] as $field) {
+                        $schemaMap[$field['fieldId']] = $field['schema'] ?? [];
+                    }
                 }
-            }
 
-            foreach ($updates['customFields'] as $fieldId => $value) {
-                $schema = $schemaMap[$fieldId] ?? [];
-                $updatePayload['fields'][$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                foreach ($updates['customFields'] as $fieldId => $value) {
+                    $schema = $schemaMap[$fieldId] ?? [];
+                    $updatePayload['fields'][$fieldId] = $this->formatCustomFieldValue($value, $schema);
+                }
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'Failed to prepare custom fields for update: ' . $e->getMessage(),
+                    400,
+                    $e
+                );
             }
         }
 

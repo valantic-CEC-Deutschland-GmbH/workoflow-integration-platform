@@ -5,9 +5,12 @@ namespace App\Service;
 use App\DTO\ToolFilterCriteria;
 use App\Entity\IntegrationConfig;
 use App\Entity\Organisation;
+use App\Entity\User;
 use App\Integration\IntegrationInterface;
 use App\Integration\IntegrationRegistry;
+use App\Integration\ToolCategory;
 use App\Repository\IntegrationConfigRepository;
+use App\Service\Integration\RemoteMcpService;
 
 /**
  * Service for providing and filtering integration tools for API access
@@ -17,13 +20,17 @@ use App\Repository\IntegrationConfigRepository;
  * - Tool type filtering (CSV support)
  * - Disabled tool filtering
  * - Tool formatting for API responses
+ * - Tool access mode filtering (read/write/delete)
+ * - Orchestrator native agent tools (for COMMON tenants)
  */
 class ToolProviderService
 {
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
         private readonly IntegrationConfigRepository $configRepository,
-        private readonly EncryptionService $encryptionService
+        private readonly EncryptionService $encryptionService,
+        private readonly RemoteMcpService $remoteMcpService,
+        private readonly OrchestratorCapabilitiesService $orchestratorCapabilitiesService,
     ) {
     }
 
@@ -34,7 +41,8 @@ class ToolProviderService
      */
     public function getToolsForOrganisation(
         Organisation $organisation,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?User $user = null
     ): array {
         // Get configs from DB
         $configs = $this->configRepository->findByOrganisationAndWorkflowUser(
@@ -44,6 +52,9 @@ class ToolProviderService
 
         // Build config map for quick lookup
         $configMap = $this->buildConfigMap($configs);
+
+        // Get allowed categories from user's access mode
+        $allowedCategories = $user ? $user->getAllowedToolCategories() : null;
 
         // Get all integrations and filter
         $allIntegrations = $this->integrationRegistry->getAllIntegrations();
@@ -58,7 +69,8 @@ class ToolProviderService
                 $systemTools = $this->processSystemIntegration(
                     $integration,
                     $integrationConfigs,
-                    $criteria
+                    $criteria,
+                    $allowedCategories
                 );
                 $tools = array_merge($tools, $systemTools);
             } else {
@@ -66,9 +78,109 @@ class ToolProviderService
                 $userTools = $this->processUserIntegration(
                     $integration,
                     $integrationConfigs,
-                    $criteria
+                    $criteria,
+                    $allowedCategories
                 );
                 $tools = array_merge($tools, $userTools);
+            }
+        }
+
+        // Include orchestrator native agent tools (for COMMON tenants)
+        if ($organisation->getWebhookType() === 'COMMON') {
+            $orchestratorTools = $this->buildOrchestratorNativeTools($organisation, $criteria, $allowedCategories);
+            $tools = array_merge($tools, $orchestratorTools);
+        }
+
+        return $tools;
+    }
+
+    /**
+     * Build tools from orchestrator native agents (People Finder, Web Agent, etc.)
+     *
+     * Uses OrchestratorCapabilitiesService (cached 5 min) to discover agents and their tools.
+     * Respects per-agent disabled tools from IntegrationConfig(type="orchestrator.*").
+     * Only includes tools marked as mcp_exposed=true by the orchestrator.
+     *
+     * @param ToolCategory[]|null $allowedCategories
+     * @return array
+     */
+    private function buildOrchestratorNativeTools(
+        Organisation $organisation,
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
+    ): array {
+        // Skip if filter specifies only system tools
+        if ($criteria->includesOnlySystemTools()) {
+            return [];
+        }
+
+        $agents = $this->orchestratorCapabilitiesService->fetchCapabilities($organisation);
+        if (empty($agents)) {
+            return [];
+        }
+
+        // Load orchestrator IntegrationConfigs for disabled-tools check
+        $configs = $this->configRepository->findByOrganisationAndWorkflowUser(
+            $organisation,
+            $criteria->getWorkflowUserId()
+        );
+        $orchestratorConfigs = [];
+        foreach ($configs as $config) {
+            if (str_starts_with($config->getIntegrationType(), 'orchestrator.')) {
+                $orchestratorConfigs[$config->getIntegrationType()] = $config;
+            }
+        }
+
+        $tools = [];
+        foreach ($agents as $agent) {
+            $agentType = $agent['type'] ?? '';
+            $agentTools = $agent['tools'] ?? [];
+
+            if ($agentType === '' || empty($agentTools)) {
+                continue;
+            }
+
+            // Check if agent is disabled
+            $agentConfig = $orchestratorConfigs[$agentType] ?? null;
+            if ($agentConfig !== null && !$agentConfig->isActive()) {
+                continue;
+            }
+
+            $disabledTools = $agentConfig?->getDisabledTools() ?? [];
+
+            foreach ($agentTools as $agentTool) {
+                $toolName = $agentTool['name'] ?? '';
+                if ($toolName === '') {
+                    continue;
+                }
+
+                // Skip tools not exposed for MCP
+                if (!($agentTool['mcp_exposed'] ?? true)) {
+                    continue;
+                }
+
+                // Skip disabled tools
+                if (in_array($toolName, $disabledTools, true)) {
+                    continue;
+                }
+
+                // All orchestrator tools are treated as READ by default
+                if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+                    continue;
+                }
+
+                $description = $agentTool['description'] ?? 'Orchestrator tool';
+                $parameters = $this->convertMcpInputSchema($agentTool['parameters'] ?? []);
+
+                $tools[] = [
+                    'type' => 'function',
+                    'function' => [
+                        'name' => 'orchestrator.' . $toolName,
+                        'tool_id' => 'orchestrator.' . $toolName,
+                        'description' => $description,
+                        'parameters' => $parameters,
+                    ],
+                ];
             }
         }
 
@@ -99,12 +211,14 @@ class ToolProviderService
      * Process system integration (no credentials required)
      *
      * @param IntegrationConfig[] $configs
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function processSystemIntegration(
         IntegrationInterface $integration,
         array $configs,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
     ): array {
         // System tools are excluded by default unless explicitly requested
         if (!$this->shouldIncludeSystemIntegration($integration, $criteria)) {
@@ -122,19 +236,21 @@ class ToolProviderService
         // Build tools
         $disabledTools = $config?->getDisabledTools() ?? [];
 
-        return $this->buildToolsArray($integration, $disabledTools);
+        return $this->buildToolsArray($integration, $disabledTools, null, $allowedCategories);
     }
 
     /**
      * Process user integration (credentials required) - may have multiple instances
      *
      * @param IntegrationConfig[] $configs
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function processUserIntegration(
         IntegrationInterface $integration,
         array $configs,
-        ToolFilterCriteria $criteria
+        ToolFilterCriteria $criteria,
+        ?array $allowedCategories = null
     ): array {
         // Skip if filter specifies only system tools
         if ($criteria->includesOnlySystemTools()) {
@@ -156,12 +272,20 @@ class ToolProviderService
                 continue;
             }
 
+            // For remote_mcp integrations, discover tools dynamically
+            if ($integration->getType() === 'remote_mcp') {
+                $remoteMcpTools = $this->buildRemoteMcpTools($config, $allowedCategories);
+                $tools = array_merge($tools, $remoteMcpTools);
+                continue;
+            }
+
             // Build tools for this instance with unique IDs
             $disabledTools = $config->getDisabledTools();
             $instanceTools = $this->buildToolsArray(
                 $integration,
                 $disabledTools,
-                $config // Pass config for instance-specific naming
+                $config, // Pass config for instance-specific naming
+                $allowedCategories
             );
 
             $tools = array_merge($tools, $instanceTools);
@@ -198,21 +322,28 @@ class ToolProviderService
     }
 
     /**
-     * Build tools array from integration, filtering disabled tools
+     * Build tools array from integration, filtering disabled tools and by access mode
      *
      * @param array<string> $disabledTools
+     * @param ToolCategory[]|null $allowedCategories
      * @return array
      */
     private function buildToolsArray(
         IntegrationInterface $integration,
         array $disabledTools,
-        ?IntegrationConfig $config = null
+        ?IntegrationConfig $config = null,
+        ?array $allowedCategories = null
     ): array {
         $tools = [];
 
         foreach ($integration->getTools() as $tool) {
             if (in_array($tool->getName(), $disabledTools, true)) {
                 continue; // Skip disabled tools
+            }
+
+            // Filter by access mode categories
+            if ($allowedCategories !== null && !in_array($tool->getCategory(), $allowedCategories, true)) {
+                continue;
             }
 
             $toolName = $tool->getName();
@@ -243,6 +374,91 @@ class ToolProviderService
         }
 
         return $tools;
+    }
+
+    /**
+     * Build tools from a remote MCP server via dynamic discovery
+     *
+     * @param ToolCategory[]|null $allowedCategories
+     * @return array
+     */
+    private function buildRemoteMcpTools(
+        IntegrationConfig $config,
+        ?array $allowedCategories = null
+    ): array {
+        $credentials = $this->getDecryptedCredentials($config);
+        if (!$credentials) {
+            return [];
+        }
+
+        try {
+            $mcpTools = $this->remoteMcpService->discoverTools($credentials);
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $disabledTools = $config->getDisabledTools();
+        $serverUrl = $credentials['server_url'] ?? '';
+        $tools = [];
+
+        foreach ($mcpTools as $mcpTool) {
+            $toolName = $mcpTool['name'] ?? '';
+            if ($toolName === '' || in_array($toolName, $disabledTools, true)) {
+                continue;
+            }
+
+            // All remote MCP tools are treated as READ by default
+            if ($allowedCategories !== null && !in_array(ToolCategory::READ, $allowedCategories, true)) {
+                continue;
+            }
+
+            $description = $mcpTool['description'] ?? 'Remote MCP tool';
+            if ($serverUrl !== '') {
+                $description .= ' (via Remote MCP: ' . $serverUrl . ')';
+            }
+
+            // Convert MCP inputSchema to our parameter format
+            $parameters = $this->convertMcpInputSchema($mcpTool['inputSchema'] ?? []);
+
+            $tools[] = [
+                'type' => 'function',
+                'function' => [
+                    'name' => $toolName . '_' . $config->getId(),
+                    'tool_id' => $toolName . '_' . $config->getId(),
+                    'description' => $description,
+                    'parameters' => $parameters,
+                ],
+            ];
+        }
+
+        return $tools;
+    }
+
+    /**
+     * Convert MCP inputSchema (JSON Schema) to our API parameter format
+     *
+     * @param array $inputSchema
+     * @return array
+     */
+    private function convertMcpInputSchema(array $inputSchema): array
+    {
+        if (empty($inputSchema)) {
+            return [
+                'type' => 'object',
+                'properties' => new \stdClass(),
+                'required' => [],
+            ];
+        }
+
+        // MCP inputSchema is already JSON Schema format, pass through
+        $properties = $inputSchema['properties'] ?? [];
+        $required = $inputSchema['required'] ?? [];
+
+        return [
+            'type' => 'object',
+            'properties' => empty($properties) ? new \stdClass() : $properties,
+            'required' => $required,
+        ];
     }
 
     /**
@@ -307,6 +523,7 @@ class ToolProviderService
             'jira', 'confluence' => $credentials['url'] ?? null,
             'gitlab' => $credentials['gitlab_url'] ?? null,
             'sharepoint' => $credentials['sharepoint_url'] ?? null,
+            'remote_mcp' => $credentials['server_url'] ?? null,
             default => null
         };
     }

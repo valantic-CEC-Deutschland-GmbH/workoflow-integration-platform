@@ -2,6 +2,11 @@
   <img src="assets/logo_orig_large.png" alt="Workoflow Logo" width="360px">
 </p>
 
+<p align="center">
+  <a href="https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/actions/workflows/tests.yml"><img src="https://github.com/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+  <a href="https://codecov.io/gh/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform"><img src="https://codecov.io/gh/valantic-CEC-Deutschland-GmbH/workoflow-integration-platform/branch/main/graph/badge.svg" alt="codecov"></a>
+</p>
+
 # Workoflow Integration Platform
 
 > AI-first enterprise integration hub for orchestrating tools and data across multiple channels
@@ -44,24 +49,24 @@ Key differentiators:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        AI Agents / Bots                          │
-│                  (MS Teams, WhatsApp, Slack, etc.)               │
+│                        AI Agents / Bots                         │
+│                  (MS Teams, WhatsApp, Slack, etc.)              │
 └─────────────────────────────┬───────────────────────────────────┘
                               │ REST API (Basic Auth / JWT)
 ┌─────────────────────────────▼───────────────────────────────────┐
-│                   Workoflow Integration Platform                 │
+│                   Workoflow Integration Platform                │
 ├─────────────────────────────────────────────────────────────────┤
 │  IntegrationRegistry ──► Tool Discovery & Execution             │
 │  EncryptionService   ──► Credential Management (Sodium)         │
 │  AuditLogService     ──► Activity Logging                       │
 ├─────────────────────────────────────────────────────────────────┤
-│  User Integrations          │  System Tools                      │
-│  ├── Jira                   │  ├── File Sharing                  │
-│  ├── Confluence             │  ├── PDF Generator                 │
-│  ├── SharePoint             │  ├── Web Search                    │
-│  ├── GitLab                 │  ├── Knowledge Query               │
-│  ├── Trello                 │  └── ...                           │
-│  └── ...                    │                                    │
+│  User Integrations          │  System Tools                     │
+│  ├── Jira                   │  ├── File Sharing                 │
+│  ├── Confluence             │  ├── PDF Generator                │
+│  ├── SharePoint             │  ├── Web Search                   │
+│  ├── GitLab                 │  ├── Knowledge Query              │
+│  ├── Trello                 │  └── ...                          │
+│  └── ...                    │                                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -78,7 +83,7 @@ Key differentiators:
 ```bash
 # 1. Clone repository
 git clone <repository-url>
-cd workoflow-promopage-v2
+cd workoflow-integration-platform
 
 # 2. Run setup script
 ./setup.sh dev
@@ -315,5 +320,5 @@ Proprietary - All rights reserved.
 ---
 
 <p align="center">
-  Built with Symfony 7.2 and FrankenPHP
+  Built with Symfony 8 and FrankenPHP
 </p>
