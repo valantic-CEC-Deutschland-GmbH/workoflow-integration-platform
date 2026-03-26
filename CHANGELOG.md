@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-26
+
+### Fixed
+- **Links in scheduled prompt responses are now clickable** — URLs in scheduled task outputs were previously shown as plain text. They are now rendered as proper hyperlinks that open in a new tab. This applies to both markdown-formatted links and bare URLs.
+
 ## 2026-03-24
 
 ### Fixed
