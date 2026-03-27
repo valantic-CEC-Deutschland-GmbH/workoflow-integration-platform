@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-03-27
+
+### Fixed
+- **Scheduled tasks now execute at your configured local time** — Previously, tasks ran based on UTC, causing a 1-2 hour offset depending on your timezone. If you set a task for 13:35, it now fires at 13:35 in your timezone, not 13:35 UTC.
+- **"Executed at" timestamps no longer change after page refresh** — After manually running a task, the displayed timestamp would shift by 1-2 hours on refresh. All timestamps now consistently show your local time.
+- **Scheduled task notifications in MS Teams now use the correct timezone** — The timezone in MS Teams messages was hardcoded to Europe/Berlin regardless of the user's actual timezone. It now uses the timezone of the task creator.
+
 ## 2026-03-26
 
 ### Fixed
