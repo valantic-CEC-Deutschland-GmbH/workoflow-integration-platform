@@ -38,6 +38,9 @@ class ScheduledTask
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $executionTime = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $timezone = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $weekday = null;
 
@@ -156,6 +159,17 @@ class ScheduledTask
     public function setExecutionTime(?string $executionTime): static
     {
         $this->executionTime = $executionTime;
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?string $timezone): static
+    {
+        $this->timezone = $timezone;
         return $this;
     }
 
