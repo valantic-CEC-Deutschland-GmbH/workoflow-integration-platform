@@ -22,7 +22,7 @@ class CommonPayloadBuilder implements WebhookPayloadBuilderInterface
         UserOrganisation $userOrg,
         string $webhookAuthHeader,
     ): array {
-        $now = new \DateTime();
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
         $sessionId = Uuid::v4()->toRfc4122();
         $workflowUserId = $userOrg->getWorkflowUserId() ?? '';
 

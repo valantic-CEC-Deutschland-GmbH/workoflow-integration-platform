@@ -57,7 +57,9 @@
                                 </td>
                                 <td data-label="{{ 'scheduled_task.next_execution'|trans }}">
                                     {% if task.nextExecutionAt %}
-                                        {{ task.nextExecutionAt|date('Y-m-d H:i') }}
+                                        <span data-utc-datetime="{{ task.nextExecutionAt|date('Y-m-d\\TH:i:sP', 'UTC') }}">
+                                            {{ task.nextExecutionAt|date('Y-m-d H:i', 'UTC') }}
+                                        </span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -147,7 +149,7 @@
                                         {{ execution.status }}
                                     </span>
                                 </td>
-                                <td data-label="{{ 'scheduled_task.executed_at'|trans }}">{{ execution.executedAt|date('Y-m-d H:i:s') }}</td>
+                                <td data-label="{{ 'scheduled_task.executed_at'|trans }}"><span data-utc-datetime="{{ execution.executedAt|date('Y-m-d\\TH:i:sP', 'UTC') }}">{{ execution.executedAt|date('Y-m-d H:i:s', 'UTC') }}</span></td>
                                 <td data-label="{{ 'scheduled_task.duration'|trans }}">
                                     {% if execution.duration %}
                                         {{ (execution.duration / 1000)|number_format(1) }}s

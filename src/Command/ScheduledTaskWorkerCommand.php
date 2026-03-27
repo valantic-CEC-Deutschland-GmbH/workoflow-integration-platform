@@ -70,7 +70,7 @@ class ScheduledTaskWorkerCommand extends Command
                 // Clear entity manager to avoid stale data
                 $this->entityManager->clear();
 
-                $now = new \DateTime();
+                $now = new \DateTime('now', new \DateTimeZone('UTC'));
                 $dueTasks = $this->taskRepository->findDueForExecution($now);
 
                 if (count($dueTasks) > 0) {
@@ -88,7 +88,7 @@ class ScheduledTaskWorkerCommand extends Command
                         $execution = $this->executor->createPendingExecution($task, 'scheduled');
 
                         // Update next execution time immediately so it won't be picked up again
-                        $task->setLastExecutionAt(new \DateTime());
+                        $task->setLastExecutionAt(new \DateTime('now', new \DateTimeZone('UTC')));
                         $task->computeNextExecutionAt();
 
                         $this->entityManager->flush();

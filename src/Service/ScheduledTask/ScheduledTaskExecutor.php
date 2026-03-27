@@ -171,7 +171,7 @@ class ScheduledTaskExecutor
         $execution->setDuration($duration);
 
         // Update task
-        $task->setLastExecutionAt(new \DateTime());
+        $task->setLastExecutionAt(new \DateTime('now', new \DateTimeZone('UTC')));
         $task->computeNextExecutionAt();
 
         $this->entityManager->persist($execution);

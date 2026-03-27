@@ -82,6 +82,11 @@ class ScheduledTaskController extends AbstractController
             $task->setExecutionTime($request->request->get('execution_time') ?: null);
             $task->setActive($request->request->getBoolean('active', true));
 
+            $timezone = $request->request->get('timezone');
+            if ($timezone !== null && $timezone !== '' && \in_array($timezone, \DateTimeZone::listIdentifiers(), true)) {
+                $task->setTimezone($timezone);
+            }
+
             $weekday = $request->request->get('weekday');
             $task->setWeekday($weekday !== null && $weekday !== '' ? (int) $weekday : null);
 
@@ -135,6 +140,11 @@ class ScheduledTaskController extends AbstractController
             $task->setFrequency((string) $request->request->get('frequency', 'manual'));
             $task->setExecutionTime($request->request->get('execution_time') ?: null);
             $task->setActive($request->request->getBoolean('active', true));
+
+            $timezone = $request->request->get('timezone');
+            if ($timezone !== null && $timezone !== '' && \in_array($timezone, \DateTimeZone::listIdentifiers(), true)) {
+                $task->setTimezone($timezone);
+            }
 
             $weekday = $request->request->get('weekday');
             $task->setWeekday($weekday !== null && $weekday !== '' ? (int) $weekday : null);

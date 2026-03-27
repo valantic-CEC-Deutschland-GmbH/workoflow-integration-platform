@@ -29,7 +29,7 @@ class WebPayloadBuilder implements WebhookPayloadBuilderInterface
             'body' => [
                 'text' => $task->getPrompt(),
                 'type' => 'message',
-                'timestamp' => (new \DateTime())->format('Y-m-d\TH:i:s.v\Z'),
+                'timestamp' => (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:s.v\Z'),
                 'from' => [
                     'id' => $userOrg->getWorkflowUserId() ?? '',
                     'name' => $user->getName() ?? $user->getEmail(),

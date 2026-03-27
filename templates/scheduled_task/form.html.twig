@@ -58,6 +58,7 @@
                          style="{{ (task and task.frequency in ['daily', 'weekdays', 'weekly']) ? '' : 'display:none;' }}">
                         <input type="time" id="task_execution_time" name="execution_time" class="form-control"
                                value="{{ task ? task.executionTime : '09:00' }}">
+                        <small class="form-help timezone-label" data-scheduled-task-target="timezoneLabel"></small>
                     </div>
 
                     <div class="frequency-row-field" data-scheduled-task-target="weekdayField"
@@ -73,6 +74,9 @@
                         </select>
                     </div>
                 </div>
+                <input type="hidden" name="timezone" id="task_timezone"
+                       data-scheduled-task-target="timezoneInput"
+                       value="{{ task and task.timezone ? task.timezone : '' }}">
                 <small class="form-help">{{ 'scheduled_task.execution_time_help'|trans }}</small>
             </div>
 

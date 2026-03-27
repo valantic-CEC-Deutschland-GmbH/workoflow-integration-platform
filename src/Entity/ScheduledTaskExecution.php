@@ -46,7 +46,7 @@ class ScheduledTaskExecution
 
     public function __construct()
     {
-        $this->executedAt = new \DateTime();
+        $this->executedAt = new \DateTime('now', new \DateTimeZone('UTC'));
     }
 
     public function getId(): ?int

@@ -22,7 +22,8 @@ class MsTeamsPayloadBuilder implements WebhookPayloadBuilderInterface
         UserOrganisation $userOrg,
         string $webhookAuthHeader,
     ): array {
-        $now = new \DateTime();
+        $taskTz = $task->getTimezone() ?? 'UTC';
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
         $conversationId = 'a:' . Uuid::v4()->toRfc4122();
         $messageId = (string) (int) ($now->format('U') . $now->format('v'));
 
@@ -42,7 +43,7 @@ class MsTeamsPayloadBuilder implements WebhookPayloadBuilderInterface
                 ],
                 'type' => 'message',
                 'timestamp' => $now->format('Y-m-d\TH:i:s.v\Z'),
-                'localTimestamp' => $now->format('Y-m-d\TH:i:s.v\Z'),
+                'localTimestamp' => (new \DateTime('now', new \DateTimeZone($taskTz)))->format('Y-m-d\TH:i:s.vP'),
                 'id' => $messageId,
                 'channelId' => 'msteams',
                 'serviceUrl' => 'https://smba.trafficmanager.net/de/' . $org->getUuid() . '/',
@@ -65,7 +66,7 @@ class MsTeamsPayloadBuilder implements WebhookPayloadBuilderInterface
                         'locale' => 'en-US',
                         'country' => 'US',
                         'platform' => 'Web',
-                        'timezone' => 'Europe/Berlin',
+                        'timezone' => $taskTz,
                         'type' => 'clientInfo',
                     ],
                 ],
@@ -75,7 +76,7 @@ class MsTeamsPayloadBuilder implements WebhookPayloadBuilderInterface
                     ],
                 ],
                 'locale' => 'en-US',
-                'localTimezone' => 'Europe/Berlin',
+                'localTimezone' => $taskTz,
                 'callerId' => 'urn:botframework:azure',
                 'custom' => [
                     'isThreadReply' => false,

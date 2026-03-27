@@ -1,10 +1,65 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['frequencySelect', 'timeField', 'weekdayField', 'row'];
+    static targets = ['frequencySelect', 'timeField', 'weekdayField', 'row', 'timezoneInput', 'timezoneLabel'];
 
     connect() {
+        this.detectTimezone();
+        this.convertTimestamps();
         this.resumePendingPolling();
+    }
+
+    /**
+     * Auto-detect browser timezone and populate the hidden input
+     */
+    detectTimezone() {
+        if (!this.hasTimezoneInputTarget) return;
+
+        const browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Only auto-fill if the field is empty (new task or legacy task without timezone)
+        if (!this.timezoneInputTarget.value && browserTz) {
+            this.timezoneInputTarget.value = browserTz;
+        }
+
+        // Show the timezone label next to the time input
+        if (this.hasTimezoneLabelTarget) {
+            const tz = this.timezoneInputTarget.value || browserTz || 'UTC';
+            this.timezoneLabelTarget.textContent = tz;
+        }
+    }
+
+    /**
+     * Convert all UTC timestamps on the page to the user's local timezone
+     */
+    convertTimestamps() {
+        document.querySelectorAll('[data-utc-datetime]').forEach(el => {
+            const iso = el.dataset.utcDatetime;
+            if (!iso) return;
+
+            const date = new Date(iso);
+            if (isNaN(date.getTime())) return;
+
+            const includeSeconds = el.textContent.trim().split(':').length > 2;
+            el.textContent = this.formatLocalDateTime(date, includeSeconds);
+        });
+    }
+
+    /**
+     * Format a Date object as 'YYYY-MM-DD HH:MM(:SS)' in the browser's local timezone
+     */
+    formatLocalDateTime(date, includeSeconds = false) {
+        const pad = n => String(n).padStart(2, '0');
+        const y = date.getFullYear();
+        const m = pad(date.getMonth() + 1);
+        const d = pad(date.getDate());
+        const h = pad(date.getHours());
+        const min = pad(date.getMinutes());
+        if (includeSeconds) {
+            const s = pad(date.getSeconds());
+            return `${y}-${m}-${d} ${h}:${min}:${s}`;
+        }
+        return `${y}-${m}-${d} ${h}:${min}`;
     }
 
     /**
@@ -117,6 +172,8 @@ export default class extends Controller {
         const tbody = document.getElementById('executions-tbody');
         if (!tbody) return;
 
+        // Timestamp is already in browser-local time (unlike server-rendered UTC timestamps
+        // that get converted by convertTimestamps()). Both produce local time for the user.
         const now = new Date();
         const timestamp = now.getFullYear() + '-' +
             String(now.getMonth() + 1).padStart(2, '0') + '-' +
