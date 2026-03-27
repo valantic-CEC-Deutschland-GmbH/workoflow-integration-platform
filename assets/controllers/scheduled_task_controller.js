@@ -1,10 +1,31 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['frequencySelect', 'timeField', 'weekdayField', 'row'];
+    static targets = ['frequencySelect', 'timeField', 'weekdayField', 'row', 'timezoneInput', 'timezoneLabel'];
 
     connect() {
+        this.detectTimezone();
         this.resumePendingPolling();
+    }
+
+    /**
+     * Auto-detect browser timezone and populate the hidden input
+     */
+    detectTimezone() {
+        if (!this.hasTimezoneInputTarget) return;
+
+        const browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Only auto-fill if the field is empty (new task or legacy task without timezone)
+        if (!this.timezoneInputTarget.value && browserTz) {
+            this.timezoneInputTarget.value = browserTz;
+        }
+
+        // Show the timezone label next to the time input
+        if (this.hasTimezoneLabelTarget) {
+            const tz = this.timezoneInputTarget.value || browserTz || 'UTC';
+            this.timezoneLabelTarget.textContent = tz;
+        }
     }
 
     /**
