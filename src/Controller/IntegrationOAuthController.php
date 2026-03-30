@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Service\Integration\RemoteMcpOAuthService;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/integrations/oauth')]
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
@@ -21,7 +23,8 @@ class IntegrationOAuthController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private EncryptionService $encryptionService,
-        private HttpClientInterface $httpClient
+        private HttpClientInterface $httpClient,
+        private RemoteMcpOAuthService $remoteMcpOAuthService,
     ) {
     }
 
@@ -965,6 +968,225 @@ class IntegrationOAuthController extends AbstractController
             $this->addFlash('error', 'Failed to connect to ' . $integrationLabel . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_skills');
         }
+    }
+
+    #[Route('/remote-mcp/start/{configId}', name: 'app_tool_oauth_remote_mcp_start')]
+    public function remoteMcpOAuthStart(int $configId, Request $request): RedirectResponse
+    {
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        try {
+            // Decrypt existing credentials to get server_url
+            $credentials = [];
+            if ($config->getEncryptedCredentials()) {
+                $credentials = json_decode(
+                    $this->encryptionService->decrypt($config->getEncryptedCredentials()),
+                    true
+                ) ?: [];
+            }
+
+            $serverUrl = $credentials['server_url'] ?? '';
+            if (empty($serverUrl)) {
+                $this->addFlash('error', 'Server URL is required for OAuth2 authentication');
+                return $this->redirectToRoute('app_skills');
+            }
+
+            // Step 1: Discover OAuth metadata
+            $metadata = $this->remoteMcpOAuthService->discoverOAuthMetadata($serverUrl);
+
+            // Step 2: Reuse existing DCR client_id or register new client
+            $clientId = $credentials['oauth_dcr_client_id'] ?? '';
+            if (empty($clientId)) {
+                $callbackUrl = $this->generateUrl(
+                    'app_tool_oauth_remote_mcp_callback',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+
+                $registration = $this->remoteMcpOAuthService->registerClient($metadata, $callbackUrl);
+                $clientId = $registration['client_id'];
+            }
+
+            // Step 3: Generate PKCE and state
+            $pkce = $this->remoteMcpOAuthService->generatePkce();
+            $state = $this->remoteMcpOAuthService->generateState();
+
+            // Step 4: Store in session
+            $session = $request->getSession();
+            $session->set('remote_mcp_oauth_config_id', $configId);
+            $session->set('remote_mcp_oauth_state', $state);
+            $session->set('remote_mcp_oauth_code_verifier', $pkce['code_verifier']);
+            $session->set('remote_mcp_oauth_metadata', json_encode($metadata));
+            $session->set('remote_mcp_oauth_client_id', $clientId);
+
+            // Step 5: Build authorization URL and redirect
+            $callbackUrl = $this->generateUrl(
+                'app_tool_oauth_remote_mcp_callback',
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $authUrl = $this->remoteMcpOAuthService->buildAuthorizationUrl(
+                $metadata,
+                $clientId,
+                $callbackUrl,
+                $state,
+                $pkce['code_challenge'],
+            );
+
+            return new RedirectResponse($authUrl);
+        } catch (\Exception $e) {
+            // Clean up temp config if this was initial setup
+            $oauthFlowIntegration = $request->getSession()->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $request->getSession()->remove('oauth_flow_integration');
+                $this->entityManager->remove($config);
+                $this->entityManager->flush();
+            }
+
+            $this->addFlash('error', 'Failed to start OAuth2 flow: ' . $e->getMessage());
+            return $this->redirectToRoute('app_skills');
+        }
+    }
+
+    #[Route('/callback/remote-mcp', name: 'app_tool_oauth_remote_mcp_callback')]
+    public function remoteMcpOAuthCallback(Request $request): Response
+    {
+        $session = $request->getSession();
+        $configId = $session->get('remote_mcp_oauth_config_id');
+        $error = $request->query->get('error');
+
+        // Handle OAuth error/cancellation
+        if ($error) {
+            $errorDesc = $request->query->get('error_description', 'Authorization was denied or cancelled');
+
+            // Clean up temp config if initial setup
+            if ($configId) {
+                $oauthFlowIntegration = $session->get('oauth_flow_integration');
+                if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                    $tempConfig = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+                    if ($tempConfig) {
+                        $this->entityManager->remove($tempConfig);
+                        $this->entityManager->flush();
+                    }
+                    $session->remove('oauth_flow_integration');
+                }
+            }
+
+            $this->cleanupOAuthSession($session);
+            $this->addFlash('error', 'OAuth2 authorization failed: ' . $errorDesc);
+            return $this->redirectToRoute('app_skills');
+        }
+
+        if (!$configId) {
+            $this->addFlash('error', 'OAuth session expired. Please try again.');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        // Retrieve session data
+        $expectedState = $session->get('remote_mcp_oauth_state');
+        $codeVerifier = $session->get('remote_mcp_oauth_code_verifier');
+        $metadataJson = $session->get('remote_mcp_oauth_metadata');
+        $clientId = $session->get('remote_mcp_oauth_client_id');
+
+        // Validate state parameter (CSRF protection)
+        $receivedState = $request->query->get('state', '');
+        if (empty($expectedState) || $receivedState !== $expectedState) {
+            $this->cleanupOAuthSession($session);
+            $this->addFlash('error', 'OAuth2 state validation failed. Please try again.');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $config = $this->entityManager->getRepository(IntegrationConfig::class)->find($configId);
+        if (!$config || $config->getUser() !== $this->getUser()) {
+            $this->cleanupOAuthSession($session);
+            $this->addFlash('error', 'Integration configuration not found');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        try {
+            $code = $request->query->get('code', '');
+            $metadata = json_decode($metadataJson, true) ?: [];
+
+            $callbackUrl = $this->generateUrl(
+                'app_tool_oauth_remote_mcp_callback',
+                [],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            // Exchange code for tokens
+            $tokens = $this->remoteMcpOAuthService->exchangeCodeForTokens(
+                $metadata,
+                $code,
+                $clientId,
+                $callbackUrl,
+                $codeVerifier,
+            );
+
+            // Merge tokens into existing credentials
+            $existingCredentials = [];
+            if ($config->getEncryptedCredentials()) {
+                $existingCredentials = json_decode(
+                    $this->encryptionService->decrypt($config->getEncryptedCredentials()),
+                    true
+                ) ?: [];
+            }
+
+            $credentials = array_merge($existingCredentials, [
+                'oauth_access_token' => $tokens['access_token'],
+                'oauth_refresh_token' => $tokens['refresh_token'] ?? null,
+                'oauth_expires_at' => $tokens['expires_at'] ?? null,
+                'oauth_token_type' => $tokens['token_type'] ?? 'Bearer',
+                'oauth_dcr_client_id' => $clientId,
+                'oauth_metadata' => $metadata,
+            ]);
+
+            $config->setEncryptedCredentials(
+                $this->encryptionService->encrypt(json_encode($credentials))
+            );
+            $config->setActive(true);
+            $this->entityManager->flush();
+
+            $this->cleanupOAuthSession($session);
+
+            $oauthFlowIntegration = $session->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $session->remove('oauth_flow_integration');
+                $this->addFlash('success', 'Remote MCP Server integration created and connected via OAuth2!');
+            } else {
+                $this->addFlash('success', 'Remote MCP Server connected via OAuth2!');
+            }
+
+            return $this->redirectToRoute('app_skills');
+        } catch (\Exception $e) {
+            $oauthFlowIntegration = $session->get('oauth_flow_integration');
+            if ($oauthFlowIntegration && $oauthFlowIntegration == $configId) {
+                $session->remove('oauth_flow_integration');
+                $this->entityManager->remove($config);
+                $this->entityManager->flush();
+            }
+
+            $this->cleanupOAuthSession($session);
+            $this->addFlash('error', 'Failed to connect via OAuth2: ' . $e->getMessage());
+            return $this->redirectToRoute('app_skills');
+        }
+    }
+
+    /**
+     * Clean up all Remote MCP OAuth session keys.
+     */
+    private function cleanupOAuthSession(\Symfony\Component\HttpFoundation\Session\SessionInterface $session): void
+    {
+        $session->remove('remote_mcp_oauth_config_id');
+        $session->remove('remote_mcp_oauth_state');
+        $session->remove('remote_mcp_oauth_code_verifier');
+        $session->remove('remote_mcp_oauth_metadata');
+        $session->remove('remote_mcp_oauth_client_id');
     }
 
     /**

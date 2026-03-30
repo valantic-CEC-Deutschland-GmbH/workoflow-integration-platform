@@ -230,6 +230,7 @@ status:
   connected_outlook_mail: Connected to Outlook Mail
   connected_outlook_calendar: Connected to Outlook Calendar
   connected_msteams: Connected to MS Teams
+  connected_remote_mcp_oauth: Connected via OAuth2
   disconnected: Disconnected
   not_connected: Not Connected
   experimental: Experimental
@@ -251,6 +252,8 @@ integration:
   skills_explanation_p2: There are two types of skills - Personalized Skills require your credentials to access external services like Jira or Confluence on your behalf, while Platform Skills are built-in capabilities that don't need external authentication, such as generating PDFs or processing data.
   add_new: Add Personalized Skill
   search_skills: Search skills...
+  search_mcp_servers: Search MCP servers...
+  custom_mcp_server: Custom MCP Server
   no_integrations: No skills configured yet
   no_integrations_desc: 'Start by adding your first skill to connect external services'
   platform_skills: Platform Skills
@@ -282,6 +285,10 @@ integration:
   reconnect_outlook_mail: Reconnect with Microsoft
   reconnect_outlook_calendar: Reconnect with Microsoft
   reconnect_msteams: Reconnect with Microsoft
+  reconnect_remote_mcp_oauth: Reconnect via OAuth2
+  connect_remote_mcp_oauth: Save & Connect via OAuth2
+  oauth_required_remote_mcp: Save this configuration first, then click "Connect via OAuth2" to authorize with the remote MCP server.
+  connected_remote_mcp_oauth: Connected via OAuth2
   toggle_error: Failed to update setting
   tool_category_read: Read
   tool_category_write: Write

@@ -230,6 +230,7 @@ status:
   connected_outlook_mail: Prisijungta prie Outlook Mail
   connected_outlook_calendar: Prisijungta prie Outlook Calendar
   connected_msteams: Prisijungta prie MS Teams
+  connected_remote_mcp_oauth: Prisijungta per OAuth2
   disconnected: Atjungta
   not_connected: Neprisijungta
   experimental: Eksperimentinis
@@ -251,6 +252,8 @@ integration:
   skills_explanation_p2: Yra du įgūdžių tipai - Personalizuoti įgūdžiai reikalauja jūsų prisijungimo duomenų, kad galėtų pasiekti išorines paslaugas kaip Jira ar Confluence jūsų vardu, o Platformos įgūdžiai yra integruotos galimybės, kurioms nereikia išorinės autentifikacijos, pvz. PDF generavimas ar duomenų apdorojimas.
   add_new: Pridėti personalizuotą įgūdį
   search_skills: Ieškoti įgūdžių...
+  search_mcp_servers: Ieškoti MCP serverių...
+  custom_mcp_server: Pasirinktinis MCP serveris
   no_integrations: Dar nėra sukonfigūruotų įgūdžių
   no_integrations_desc: 'Pradėkite pridėdami pirmąjį įgūdį, kad prisijungtumėte prie išorinių paslaugų'
   platform_skills: Platformos įgūdžiai
@@ -282,6 +285,9 @@ integration:
   reconnect_outlook_mail: Prisijungti iš naujo su Microsoft
   reconnect_outlook_calendar: Prisijungti iš naujo su Microsoft
   reconnect_msteams: Prisijungti iš naujo su Microsoft
+  reconnect_remote_mcp_oauth: Prisijungti iš naujo per OAuth2
+  connect_remote_mcp_oauth: Išsaugoti ir prisijungti per OAuth2
+  oauth_required_remote_mcp: Pirmiausia išsaugokite konfigūraciją, tada spustelėkite "Prisijungti per OAuth2", kad autorizuotumėte nuotoliniame MCP serveryje.
   toggle_error: Nepavyko atnaujinti nustatymo
   tool_category_read: Skaitymas
   tool_category_write: Rašymas

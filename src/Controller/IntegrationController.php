@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Config\RemoteMcpServerCatalog;
 use App\Entity\IntegrationConfig;
 use App\Entity\User;
 use App\Form\IntegrationConfigType;
@@ -10,6 +11,7 @@ use App\Repository\IntegrationConfigRepository;
 use App\Service\AuditLogService;
 use App\Service\ConnectionStatusService;
 use App\Service\EncryptionService;
+use App\Service\Integration\RemoteMcpOAuthService;
 use App\Service\Integration\RemoteMcpService;
 use App\Service\OrchestratorCapabilitiesService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -336,7 +338,17 @@ class IntegrationController extends AbstractController
             // Process credential fields
             foreach ($integration->getCredentialFields() as $field) {
                 if ($field->getType() === 'oauth') {
-                    $hasOAuthField = true;
+                    // Only set hasOAuthField if the condition is actually met
+                    if ($field->isConditional()) {
+                        $condField = $field->getConditionalOn();
+                        $condValue = $field->getConditionalValue();
+                        $actualValue = $formData[$condField] ?? ($credentials[$condField] ?? null);
+                        if ($actualValue === $condValue) {
+                            $hasOAuthField = true;
+                        }
+                    } else {
+                        $hasOAuthField = true;
+                    }
                     continue;
                 }
 
@@ -392,6 +404,7 @@ class IntegrationController extends AbstractController
                     'outlook_mail' => 'app_tool_oauth_outlook_mail_start',
                     'outlook_calendar' => 'app_tool_oauth_outlook_calendar_start',
                     'msteams' => 'app_tool_oauth_teams_start',
+                    'remote_mcp' => 'app_tool_oauth_remote_mcp_start',
                     default => 'app_tool_oauth_microsoft_start',
                 };
 
@@ -1060,5 +1073,67 @@ class IntegrationController extends AbstractController
                 'message' => $this->translator->trans('integration.error.request_failed')
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    #[Route('/remote-mcp/quick-connect/{serverKey}', name: 'app_remote_mcp_quick_connect')]
+    public function remoteMcpQuickConnect(string $serverKey, Request $request): Response
+    {
+        $catalog = RemoteMcpServerCatalog::getServers();
+
+        if (!isset($catalog[$serverKey])) {
+            $this->addFlash('error', 'Unknown MCP server');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        $server = $catalog[$serverKey];
+        /** @var User $user */
+        $user = $this->getUser();
+        $sessionOrgId = $request->getSession()->get('current_organisation_id');
+        $organisation = $user->getCurrentOrganisation($sessionOrgId);
+
+        if (!$organisation) {
+            $this->addFlash('error', 'No organisation selected');
+            return $this->redirectToRoute('app_skills');
+        }
+
+        // Create IntegrationConfig with pre-filled credentials
+        $config = new IntegrationConfig();
+        $config->setOrganisation($organisation);
+        $config->setIntegrationType('remote_mcp');
+        $config->setUser($user);
+        $config->setName($server['name']);
+        $config->setActive(false);
+
+        $credentials = [
+            'server_url' => $server['url'],
+            'auth_type' => 'oauth2',
+        ];
+
+        $config->setEncryptedCredentials(
+            $this->encryptionService->encrypt(json_encode($credentials))
+        );
+
+        $this->entityManager->persist($config);
+        $this->entityManager->flush();
+
+        // Mark as initial setup flow (for cleanup on OAuth failure)
+        $request->getSession()->set('oauth_flow_integration', $config->getId());
+
+        return $this->redirectToRoute('app_tool_oauth_remote_mcp_start', ['configId' => $config->getId()]);
+    }
+
+    #[Route('/remote-mcp/detect-auth', name: 'app_remote_mcp_detect_auth', methods: ['POST'])]
+    public function detectRemoteMcpAuth(Request $request, RemoteMcpOAuthService $oauthService): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        $serverUrl = $data['server_url'] ?? '';
+
+        if (empty($serverUrl)) {
+            return new JsonResponse(['error' => 'Server URL is required'], 400);
+        }
+
+        $result = $oauthService->probeServerAuthSupport($serverUrl);
+
+        return new JsonResponse($result);
     }
 }

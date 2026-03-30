@@ -65,6 +65,11 @@ class RemoteMcpIntegration implements PersonalizedSkillInterface
             return false;
         }
 
+        // OAuth2 credentials are validated through the OAuth flow, not direct connection test
+        if (($credentials['auth_type'] ?? '') === 'oauth2') {
+            return !empty($credentials['oauth_access_token']);
+        }
+
         return $this->remoteMcpService->testConnection($credentials);
     }
 
@@ -94,6 +99,7 @@ class RemoteMcpIntegration implements PersonalizedSkillInterface
                     'bearer' => 'Bearer Token',
                     'api_key' => 'API Key Header',
                     'basic' => 'Basic Auth',
+                    'oauth2' => 'OAuth 2.0 (MCP Standard)',
                 ]
             ),
             new CredentialField(
@@ -152,6 +158,17 @@ class RemoteMcpIntegration implements PersonalizedSkillInterface
                 'basic'
             ),
             new CredentialField(
+                'oauth_remote_mcp',
+                'oauth',
+                'Connect via OAuth2',
+                null,
+                false,
+                'Save configuration first, then click Connect to authorize with the remote MCP server.',
+                null,
+                'auth_type',
+                'oauth2'
+            ),
+            new CredentialField(
                 'custom_headers',
                 'text',
                 'Custom Headers',
@@ -179,7 +196,10 @@ class RemoteMcpIntegration implements PersonalizedSkillInterface
     {
         return '<p>Connect to any vendor-provided Remote MCP Server. '
             . 'The platform will discover available tools automatically and make them available through your Workoflow MCP endpoint.</p>'
-            . '<p><strong>Requirements:</strong> The remote server must support MCP Streamable HTTP transport (JSON-RPC 2.0 over HTTPS).</p>';
+            . '<p><strong>Requirements:</strong> The remote server must support MCP Streamable HTTP transport (JSON-RPC 2.0 over HTTPS).</p>'
+            . '<p><strong>OAuth 2.0:</strong> For servers requiring OAuth authentication (e.g., Atlassian Rovo MCP), '
+            . 'select "OAuth 2.0 (MCP Standard)" as authentication type. The platform will handle registration and authorization automatically. '
+            . 'Your organization admin may need to add this platform\'s domain to the server\'s allowlist.</p>';
     }
 
     public function getLogoPath(): string

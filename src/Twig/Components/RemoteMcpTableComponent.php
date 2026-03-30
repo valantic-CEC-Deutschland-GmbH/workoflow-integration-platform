@@ -2,6 +2,7 @@
 
 namespace App\Twig\Components;
 
+use App\Config\RemoteMcpServerCatalog;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent('remote_mcp_table')]
@@ -29,5 +30,13 @@ class RemoteMcpTableComponent
     public function hasConfiguredIntegrations(): bool
     {
         return count($this->getRemoteMcpIntegrations()) > 0;
+    }
+
+    /**
+     * @return array<string, array{name: string, url: string, logo: string}>
+     */
+    public function getMcpServerCatalog(): array
+    {
+        return RemoteMcpServerCatalog::getServers();
     }
 }

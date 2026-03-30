@@ -22,6 +22,7 @@ class RemoteMcpService
         private readonly CacheInterface $cache,
         private readonly LoggerInterface $logger,
         private readonly UrlNormalizer $urlNormalizer,
+        private readonly RemoteMcpOAuthService $oauthService,
     ) {
     }
 
@@ -187,6 +188,7 @@ class RemoteMcpService
     private function initialize(array $credentials): ?string
     {
         $url = $this->validateUrl($credentials['server_url'] ?? '');
+        $credentials = $this->prepareCredentials($credentials);
         $headers = $this->buildHeaders($credentials);
 
         // Step 1: Send initialize request
@@ -260,6 +262,7 @@ class RemoteMcpService
     private function listTools(array $credentials, ?string $sessionId): array
     {
         $url = $this->validateUrl($credentials['server_url'] ?? '');
+        $credentials = $this->prepareCredentials($credentials);
         $headers = $this->buildHeaders($credentials);
 
         $payload = [
@@ -302,6 +305,7 @@ class RemoteMcpService
     private function callTool(array $credentials, ?string $sessionId, string $toolName, array $parameters): array
     {
         $url = $this->validateUrl($credentials['server_url'] ?? '');
+        $credentials = $this->prepareCredentials($credentials);
         $headers = $this->buildHeaders($credentials);
 
         $payload = [
@@ -391,6 +395,21 @@ class RemoteMcpService
     }
 
     /**
+     * Prepare credentials for use, refreshing OAuth2 tokens if needed.
+     *
+     * @param array<string, mixed> $credentials
+     * @return array<string, mixed>
+     */
+    private function prepareCredentials(array $credentials, ?int $configId = null): array
+    {
+        if (($credentials['auth_type'] ?? '') !== 'oauth2') {
+            return $credentials;
+        }
+
+        return $this->oauthService->ensureValidToken($credentials, $configId);
+    }
+
+    /**
      * Build auth headers based on credential auth_type.
      *
      * @param array<string, mixed> $credentials
@@ -422,6 +441,13 @@ class RemoteMcpService
                 $password = $credentials['basic_password'] ?? '';
                 if ($username !== '') {
                     $headers['Authorization'] = 'Basic ' . base64_encode($username . ':' . $password);
+                }
+                break;
+
+            case 'oauth2':
+                $token = $credentials['oauth_access_token'] ?? '';
+                if ($token !== '') {
+                    $headers['Authorization'] = 'Bearer ' . $token;
                 }
                 break;
         }

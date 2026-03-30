@@ -534,6 +534,8 @@ body {
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
         min-width: 200px;
+        max-height: 420px;
+        overflow-y: auto;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         z-index: 1000;
         padding: var(--space-sm) 0;
@@ -3932,6 +3934,8 @@ body {
     border-radius: var(--border-radius);
     padding: var(--space-sm);
     min-width: 320px;
+    max-height: 420px;
+    overflow-y: auto;
     display: none;
     z-index: 10;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -3965,9 +3969,13 @@ body {
   }
 
   .dropdown-search {
+    position: sticky;
+    top: 0;
+    background: var(--bg-card);
     padding: 0 var(--space-sm) var(--space-sm);
     border-bottom: 1px solid var(--border-color);
     margin-bottom: var(--space-xs);
+    z-index: 1;
 
     .dropdown-search-inner {
       position: relative;

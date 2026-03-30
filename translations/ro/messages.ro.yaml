@@ -230,6 +230,7 @@ status:
   connected_outlook_mail: Conectat la Outlook Mail
   connected_outlook_calendar: Conectat la Outlook Calendar
   connected_msteams: Conectat la MS Teams
+  connected_remote_mcp_oauth: Conectat prin OAuth2
   disconnected: Deconectat
   not_connected: Neconectat
   experimental: Experimental
@@ -251,6 +252,8 @@ integration:
   skills_explanation_p2: Există două tipuri de abilități - Abilitățile personalizate necesită acreditările dvs. pentru a accesa servicii externe precum Jira sau Confluence în numele dvs., în timp ce Abilitățile platformei sunt capabilități integrate care nu necesită autentificare externă, cum ar fi generarea PDF sau procesarea datelor.
   add_new: Adăugați abilitate personalizată
   search_skills: Căutați abilități...
+  search_mcp_servers: Căutați servere MCP...
+  custom_mcp_server: Server MCP personalizat
   no_integrations: Nicio abilitate configurată încă
   no_integrations_desc: 'Începeți prin adăugarea primei abilități pentru a conecta servicii externe'
   platform_skills: Abilități platformă
@@ -282,6 +285,9 @@ integration:
   reconnect_outlook_mail: Reconectați-vă cu Microsoft
   reconnect_outlook_calendar: Reconectați-vă cu Microsoft
   reconnect_msteams: Reconectați-vă cu Microsoft
+  reconnect_remote_mcp_oauth: Reconectare prin OAuth2
+  connect_remote_mcp_oauth: Salvare și conectare prin OAuth2
+  oauth_required_remote_mcp: Salvați mai întâi configurația, apoi faceți clic pe "Conectare prin OAuth2" pentru a vă autoriza pe serverul MCP remote.
   toggle_error: Setarea nu a putut fi actualizată
   tool_category_read: Citire
   tool_category_write: Scriere

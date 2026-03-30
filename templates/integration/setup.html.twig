@@ -75,14 +75,14 @@
                             {% set showOAuthField = currentAuthMode == field.getConditionalValue() %}
                         {% endif %}
 
-                        {% if showOAuthField %}
                         {% if config and config.id %}
                             {# Show OAuth connection button only after initial save #}
                             <div class="oauth-section{% if isConditionalOAuth %} conditional-field{% endif %}"
                                  {% if isConditionalOAuth %}
                                      data-conditional-on="{{ field.getConditionalOn() }}"
                                      data-conditional-value="{{ field.getConditionalValue() }}"
-                                 {% endif %}>
+                                 {% endif %}
+                                 {% if isConditionalOAuth and not showOAuthField %}style="display: none;"{% endif %}>
                                 <div class="alert alert-info">
                                     <h4>{{ field.getLabel() }}</h4>
                                     <p>{{ field.getHint() }}</p>
@@ -109,6 +109,8 @@
                                             <span>{{ 'status.connected_azure'|trans|default('Connected via Azure AD') }}</span>
                                         {% elseif integration.getType() == 'sap_sac' %}
                                             <span>{{ 'status.connected_azure'|trans|default('Connected via Azure AD') }}</span>
+                                        {% elseif integration.getType() == 'remote_mcp' %}
+                                            <span>{{ 'status.connected_remote_mcp_oauth'|trans|default('Connected via OAuth2') }}</span>
                                         {% else %}
                                             <span>{{ 'status.connected'|trans|default('Connected to Microsoft') }}</span>
                                         {% endif %}
@@ -154,6 +156,12 @@
                                            class="btn btn-secondary"
                                            onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
                                             <i class="fab fa-microsoft"></i> {{ 'integration.reconnect_azure'|trans|default('Reconnect with Azure AD') }}
+                                        </a>
+                                    {% elseif integration.getType() == 'remote_mcp' %}
+                                        <a href="{{ path('app_tool_oauth_remote_mcp_start', {configId: config.id}) }}"
+                                           class="btn btn-secondary"
+                                           onclick="return confirm('{{ 'integration.oauth_reconnect_confirm'|trans|default('This will replace your existing connection. Continue?') }}');">
+                                            <i class="fas fa-key"></i> {{ 'integration.reconnect_remote_mcp_oauth'|trans|default('Reconnect via OAuth2') }}
                                         </a>
                                     {% else %}
                                         <a href="{{ path('app_tool_oauth_microsoft_start', {configId: config.id}) }}"
@@ -202,6 +210,11 @@
                                            class="btn btn-primary">
                                             <i class="fab fa-microsoft"></i> {{ field.getLabel() }}
                                         </a>
+                                    {% elseif integration.getType() == 'remote_mcp' %}
+                                        <a href="{{ path('app_tool_oauth_remote_mcp_start', {configId: config.id}) }}"
+                                           class="btn btn-primary">
+                                            <i class="fas fa-key"></i> {{ field.getLabel() }}
+                                        </a>
                                     {% else %}
                                         <a href="{{ path('app_tool_oauth_microsoft_start', {configId: config.id}) }}"
                                            class="btn btn-primary">
@@ -216,7 +229,8 @@
                                  {% if isConditionalOAuth %}
                                      data-conditional-on="{{ field.getConditionalOn() }}"
                                      data-conditional-value="{{ field.getConditionalValue() }}"
-                                 {% endif %}>
+                                 {% endif %}
+                                 {% if isConditionalOAuth and not showOAuthField %}style="display: none;"{% endif %}>
                                 <h4>{{ field.getLabel() }}</h4>
                                 <p>{{ field.getHint() }}</p>
                                 {% if integration.getType() == 'hubspot' %}
@@ -227,11 +241,18 @@
                                     <p><strong>{{ 'integration.oauth_required'|trans|default('Microsoft authorization is required. Click "Connect with Microsoft" below to continue.') }}</strong></p>
                                 {% elseif integration.getType() in ['sap_c4c', 'sap_sac'] %}
                                     <p><strong>{{ 'integration.oauth_required_azure'|trans|default('Save this configuration first, then click "Connect with Azure AD" to authorize.') }}</strong></p>
+                                {% elseif integration.getType() == 'remote_mcp' %}
+                                    <p><strong>{{ 'integration.oauth_required_remote_mcp'|trans|default('Save this configuration first, then click "Connect via OAuth2" to authorize with the remote MCP server.') }}</strong></p>
+                                    <div class="detect-auth-wrapper">
+                                        <button type="button" id="detect-auth-btn" class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-search"></i> Detect Auth Support
+                                        </button>
+                                        <span id="detect-auth-result" class="detect-auth-result"></span>
+                                    </div>
                                 {% else %}
                                     <p><strong>{{ 'integration.oauth_required'|trans|default('Microsoft authorization is required. Click "Connect with Microsoft" below to continue.') }}</strong></p>
                                 {% endif %}
                             </div>
-                        {% endif %}
                         {% endif %}
                     {% else %}
                         {% set fieldName = field.getName() %}
@@ -353,6 +374,10 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fab fa-microsoft"></i> {{ 'integration.connect_microsoft'|trans|default('Connect with Microsoft') }}
                             </button>
+                        {% elseif integration.getType() == 'remote_mcp' %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-key"></i> {{ 'integration.connect_remote_mcp_oauth'|trans|default('Save & Connect via OAuth2') }}
+                            </button>
                         {% else %}
                             <button type="submit" class="btn btn-primary">
                                 <i class="fab fa-microsoft"></i> {{ 'integration.connect_microsoft'|trans|default('Connect with Microsoft') }}
@@ -374,6 +399,26 @@
 </div>
 
 <style>
+.detect-auth-wrapper {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.detect-auth-result {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.detect-auth-result.success {
+    color: var(--success-color, #22c55e);
+}
+
+.detect-auth-result.error {
+    color: var(--danger-color, #ef4444);
+}
+
 .setup-container {
     max-width: 600px;
     margin: 2rem auto;
@@ -1117,6 +1162,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial update on page load
     updateConditionalFields();
+
+    // Detect Auth Support button for Remote MCP OAuth2
+    const detectAuthBtn = document.getElementById('detect-auth-btn');
+    if (detectAuthBtn) {
+        detectAuthBtn.addEventListener('click', async function() {
+            const serverUrlInput = document.querySelector('#integration_config_server_url, [name="integration_config[server_url]"]');
+            const serverUrl = serverUrlInput ? serverUrlInput.value.trim() : '';
+            const resultEl = document.getElementById('detect-auth-result');
+
+            if (!serverUrl) {
+                resultEl.textContent = 'Please enter a server URL first.';
+                resultEl.className = 'detect-auth-result error';
+                return;
+            }
+
+            detectAuthBtn.disabled = true;
+            detectAuthBtn.textContent = 'Detecting...';
+            resultEl.textContent = '';
+            resultEl.className = 'detect-auth-result';
+
+            try {
+                const response = await fetch('{{ path("app_remote_mcp_detect_auth") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    body: JSON.stringify({ server_url: serverUrl })
+                });
+                const data = await response.json();
+                resultEl.textContent = data.message || (data.supports_oauth ? 'OAuth 2.0 supported' : 'OAuth 2.0 not detected');
+                resultEl.className = 'detect-auth-result ' + (data.supports_oauth ? 'success' : 'error');
+            } catch (err) {
+                resultEl.textContent = 'Detection failed: ' + err.message;
+                resultEl.className = 'detect-auth-result error';
+            } finally {
+                detectAuthBtn.disabled = false;
+                detectAuthBtn.textContent = 'Detect Auth Support';
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

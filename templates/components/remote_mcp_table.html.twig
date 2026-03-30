@@ -8,9 +8,53 @@
         </div>
 
         <div class="section-actions">
-            <a href="{{ path('app_tool_setup', {type: 'remote_mcp'}) }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> {{ 'integration.add_remote_mcp'|trans|default('Add Remote MCP Server') }}
-            </a>
+            <div class="add-integration-dropdown" data-controller="integration-dropdown">
+                <button
+                    class="btn btn-primary dropdown-toggle"
+                    data-action="click->integration-dropdown#toggle"
+                    data-integration-dropdown-target="button"
+                >
+                    <i class="fas fa-plus"></i> {{ 'integration.add_remote_mcp'|trans|default('Add Remote MCP Server') }}
+                </button>
+                <div
+                    class="dropdown-menu"
+                    data-integration-dropdown-target="menu"
+                    style="display: none;"
+                >
+                    <div class="dropdown-search">
+                        <div class="dropdown-search-inner">
+                            <i class="fas fa-search"></i>
+                            <input type="text"
+                                   placeholder="{{ 'integration.search_mcp_servers'|trans|default('Search MCP servers...') }}"
+                                   data-integration-dropdown-target="searchInput"
+                                   data-action="input->integration-dropdown#filter"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    {% for key, server in this.mcpServerCatalog %}
+                        <a href="{{ path('app_remote_mcp_quick_connect', {serverKey: key}) }}"
+                           class="dropdown-item"
+                           data-integration-dropdown-target="item"
+                           data-name="{{ server.name|lower }}">
+                            <img src="/images/logos/mcp-servers/{{ server.logo }}"
+                                 class="dropdown-icon"
+                                 alt="{{ server.name }}"
+                                 width="16" height="16"
+                                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+                            <i class="fas fa-server" style="display:none"></i>
+                            <span>{{ server.name }}</span>
+                        </a>
+                    {% endfor %}
+                    <div style="border-top: 1px solid var(--border-color); margin: var(--space-xs) 0;"></div>
+                    <a href="{{ path('app_tool_setup', {type: 'remote_mcp'}) }}"
+                       class="dropdown-item"
+                       data-integration-dropdown-target="item"
+                       data-name="custom mcp server">
+                        <i class="fas fa-cog"></i>
+                        <span>{{ 'integration.custom_mcp_server'|trans|default('Custom MCP Server') }}</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

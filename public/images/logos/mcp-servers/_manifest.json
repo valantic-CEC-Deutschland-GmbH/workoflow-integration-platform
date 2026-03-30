@@ -1,0 +1,1423 @@
+[
+  {
+    "name": "10x Genomics Cloud",
+    "slug": "10x-genomics-cloud",
+    "filename": "10x-genomics-cloud.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abd7406980b388be9ed4e_10x%20Genomics%20Cloud.jpg",
+    "size": 14480
+  },
+  {
+    "name": "AWS Marketplace",
+    "slug": "aws-marketplace",
+    "filename": "aws-marketplace.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/692ddfcc3b71a55bb1993c71_amazon.jpg",
+    "size": 7617
+  },
+  {
+    "name": "ActiveCampaign",
+    "slug": "activecampaign",
+    "filename": "activecampaign.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913f44f36966b0154800214_logo_activecampaign.svg",
+    "size": 11308
+  },
+  {
+    "name": "Ahrefs",
+    "slug": "ahrefs",
+    "filename": "ahrefs.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d489e3a9d195da9e8d2e8_ahrefs-logo.svg",
+    "size": 958
+  },
+  {
+    "name": "Aiera",
+    "slug": "aiera",
+    "filename": "aiera.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abd9230df5f81ef095019_Aiera.jpg",
+    "size": 22892
+  },
+  {
+    "name": "AirOps",
+    "slug": "airops",
+    "filename": "airops.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6973cbbab064adc3bdffb11e_logo-airops.svg",
+    "size": 1150
+  },
+  {
+    "name": "Airtable",
+    "slug": "airtable",
+    "filename": "airtable.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a0e501c94c8f67e3d8820c_airtable.svg",
+    "size": 1058
+  },
+  {
+    "name": "Airwallex",
+    "slug": "airwallex",
+    "filename": "airwallex.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6977ee686ffe1cb730e94f07_Airwallex%20Mark%20-%20Colour%20-%20Square.png",
+    "size": 172281
+  },
+  {
+    "name": "Aiwyn Tax",
+    "slug": "aiwyn-tax",
+    "filename": "aiwyn-tax.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c05a2e0f10f41c8f005ee0_Aiwyn_Logo_Mark_Square%20(1).svg",
+    "size": 552
+  },
+  {
+    "name": "Amplitude",
+    "slug": "amplitude",
+    "filename": "amplitude.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abdac9a60d37ccbb9f396_Amplitude.jpg",
+    "size": 11163
+  },
+  {
+    "name": "Apollo.io",
+    "slug": "apollo-io",
+    "filename": "apollo-io.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699cc5c8e115b1bc6e58cb4c_Apollo.svg",
+    "size": 1523
+  },
+  {
+    "name": "Asana",
+    "slug": "asana",
+    "filename": "asana.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abdda280622da0e174da2_Asana.jpg",
+    "size": 12815
+  },
+  {
+    "name": "Atlassian Rovo",
+    "slug": "atlassian-rovo",
+    "filename": "atlassian-rovo.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abde7cfa24b799acf7fc9_Atlassian.jpg",
+    "size": 8753
+  },
+  {
+    "name": "Attio",
+    "slug": "attio",
+    "filename": "attio.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698f6e4682ca2652393057da_attio-rounded.svg",
+    "size": 28693
+  },
+  {
+    "name": "Aura",
+    "slug": "aura",
+    "filename": "aura.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abdf0757d9241e42ce447_Aura.jpg",
+    "size": 13471
+  },
+  {
+    "name": "Base44",
+    "slug": "base44",
+    "filename": "base44.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69acdf17420ea818c8dd6df3_only%20icon%20vector%20(1).svg",
+    "size": 1297
+  },
+  {
+    "name": "Benchling",
+    "slug": "benchling",
+    "filename": "benchling.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abdfc622a31cabb4ed418_Benchling.jpg",
+    "size": 9898
+  },
+  {
+    "name": "Benevity",
+    "slug": "benevity",
+    "filename": "benevity.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/692e4c057216b17022e9dc17_benevity.svg",
+    "size": 13968
+  },
+  {
+    "name": "Bigdata.com",
+    "slug": "bigdata-com",
+    "filename": "bigdata-com.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6983d643ae1a792dcbdae54c_Bigdata.com.svg",
+    "size": 6760
+  },
+  {
+    "name": "BioRender",
+    "slug": "biorender",
+    "filename": "biorender.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abe5cecad201acb193aa2_BioRender.jpg",
+    "size": 24800
+  },
+  {
+    "name": "Bitly",
+    "slug": "bitly",
+    "filename": "bitly.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6945bbe8b83f23c13a1fa551_bitly.svg",
+    "size": 1947
+  },
+  {
+    "name": "Blackbaud",
+    "slug": "blackbaud",
+    "filename": "blackbaud.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/692e4c2509be5a9236dcb73b_blackbaud.svg",
+    "size": 17572
+  },
+  {
+    "name": "Blockscout",
+    "slug": "blockscout",
+    "filename": "blockscout.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69409abb57bdbb7a4d76fdda_blockscout.svg",
+    "size": 1323
+  },
+  {
+    "name": "Box",
+    "slug": "box",
+    "filename": "box.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abe6914fb83099a240fa4_Box.jpg",
+    "size": 15919
+  },
+  {
+    "name": "Braze",
+    "slug": "braze",
+    "filename": "braze.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d3887ab6983e351f7707d_idcBI1GxVf_1769814142619.jpeg",
+    "size": 4543
+  },
+  {
+    "name": "Brex",
+    "slug": "brex",
+    "filename": "brex.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b073e9d3f60065e71d81f8_Brex-symbol-ink-gray-1024x1024px.svg",
+    "size": 765
+  },
+  {
+    "name": "CB Insights",
+    "slug": "cb-insights",
+    "filename": "cb-insights.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c41a7e8b65e927e745dc80_cb_insights.png",
+    "size": 16383
+  },
+  {
+    "name": "CData",
+    "slug": "cdata",
+    "filename": "cdata.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699df10478722f45ef1dc298_CData.svg",
+    "size": 357
+  },
+  {
+    "name": "CMS Coverage",
+    "slug": "cms-coverage",
+    "filename": "cms-coverage.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3e9e884bd175dbadbf06_cms.jpg",
+    "size": 8780
+  },
+  {
+    "name": "Calendly",
+    "slug": "calendly",
+    "filename": "calendly.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b34c5906e3168551c70107_calendly_brand%20mark_color.svg",
+    "size": 3811
+  },
+  {
+    "name": "Campfire",
+    "slug": "campfire",
+    "filename": "campfire.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699e5972fc47515643c22e6e_campfire.jpeg",
+    "size": 4553
+  },
+  {
+    "name": "Candid",
+    "slug": "candid",
+    "filename": "candid.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6921eaf57e1729586a4611fe_candid.jpg",
+    "size": 13529
+  },
+  {
+    "name": "Canva",
+    "slug": "canva",
+    "filename": "canva.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abe745ff5e30a03edd1cc_Canva%20MCP%20Server.jpg",
+    "size": 26123
+  },
+  {
+    "name": "ChEMBL",
+    "slug": "chembl",
+    "filename": "chembl.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3f1ba62e131168eafdfd_chembl.jpg",
+    "size": 19153
+  },
+  {
+    "name": "Chronograph",
+    "slug": "chronograph",
+    "filename": "chronograph.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abe95391c4c066b490cb0_Chronograph.jpg",
+    "size": 6993
+  },
+  {
+    "name": "Circleback",
+    "slug": "circleback",
+    "filename": "circleback.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696323e2a1aaf767a84b4ebc_circleback.svg",
+    "size": 1839
+  },
+  {
+    "name": "Clarify",
+    "slug": "clarify",
+    "filename": "clarify.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698d1004171e3fb37688cf6e_clarify.svg",
+    "size": 1386
+  },
+  {
+    "name": "Clarity AI",
+    "slug": "clarity-ai",
+    "filename": "clarity-ai.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69addd1fbd98572d829d496b_clarity_ai.svg",
+    "size": 3105
+  },
+  {
+    "name": "Clay",
+    "slug": "clay",
+    "filename": "clay.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69774464eaca3c68a1a04ce4_Clay.svg",
+    "size": 11867
+  },
+  {
+    "name": "Clerk",
+    "slug": "clerk",
+    "filename": "clerk.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a5cd3d14699b00ee21b969_clerk.svg",
+    "size": 1822
+  },
+  {
+    "name": "ClickUp",
+    "slug": "clickup",
+    "filename": "clickup.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69409a6f2b6cc54b2041f38c_clickup.svg",
+    "size": 1592
+  },
+  {
+    "name": "Clinical Trials",
+    "slug": "clinical-trials",
+    "filename": "clinical-trials.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6963259b8df14c13e41f9015_clinical-trials.svg",
+    "size": 15310
+  },
+  {
+    "name": "Clockwise",
+    "slug": "clockwise",
+    "filename": "clockwise.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abea15b2e81afb9619d33_Clockwise.jpg",
+    "size": 19531
+  },
+  {
+    "name": "Close",
+    "slug": "close",
+    "filename": "close.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abeac92266bd43baf3e13_Close.jpg",
+    "size": 32125
+  },
+  {
+    "name": "Cloudflare",
+    "slug": "cloudflare",
+    "filename": "cloudflare.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abeb765f2d57005074b8f_Cloudflare%20Developer%20Platform.jpg",
+    "size": 10884
+  },
+  {
+    "name": "Cloudinary",
+    "slug": "cloudinary",
+    "filename": "cloudinary.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abec2b389536b0797f344_Cloudinary.jpg",
+    "size": 21149
+  },
+  {
+    "name": "Common Room",
+    "slug": "common-room",
+    "filename": "common-room.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699ba7b8c5276533a063fed7_common-room-logo-inverted%20(1).svg",
+    "size": 937
+  },
+  {
+    "name": "Consensus",
+    "slug": "consensus",
+    "filename": "consensus.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69868c8886175b426660b5b8_consensus-logo.svg",
+    "size": 1904
+  },
+  {
+    "name": "Context7",
+    "slug": "context7",
+    "filename": "context7.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698690879ec0fe5a8ed0e319_context7-icon-green.png",
+    "size": 9380
+  },
+  {
+    "name": "Cortellis Regulatory Intelligence",
+    "slug": "cortellis-regulatory-intelligence",
+    "filename": "cortellis-regulatory-intelligence.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ab25f13caefbf182507910_clarivate_logo.svg",
+    "size": 1635
+  },
+  {
+    "name": "Coupler.io",
+    "slug": "coupler-io",
+    "filename": "coupler-io.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abef0d363c9893d2b1511_coupler.jpg",
+    "size": 13635
+  },
+  {
+    "name": "Craft",
+    "slug": "craft",
+    "filename": "craft.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b8358cfa1b45fab0eab43f_craft_app_icon%20(3)%20-%20Marton%20Wernigg.png",
+    "size": 104597
+  },
+  {
+    "name": "Crossbeam",
+    "slug": "crossbeam",
+    "filename": "crossbeam.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913f587fda5ed6a14574a0a_crossbeam.svg",
+    "size": 8192
+  },
+  {
+    "name": "Crypto.com",
+    "slug": "crypto-com",
+    "filename": "crypto-com.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6923bf961a7c4a6c6b6de7ff_crypto.com.svg",
+    "size": 25108
+  },
+  {
+    "name": "Customer.io",
+    "slug": "customer-io",
+    "filename": "customer-io.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a3a6558bbc074ef44ea530_e1ead94ff38d1ec15140dc0879661ed1b3bd1857-259x258.svg",
+    "size": 811
+  },
+  {
+    "name": "Daloopa",
+    "slug": "daloopa",
+    "filename": "daloopa.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b05bb16cd6ba7130dc119f_Daloopa.svg",
+    "size": 31314
+  },
+  {
+    "name": "DataGrail",
+    "slug": "datagrail",
+    "filename": "datagrail.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69adf67bcfc53553c4187dfd_datagrail.svg",
+    "size": 1867
+  },
+  {
+    "name": "Databricks",
+    "slug": "databricks",
+    "filename": "databricks.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf0efc7c6c19c9ec062d_Databricks.jpg",
+    "size": 21577
+  },
+  {
+    "name": "Day AI",
+    "slug": "day-ai",
+    "filename": "day-ai.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a881c53b0a0800bff6afc8_day-ai.png",
+    "size": 7635
+  },
+  {
+    "name": "DevRev",
+    "slug": "devrev",
+    "filename": "devrev.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69797d31d1e2debf8a87f5a7_DevRev_logo_2.svg",
+    "size": 902
+  },
+  {
+    "name": "Dice",
+    "slug": "dice",
+    "filename": "dice.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696ed95ff04fa48923f3fa49_dice_squarelogo.svg",
+    "size": 2726
+  },
+  {
+    "name": "DirectBooker",
+    "slug": "directbooker",
+    "filename": "directbooker.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ab3ccf21f1bc3c72d4e514_directbooker2.png",
+    "size": 9032
+  },
+  {
+    "name": "DocuSeal",
+    "slug": "docuseal",
+    "filename": "docuseal.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b9dc0121b3bbcf32cfaf38_logo_square.svg",
+    "size": 1238
+  },
+  {
+    "name": "Docusign",
+    "slug": "docusign",
+    "filename": "docusign.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6998e8defaa12a843a37084c_docusign.jpeg",
+    "size": 9730
+  },
+  {
+    "name": "Dremio Cloud",
+    "slug": "dremio-cloud",
+    "filename": "dremio-cloud.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ab00815be18f72559c3a66_Dremio-Logo_Narwhal-Only.svg",
+    "size": 3188
+  },
+  {
+    "name": "Egnyte",
+    "slug": "egnyte",
+    "filename": "egnyte.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf27902ed1e055163fd7_Egnyte.jpg",
+    "size": 14290
+  },
+  {
+    "name": "Excalidraw",
+    "slug": "excalidraw",
+    "filename": "excalidraw.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698b6d382644a53ecb859c9b_idJpJtW9KY_logos.png",
+    "size": 8722
+  },
+  {
+    "name": "FactSet AI-Ready Data",
+    "slug": "factset-ai-ready-data",
+    "filename": "factset-ai-ready-data.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69990364234d36657f454feb_F_Icon%20-%20Patrick%20Starling.png",
+    "size": 2077
+  },
+  {
+    "name": "Fellow.ai",
+    "slug": "fellow-ai",
+    "filename": "fellow-ai.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6923bec73a155fccfdab98ae_fellow.ai.svg",
+    "size": 15668
+  },
+  {
+    "name": "Fever Event Discovery",
+    "slug": "fever-event-discovery",
+    "filename": "fever-event-discovery.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b4bb49b243700a3cd55721_fever.svg",
+    "size": 4298
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "filename": "figma.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf35eff31cb9416d9ec4_Figma.jpg",
+    "size": 10140
+  },
+  {
+    "name": "Fireflies",
+    "slug": "fireflies",
+    "filename": "fireflies.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf5cf91d777702ff2e6a_Fireflies.jpg",
+    "size": 10105
+  },
+  {
+    "name": "Function (beta)",
+    "slug": "function-beta",
+    "filename": "function-beta.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696146b3ef7f8280dc6a91ff_function-health.jpg",
+    "size": 31027
+  },
+  {
+    "name": "G2",
+    "slug": "g2",
+    "filename": "g2.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c050a781d8a1f946e87d0c_g2.svg",
+    "size": 2300
+  },
+  {
+    "name": "Gainsight (Staircase AI)",
+    "slug": "gainsight-staircase-ai",
+    "filename": "gainsight-staircase-ai.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c41f9fe5b4a5ee526cc06d_Staircase_Stars_Saturated%20-%20Mike%20Barnes.png",
+    "size": 31434
+  },
+  {
+    "name": "Gamma",
+    "slug": "gamma",
+    "filename": "gamma.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972b2009201ad5676779ae6_gamma.png",
+    "size": 9816
+  },
+  {
+    "name": "Glean",
+    "slug": "glean",
+    "filename": "glean.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696e96ce46080bb76b08f5d6_glean-logo.svg",
+    "size": 1509
+  },
+  {
+    "name": "Gmail",
+    "slug": "gmail",
+    "filename": "gmail.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699d2af055fa3d5b7187ca31_Gmail.svg",
+    "size": 9703
+  },
+  {
+    "name": "GoDaddy",
+    "slug": "godaddy",
+    "filename": "godaddy.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6923bf645c7a7cc8f935d96b_godaddy%20(1).svg",
+    "size": 3786
+  },
+  {
+    "name": "Google Calendar",
+    "slug": "google-calendar",
+    "filename": "google-calendar.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699d19b00926e2026aaf79eb_google-calendar.png",
+    "size": 10065
+  },
+  {
+    "name": "Google Cloud BigQuery",
+    "slug": "google-cloud-bigquery",
+    "filename": "google-cloud-bigquery.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69825fde71dbb2043676fc68_brandmark-logo-google-bigquery.svg",
+    "size": 1520
+  },
+  {
+    "name": "Google Compute Engine",
+    "slug": "google-compute-engine",
+    "filename": "google-compute-engine.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6921e7cdccfb4d1db46251e1_google.jpg",
+    "size": 18011
+  },
+  {
+    "name": "Google Drive",
+    "slug": "google-drive",
+    "filename": "google-drive.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699d2ada8438f2b9754bb820_Drive.svg",
+    "size": 24687
+  },
+  {
+    "name": "Granola",
+    "slug": "granola",
+    "filename": "granola.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6983856f3c47bff2ec615f86_logo-square.svg",
+    "size": 5150
+  },
+  {
+    "name": "Granted",
+    "slug": "granted",
+    "filename": "granted.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69badf81ee3313955f22b01c_granted.png",
+    "size": 9708
+  },
+  {
+    "name": "GraphOS MCP Tools",
+    "slug": "graphos-mcp-tools",
+    "filename": "graphos-mcp-tools.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699cf0031601d73ff0fd742e_graphos.png",
+    "size": 15651
+  },
+  {
+    "name": "Guru",
+    "slug": "guru",
+    "filename": "guru.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6973fef9099795a074827034_1_Guru-G_Logo.svg",
+    "size": 2149
+  },
+  {
+    "name": "Gusto",
+    "slug": "gusto",
+    "filename": "gusto.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a36e52639b2e82385fa088_gusto-favicon-192x192-160x160-5cf1c88.png",
+    "size": 6392
+  },
+  {
+    "name": "Harmonic",
+    "slug": "harmonic",
+    "filename": "harmonic.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d4a1ac4c3c5105f7dc970_harmonic.png",
+    "size": 3017
+  },
+  {
+    "name": "Harvey",
+    "slug": "harvey",
+    "filename": "harvey.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699a0a0d19b063c457a240ed_Harvey%20Logo%20(1).svg",
+    "size": 1088
+  },
+  {
+    "name": "HealthEx (beta)",
+    "slug": "healthex-beta",
+    "filename": "healthex-beta.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3e7cb91804401037ccb4_healthEx.jpg",
+    "size": 11177
+  },
+  {
+    "name": "Hex",
+    "slug": "hex",
+    "filename": "hex.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf6c6461f0fd29c63e59_Hex.jpg",
+    "size": 11332
+  },
+  {
+    "name": "Honeycomb",
+    "slug": "honeycomb",
+    "filename": "honeycomb.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6923bf27e6d9dd347e34ca26_honeycomb.svg",
+    "size": 11912
+  },
+  {
+    "name": "Hubspot",
+    "slug": "hubspot",
+    "filename": "hubspot.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf89f91d777702ff37af_HubSpot.jpg",
+    "size": 13894
+  },
+  {
+    "name": "Hugging Face",
+    "slug": "hugging-face",
+    "filename": "hugging-face.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abf96bd16a291db21b1ab_Hugging%20Face.jpg",
+    "size": 19901
+  },
+  {
+    "name": "ICD-10 Codes",
+    "slug": "icd-10-codes",
+    "filename": "icd-10-codes.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3eb9f2f34ada6ce08e57_ICD-10.jpg",
+    "size": 10849
+  },
+  {
+    "name": "Indeed",
+    "slug": "indeed",
+    "filename": "indeed.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abfa1fc7c6c19c9ec2465_Indeed.jpg",
+    "size": 9860
+  },
+  {
+    "name": "Intapp Celeste",
+    "slug": "intapp-celeste",
+    "filename": "intapp-celeste.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6998cfc1578c55636d866aa7_Intapp%20Logo%2032x32%20(1)%20(1).svg",
+    "size": 4905
+  },
+  {
+    "name": "Intercom",
+    "slug": "intercom",
+    "filename": "intercom.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abfac1647ce192e81c3ba_Intercom.jpg",
+    "size": 14346
+  },
+  {
+    "name": "Intuit QuickBooks",
+    "slug": "intuit-quickbooks",
+    "filename": "intuit-quickbooks.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c4094afe9398607424b105_quickbooks.svg",
+    "size": 1367
+  },
+  {
+    "name": "Intuit TurboTax",
+    "slug": "intuit-turbotax",
+    "filename": "intuit-turbotax.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69bacafac25bdb7463797660_____logo_1%20(1).svg",
+    "size": 2385
+  },
+  {
+    "name": "Jam",
+    "slug": "jam",
+    "filename": "jam.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abfb928bf214f7824247c_Jam.jpg",
+    "size": 16642
+  },
+  {
+    "name": "Jentic",
+    "slug": "jentic",
+    "filename": "jentic.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c1668bb5555d5b95e993f4_Jentic-Icon-Gradient-LightBG.png",
+    "size": 170332
+  },
+  {
+    "name": "Jotform",
+    "slug": "jotform",
+    "filename": "jotform.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abfc71647ce192e81d28a_jotform.jpg",
+    "size": 15217
+  },
+  {
+    "name": "Kiwi.com",
+    "slug": "kiwi-com",
+    "filename": "kiwi-com.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6923bf058e26b5aa3c809b42_kiwi.svg",
+    "size": 108678
+  },
+  {
+    "name": "Klaviyo",
+    "slug": "klaviyo",
+    "filename": "klaviyo.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69710feadd4fbcdc9202b732_klaviyo-poppy%20(1).png",
+    "size": 1099
+  },
+  {
+    "name": "Krisp",
+    "slug": "krisp",
+    "filename": "krisp.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b83d3204bce883f7a15847_krisp%20(1).svg",
+    "size": 2131
+  },
+  {
+    "name": "LILT",
+    "slug": "lilt",
+    "filename": "lilt.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d13e9fb2d1120753661ed_Lilt-LogoMark_Color.png",
+    "size": 13014
+  },
+  {
+    "name": "LSEG",
+    "slug": "lseg",
+    "filename": "lseg.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac002ca8cf24dae1dfbe8_LSEG.jpg",
+    "size": 9505
+  },
+  {
+    "name": "Learning Commons Knowledge Graph",
+    "slug": "learning-commons-knowledge-graph",
+    "filename": "learning-commons-knowledge-graph.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abfe0db0d82b0112d1531_1758567129415.jpeg",
+    "size": 3172
+  },
+  {
+    "name": "LegalZoom",
+    "slug": "legalzoom",
+    "filename": "legalzoom.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6998fa13ef6d199e17dc66ab_LZ_Logomark_Black.svg",
+    "size": 797
+  },
+  {
+    "name": "Linear",
+    "slug": "linear",
+    "filename": "linear.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690abff72b804fad37465165_Linear.jpg",
+    "size": 14239
+  },
+  {
+    "name": "Local Falcon",
+    "slug": "local-falcon",
+    "filename": "local-falcon.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ae254459fe3a977afda9f1_local-falcon-mcp-logo.svg",
+    "size": 4000
+  },
+  {
+    "name": "Lumin",
+    "slug": "lumin",
+    "filename": "lumin.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69843e996011391070f38a40_lumin%20(1).svg",
+    "size": 2325
+  },
+  {
+    "name": "LunarCrush",
+    "slug": "lunarcrush",
+    "filename": "lunarcrush.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697011202bc68d8b21660503_lunarcrush.png",
+    "size": 85161
+  },
+  {
+    "name": "MSCI",
+    "slug": "msci",
+    "filename": "msci.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69960386162842e34d0d9095_MSCI%20Thumbnail-White%20background.png",
+    "size": 182499
+  },
+  {
+    "name": "MT Newswires",
+    "slug": "mt-newswires",
+    "filename": "mt-newswires.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac05e101530e7d9d53fde_MT%20Newswires.jpg",
+    "size": 15559
+  },
+  {
+    "name": "Magic Patterns",
+    "slug": "magic-patterns",
+    "filename": "magic-patterns.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6983b706c57aa5fd1fd7a2d2_magicpatterns.jpeg",
+    "size": 7441
+  },
+  {
+    "name": "MailerLite",
+    "slug": "mailerlite",
+    "filename": "mailerlite.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a666eeaf51ef9283ed2fd8_mailerlite.jpeg",
+    "size": 23572
+  },
+  {
+    "name": "Make",
+    "slug": "make",
+    "filename": "make.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d14371cf45af84e39a93e_Make-Icon-Square-Purple.svg",
+    "size": 1169
+  },
+  {
+    "name": "Medidata",
+    "slug": "medidata",
+    "filename": "medidata.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6963241073e3facf8ccc4053_medidata.svg",
+    "size": 11676
+  },
+  {
+    "name": "Melon",
+    "slug": "melon",
+    "filename": "melon.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac015d363c9893d2b3b46_Melon.jpg",
+    "size": 12139
+  },
+  {
+    "name": "Mem",
+    "slug": "mem",
+    "filename": "mem.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a772eb46aaa3bf051c52ed_mem_logo_square%20(1).svg",
+    "size": 1220
+  },
+  {
+    "name": "Mercury",
+    "slug": "mercury",
+    "filename": "mercury.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69725f86a86e37636164b38e_mercury-bordered.svg",
+    "size": 5567
+  },
+  {
+    "name": "Mermaid Chart",
+    "slug": "mermaid-chart",
+    "filename": "mermaid-chart.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac024622a31cabb4f22f9_Mermaid%20Chart.jpg",
+    "size": 12073
+  },
+  {
+    "name": "Metaview",
+    "slug": "metaview",
+    "filename": "metaview.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b3253475eefcc4bf8f3351_Metaview%20(1).svg",
+    "size": 5985
+  },
+  {
+    "name": "Microsoft 365",
+    "slug": "microsoft-365",
+    "filename": "microsoft-365.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690c442881b2f70098a4491a_logo_microsoft.svg",
+    "size": 972
+  },
+  {
+    "name": "Microsoft Learn",
+    "slug": "microsoft-learn",
+    "filename": "microsoft-learn.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690c442881b2f70098a4491a_logo_microsoft.svg",
+    "size": 972
+  },
+  {
+    "name": "Midpage Legal Research",
+    "slug": "midpage-legal-research",
+    "filename": "midpage-legal-research.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699a550b5cce23be4022d0ab_midpage.svg",
+    "size": 1060
+  },
+  {
+    "name": "Miro",
+    "slug": "miro",
+    "filename": "miro.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69825d400692311462b4a241_Miro_Miro_Icon_0.svg",
+    "size": 640
+  },
+  {
+    "name": "Mixpanel",
+    "slug": "mixpanel",
+    "filename": "mixpanel.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b842de13c16936e674bff7_Mixpanel%20Logomark%20Purple%20(1).svg",
+    "size": 2060
+  },
+  {
+    "name": "Monday",
+    "slug": "monday",
+    "filename": "monday.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6921e782b78ebbcbede151d0_monday.jpg",
+    "size": 11565
+  },
+  {
+    "name": "Moody's Analytics",
+    "slug": "moody-s-analytics",
+    "filename": "moody-s-analytics.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac04450f8882a1c470ad2_Moody%27s%20Analytics.jpg",
+    "size": 17962
+  },
+  {
+    "name": "Morningstar",
+    "slug": "morningstar",
+    "filename": "morningstar.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac04d1d56f274313a74c8_Morningstar.jpg",
+    "size": 10984
+  },
+  {
+    "name": "MotherDuck",
+    "slug": "motherduck",
+    "filename": "motherduck.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972aeacfd96f311a3714191_duck_feet_square.svg",
+    "size": 1505
+  },
+  {
+    "name": "NPI Registry",
+    "slug": "npi-registry",
+    "filename": "npi-registry.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3ed486c00439706bad8d_npi.jpg",
+    "size": 9929
+  },
+  {
+    "name": "Netlify",
+    "slug": "netlify",
+    "filename": "netlify.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac06ca62460beff2c64be_Netlify.jpg",
+    "size": 9983
+  },
+  {
+    "name": "Notion",
+    "slug": "notion",
+    "filename": "notion.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac085f91d777702ff6935_Notion%20MCP.jpg",
+    "size": 8940
+  },
+  {
+    "name": "Omni Analytics",
+    "slug": "omni-analytics",
+    "filename": "omni-analytics.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69adea9f99911673406e9166_omni.jpeg",
+    "size": 4772
+  },
+  {
+    "name": "Open Targets",
+    "slug": "open-targets",
+    "filename": "open-targets.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3f34a5d8bf093e154de4_open-targets.jpg",
+    "size": 8471
+  },
+  {
+    "name": "Oracle NetSuite",
+    "slug": "oracle-netsuite",
+    "filename": "oracle-netsuite.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0797fb7905db81f0c5f_NetSuite%20AI%20Connector%20for%20Claude.jpg",
+    "size": 11681
+  },
+  {
+    "name": "Outreach",
+    "slug": "outreach",
+    "filename": "outreach.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69964daf5dfec668f0dc6049_outreach.png",
+    "size": 51790
+  },
+  {
+    "name": "Owkin",
+    "slug": "owkin",
+    "filename": "owkin.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3ef5bcc23b924b6da7b7_OWKIN.jpg",
+    "size": 24435
+  },
+  {
+    "name": "PagerDuty",
+    "slug": "pagerduty",
+    "filename": "pagerduty.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ab72067a1c635172fa9fd1_P-WhiteRGB-bg%20(1).svg",
+    "size": 1196
+  },
+  {
+    "name": "PayPal",
+    "slug": "paypal",
+    "filename": "paypal.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac08f7113e7cbba88188e_PayPal%20MCP%20Server.jpg",
+    "size": 10532
+  },
+  {
+    "name": "Pendo",
+    "slug": "pendo",
+    "filename": "pendo.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6940b23f3f26a47b390c0c99_pendo-1%20(1).svg",
+    "size": 276
+  },
+  {
+    "name": "Pigment",
+    "slug": "pigment",
+    "filename": "pigment.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d4cb13ba105a718e5899a_PigmentIcon_Digital_Colors.png",
+    "size": 9688
+  },
+  {
+    "name": "PitchBook",
+    "slug": "pitchbook",
+    "filename": "pitchbook.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0a9ce745a3175e0bf75_PitchBook.jpg",
+    "size": 13355
+  },
+  {
+    "name": "Plaid",
+    "slug": "plaid",
+    "filename": "plaid.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0b95f15547a984ac458_Plaid%20Developer%20Tools.jpg",
+    "size": 21589
+  },
+  {
+    "name": "PlanetScale",
+    "slug": "planetscale",
+    "filename": "planetscale.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699799be68de9b951b510d85_planetscale.jpeg",
+    "size": 9310
+  },
+  {
+    "name": "PlayMCP",
+    "slug": "playmcp",
+    "filename": "playmcp.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972a742be081eafd340061c_PlayMCP_favicon_500x500.png",
+    "size": 4200
+  },
+  {
+    "name": "Port IO",
+    "slug": "port-io",
+    "filename": "port-io.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698b91a222c41c1f4087160d_Port%20symbol_white_bg.jpg",
+    "size": 10005
+  },
+  {
+    "name": "PostHog",
+    "slug": "posthog",
+    "filename": "posthog.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a09bc7369a6a975b383246_posthog_logo_stacked_square_padded_white_1b9d7295e4%20(1).svg",
+    "size": 4964
+  },
+  {
+    "name": "Postman",
+    "slug": "postman",
+    "filename": "postman.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ab2da2ed6d49e6e44887ca_postman.png",
+    "size": 31318
+  },
+  {
+    "name": "Process Street",
+    "slug": "process-street",
+    "filename": "process-street.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/699bc5ae5fd771a6cfee7c6b_PS%20Logo-1.svg",
+    "size": 1652
+  },
+  {
+    "name": "PubMed",
+    "slug": "pubmed",
+    "filename": "pubmed.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0d0062f6400d634c165_PubMed.jpg",
+    "size": 10296
+  },
+  {
+    "name": "Pylon",
+    "slug": "pylon",
+    "filename": "pylon.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a773b90d8c8805d2dc07a2_pylon%20(1).svg",
+    "size": 1509
+  },
+  {
+    "name": "Qlik",
+    "slug": "qlik",
+    "filename": "qlik.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c0751f1bd372c8f70c4567_qlik.jpeg",
+    "size": 8937
+  },
+  {
+    "name": "Quartr",
+    "slug": "quartr",
+    "filename": "quartr.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c16ea64d0fb4d397f39e16_quarter-black.png",
+    "size": 8554
+  },
+  {
+    "name": "Ramp",
+    "slug": "ramp",
+    "filename": "ramp.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0e242323897e8eeb479_Ramp.jpg",
+    "size": 11198
+  },
+  {
+    "name": "Razorpay",
+    "slug": "razorpay",
+    "filename": "razorpay.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698fb716f895269ccc4cf1ad_razorpay.jpeg",
+    "size": 7203
+  },
+  {
+    "name": "S&P Global",
+    "slug": "s-p-global",
+    "filename": "s-p-global.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac0ed02d4106f1281e6e2_S%26P%20Global.jpg",
+    "size": 15613
+  },
+  {
+    "name": "Sanity",
+    "slug": "sanity",
+    "filename": "sanity.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69a8c52ca3706603cfa1f7c4_sanity.svg",
+    "size": 1245
+  },
+  {
+    "name": "Scholar Gateway",
+    "slug": "scholar-gateway",
+    "filename": "scholar-gateway.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696af1b6440e8fa2af7e4ef7_scholarly-gateway.svg",
+    "size": 3548
+  },
+  {
+    "name": "Sentry",
+    "slug": "sentry",
+    "filename": "sentry.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac10642323897e8eebfdd_Sentry%20MCP.jpg",
+    "size": 13188
+  },
+  {
+    "name": "SignNow",
+    "slug": "signnow",
+    "filename": "signnow.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69ac5daf8937aa35600d96d1_signnow.svg",
+    "size": 2932
+  },
+  {
+    "name": "Similarweb",
+    "slug": "similarweb",
+    "filename": "similarweb.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d44c93b1b461da6f2d32b_ide0afd3w6_1769817151433.jpeg",
+    "size": 10493
+  },
+  {
+    "name": "Slack",
+    "slug": "slack",
+    "filename": "slack.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac11074040a8d303e83a5_Slack.jpg",
+    "size": 19564
+  },
+  {
+    "name": "Smartsheet",
+    "slug": "smartsheet",
+    "filename": "smartsheet.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697bea45f7bb423e2320333e_Smartsheet_ids5IEP7cO_0.svg",
+    "size": 820
+  },
+  {
+    "name": "Snowflake",
+    "slug": "snowflake",
+    "filename": "snowflake.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac11852ad018a42303c93_Snowflake.jpg",
+    "size": 28171
+  },
+  {
+    "name": "Sprouts Data Intelligence",
+    "slug": "sprouts-data-intelligence",
+    "filename": "sprouts-data-intelligence.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69974168446d1f867d04722e_sprouts.ai%20logo.svg",
+    "size": 1972
+  },
+  {
+    "name": "Square",
+    "slug": "square",
+    "filename": "square.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac122efac2533660b7814_Square%20MCP.jpg",
+    "size": 4481
+  },
+  {
+    "name": "Starburst",
+    "slug": "starburst",
+    "filename": "starburst.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6983b7a66d99c6d365109dd7_starburst.svg",
+    "size": 2354
+  },
+  {
+    "name": "Stripe",
+    "slug": "stripe",
+    "filename": "stripe.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac12b69f1d226d230746c_Stripe.jpg",
+    "size": 4838
+  },
+  {
+    "name": "Stytch",
+    "slug": "stytch",
+    "filename": "stytch.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac136c2e9d81397a62c6d_Stytch.jpg",
+    "size": 8216
+  },
+  {
+    "name": "Supabase",
+    "slug": "supabase",
+    "filename": "supabase.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697be34a6f8631fa5411e263_supabase-logo-icon.svg",
+    "size": 1107
+  },
+  {
+    "name": "Supermetrics",
+    "slug": "supermetrics",
+    "filename": "supermetrics.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698ce8b30c74f4d90c0fe1d5_supermetrics.svg",
+    "size": 833
+  },
+  {
+    "name": "Synapse.org",
+    "slug": "synapse-org",
+    "filename": "synapse-org.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac13f62f6fe3fff49fedb_Synapse.jpg",
+    "size": 16189
+  },
+  {
+    "name": "Tango",
+    "slug": "tango",
+    "filename": "tango.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69bdb1c6cba278b0a2facd83_MakeGov-Icon_512x512.png",
+    "size": 6359
+  },
+  {
+    "name": "Tavily",
+    "slug": "tavily",
+    "filename": "tavily.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69b32f5381aaa44510d50288_tavily.svg",
+    "size": 10151
+  },
+  {
+    "name": "Ticket Tailor",
+    "slug": "ticket-tailor",
+    "filename": "ticket-tailor.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac149c2dc363a0c9f35f1_Ticket%20Tailor.jpg",
+    "size": 13681
+  },
+  {
+    "name": "Tool Universe",
+    "slug": "tool-universe",
+    "filename": "tool-universe.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3f4ec601a69ce6b1e175_tooluniverse.jpg",
+    "size": 13564
+  },
+  {
+    "name": "Trivago",
+    "slug": "trivago",
+    "filename": "trivago.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6913f573b5cf9a67fff78b2a_logo_trivago.svg",
+    "size": 1151
+  },
+  {
+    "name": "Udemy Business",
+    "slug": "udemy-business",
+    "filename": "udemy-business.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696ed8566d655f9fb5aaf3a1_Udemy%20MCP%20Directory%20Logo.svg",
+    "size": 676
+  },
+  {
+    "name": "Vercel",
+    "slug": "vercel",
+    "filename": "vercel.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac166a0909415690fdb58_Vercel.jpg",
+    "size": 3462
+  },
+  {
+    "name": "Vibe Prospecting",
+    "slug": "vibe-prospecting",
+    "filename": "vibe-prospecting.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697972974b1a41306ae210e9_favicon_claude_web.png",
+    "size": 1171
+  },
+  {
+    "name": "Visier",
+    "slug": "visier",
+    "filename": "visier.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6914c78e0da65e9753d33051_visier.png",
+    "size": 30219
+  },
+  {
+    "name": "Webflow",
+    "slug": "webflow",
+    "filename": "webflow.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6972b98bb9c8d247685d5867_Social_Square_Blue.svg",
+    "size": 495
+  },
+  {
+    "name": "Windsor.ai",
+    "slug": "windsor-ai",
+    "filename": "windsor-ai.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697034e4879b35571408299c_windsor_160px.png",
+    "size": 8274
+  },
+  {
+    "name": "Wix",
+    "slug": "wix",
+    "filename": "wix.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/696ed33f296efad49cec4b60_5968770.png",
+    "size": 17240
+  },
+  {
+    "name": "WordPress.com",
+    "slug": "wordpress-com",
+    "filename": "wordpress-com.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697d469f9210481c04a8b9fd_wp-com160.png",
+    "size": 5977
+  },
+  {
+    "name": "Workato",
+    "slug": "workato",
+    "filename": "workato.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac17bc2e9d81397a63732_Workato.jpg",
+    "size": 12342
+  },
+  {
+    "name": "Wyndham Hotels and Resorts",
+    "slug": "wyndham-hotels-and-resorts",
+    "filename": "wyndham-hotels-and-resorts.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/697cf97c1f0c55c49363e9d7_whr_app_icon_160x160.jpg",
+    "size": 8403
+  },
+  {
+    "name": "Yardi Virtuoso",
+    "slug": "yardi-virtuoso",
+    "filename": "yardi-virtuoso.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/698a82b6a1d69ff7878e09a6_yardi.jpeg",
+    "size": 9671
+  },
+  {
+    "name": "Zapier",
+    "slug": "zapier",
+    "filename": "zapier.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac18581a191dea79db82d_Zapier.jpg",
+    "size": 14056
+  },
+  {
+    "name": "Zoho Books",
+    "slug": "zoho-books",
+    "filename": "zoho-books.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c31afedbdd4be602880b5d_zoho_books.png",
+    "size": 18264
+  },
+  {
+    "name": "Zoho CRM",
+    "slug": "zoho-crm",
+    "filename": "zoho-crm.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c31a019b039932134d6a82_zoho_crm.png",
+    "size": 18036
+  },
+  {
+    "name": "Zoho Projects",
+    "slug": "zoho-projects",
+    "filename": "zoho-projects.png",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c31ab05e7d0897eca2348b_zoho_projects.png",
+    "size": 12529
+  },
+  {
+    "name": "ZoomInfo",
+    "slug": "zoominfo",
+    "filename": "zoominfo.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/690ac18e80e00e4418bf54c8_ZoomInfo.jpg",
+    "size": 9413
+  },
+  {
+    "name": "bioRxiv",
+    "slug": "biorxiv",
+    "filename": "biorxiv.jpg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/695f3f052f1932d948bc6d21_biorx.jpg",
+    "size": 12794
+  },
+  {
+    "name": "lastminute.com",
+    "slug": "lastminute-com",
+    "filename": "lastminute-com.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69701c118e725e7149be2b2f_logo_lastminute.com_vertical_positive.svg",
+    "size": 7650
+  },
+  {
+    "name": "n8n",
+    "slug": "n8n",
+    "filename": "n8n.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/6927759bae1867cbd42ffc1c_n8n.svg",
+    "size": 2533
+  },
+  {
+    "name": "pg-aiguide",
+    "slug": "pg-aiguide",
+    "filename": "pg-aiguide.svg",
+    "src": "https://cdn.prod.website-files.com/68a44d4040f98a4adf2207b6/69c4735963142fd71f9f4a3a_logo-badge-yellow.svg",
+    "size": 2502
+  }
+]
