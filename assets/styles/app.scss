@@ -5887,33 +5887,6 @@ body {
   }
 }
 
-.mcp-tools-list {
-  background: var(--bg-secondary);
-  padding: var(--space-md);
-  border-radius: var(--radius-md);
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-      padding: var(--space-sm) 0;
-      border-bottom: 1px solid var(--border-color);
-      font-size: var(--text-sm);
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      strong {
-        color: var(--primary);
-        font-family: var(--font-mono);
-        font-size: var(--text-xs);
-      }
-    }
-  }
-}
 
 // MCP Client Tabs
 .mcp-client-tabs {

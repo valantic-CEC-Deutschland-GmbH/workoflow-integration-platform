@@ -289,17 +289,7 @@ http_headers = { "X-Prompt-Token" = "{{ userOrganisation.personalAccessToken }}"
                             </div>
                         </div>
 
-                        {# Available Tools Info #}
-                        <div class="api-helper-item">
-                            <label><i class="fas fa-tools"></i> {{ 'integration.mcp.available_tools'|trans|default('Available MCP Tools') }}</label>
-                            <div class="mcp-tools-list">
-                                <ul>
-                                    <li><strong>workoflow_list_tools</strong> - {{ 'integration.mcp.tool_list_desc'|trans|default('List all available tools from your organisation') }}</li>
-                                    <li><strong>workoflow_execute</strong> - {{ 'integration.mcp.tool_execute_desc'|trans|default('Execute any tool by name with parameters') }}</li>
-                                    <li><strong>workoflow_refresh</strong> - {{ 'integration.mcp.tool_refresh_desc'|trans|default('Refresh the cached tool list after adding integrations') }}</li>
-                                </ul>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="api-helper-footer">

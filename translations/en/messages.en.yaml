@@ -498,10 +498,7 @@ integration:
     description: Connect your AI assistant (Claude Desktop, Cursor, etc.) to Workoflow using the MCP protocol. Your personal access token automatically identifies you and your organisation.
     claude_desktop: Claude Desktop Configuration
     claude_desktop_hint: "Add this to your Claude Desktop settings file:"
-    available_tools: Available MCP Tools
-    tool_list_desc: List all available tools from your organisation
-    tool_execute_desc: Execute any tool by name with parameters
-    tool_refresh_desc: Refresh the cached tool list after adding integrations
+
     hint_token: Your X-Prompt-Token automatically identifies your user and organisation. Keep it secure and do not share it.
     no_token: You need to generate a personal access token to use the MCP server.
     generate_token: Generate Token in Profile
