@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2026-04-02
 
+### Changed
+- **BREAKING: Remote MCP tool names now include integration name prefix** — Tools from remote MCP servers (Miro, Notion, Stripe, etc.) are now prefixed with the integration name. For example, `context_explore_64` becomes `miro_context_explore_64`. This makes remote MCP tools identifiable at a glance, consistent with native tools like `jira_search_63`. Users who previously disabled specific remote MCP tools will need to re-disable them, as the stored tool names no longer match.
+
 ### Added
 - **Error monitoring with Sentry** — Both server-side (PHP) and client-side (JavaScript) errors are now automatically reported to Sentry. This helps detect and diagnose 500 errors and frontend issues faster. The integration is resilient — if Sentry is unreachable, the application continues to work normally without any impact.
 

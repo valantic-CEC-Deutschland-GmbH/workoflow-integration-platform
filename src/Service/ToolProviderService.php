@@ -401,6 +401,14 @@ class ToolProviderService
         $serverUrl = $credentials['server_url'] ?? '';
         $tools = [];
 
+        // Prefix remote MCP tool names with the integration name (e.g. "miro_")
+        // so they are identifiable like native tools (jira_search, confluence_get_page)
+        $integrationPrefix = '';
+        $configName = $config->getName();
+        if ($configName !== null && $configName !== '') {
+            $integrationPrefix = strtolower(preg_replace('/[^a-zA-Z0-9]/', '_', $configName)) . '_';
+        }
+
         foreach ($mcpTools as $mcpTool) {
             $toolName = $mcpTool['name'] ?? '';
             if ($toolName === '' || in_array($toolName, $disabledTools, true)) {
@@ -420,11 +428,13 @@ class ToolProviderService
             // Convert MCP inputSchema to our parameter format
             $parameters = $this->convertMcpInputSchema($mcpTool['inputSchema'] ?? []);
 
+            $prefixedName = $integrationPrefix . $toolName . '_' . $config->getId();
+
             $tools[] = [
                 'type' => 'function',
                 'function' => [
-                    'name' => $toolName . '_' . $config->getId(),
-                    'tool_id' => $toolName . '_' . $config->getId(),
+                    'name' => $prefixedName,
+                    'tool_id' => $prefixedName,
                     'description' => $description,
                     'parameters' => $parameters,
                 ],
