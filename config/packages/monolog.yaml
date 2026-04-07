@@ -49,7 +49,8 @@ when@prod:
                 level: debug
                 formatter: monolog.formatter.json
             sentry:
-                type: sentry
+                type: service
+                id: 'Sentry\Monolog\Handler'
                 level: error
             console:
                 type: console

@@ -35,6 +35,9 @@ services:
             - '../src/Integration/UserIntegrations/'
             - '../src/Service/ScheduledTask/'
 
+    Sentry\Monolog\Handler:
+        autoconfigure: false
+
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
