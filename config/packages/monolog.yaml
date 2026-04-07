@@ -51,7 +51,6 @@ when@prod:
             sentry:
                 type: sentry
                 level: error
-                hub_id: Sentry\State\HubInterface
             console:
                 type: console
                 process_psr_3_messages: false
