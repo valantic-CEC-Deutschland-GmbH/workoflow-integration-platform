@@ -1,5 +1,5 @@
 sentry:
-    dsn: '%env(SENTRY_DSN)%'
+    dsn: '%env(default::SENTRY_DSN)%'
     messenger:
         enabled: false
     options:
