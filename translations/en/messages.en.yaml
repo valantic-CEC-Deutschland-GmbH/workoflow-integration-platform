@@ -824,6 +824,12 @@ kb:
     upload: Upload
     sitemap: Sitemap
     snippet: Snippet
+    sources: Indexed Content
+  tab_explanation:
+    upload: Upload documents to add them to your knowledge base. Supported formats are PDF, DOCX, TXT and MD. Files are automatically chunked and indexed for AI retrieval.
+    sitemap: Crawl websites via their sitemap URL to automatically import and index web pages. Track active crawl jobs and manage indexed domains below.
+    snippet: Add text snippets directly — useful for FAQs, internal guidelines, or any knowledge that doesn't live in a file or on a website.
+    sources: All content that has been successfully indexed into your knowledge base — from file uploads, web crawls and snippets combined.
   upload:
     drag_drop: Drag and drop files here
     select_files: Select Files

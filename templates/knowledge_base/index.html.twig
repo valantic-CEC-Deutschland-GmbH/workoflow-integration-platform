@@ -10,7 +10,7 @@
                 <h1>{{ 'kb.title'|trans }}</h1>
             </div>
             <div class="files-explanation">
-                <p>{{ 'kb.explanation'|trans }}</p>
+                <p id="tabExplanation">{{ 'kb.explanation'|trans }}</p>
             </div>
         </div>
 
@@ -24,6 +24,9 @@
             </button>
             <button class="kb-tab" data-tab="snippet" onclick="switchTab('snippet')">
                 <i class="fas fa-file-alt"></i> {{ 'kb.tab.snippet'|trans }}
+            </button>
+            <button class="kb-tab" data-tab="sources" onclick="switchTab('sources')">
+                <i class="fas fa-layer-group"></i> {{ 'kb.tab.sources'|trans }}
             </button>
         </div>
 
@@ -49,6 +52,16 @@
                     {{ 'kb.upload.upload'|trans }}
                 </button>
             </div>
+
+            {# Upload Pipeline (filtered to uploads) #}
+            <div class="kb-section">
+                <div class="kb-section-header">
+                    <h2>{{ 'kb.documents.title'|trans }}</h2>
+                </div>
+                <div id="documentsTable-upload">
+                    <div class="empty-state"><p>{{ 'kb.documents.loading'|trans }}</p></div>
+                </div>
+            </div>
         </div>
 
         {# Sitemap Tab #}
@@ -68,6 +81,26 @@
                 <h3>{{ 'kb.sitemap.active_crawls'|trans }}</h3>
                 <div id="crawlJobsList"></div>
             </div>
+
+            {# Indexed Domains (moved here from global) #}
+            <div class="kb-section">
+                <div class="kb-section-header">
+                    <h2>{{ 'kb.domains.title'|trans }}</h2>
+                </div>
+                <div id="domainsTable">
+                    <div class="empty-state"><p>{{ 'kb.domains.loading'|trans }}</p></div>
+                </div>
+            </div>
+
+            {# Web crawl documents #}
+            <div class="kb-section">
+                <div class="kb-section-header">
+                    <h2>{{ 'kb.documents.title'|trans }}</h2>
+                </div>
+                <div id="documentsTable-web_crawl">
+                    <div class="empty-state"><p>{{ 'kb.documents.loading'|trans }}</p></div>
+                </div>
+            </div>
         </div>
 
         {# Snippet Tab #}
@@ -84,41 +117,35 @@
                 <span class="spinner hidden" id="snippetSpinner"></span>
                 {{ 'kb.snippet.save'|trans }}
             </button>
-        </div>
 
-        {# Upload Pipeline Table #}
-        <div class="kb-section" class="kb-section">
-            <div class="kb-section-header">
-                <h2>{{ 'kb.documents.title'|trans }}</h2>
-            </div>
-            <div id="documentsTable">
-                <div class="empty-state"><p>{{ 'kb.documents.loading'|trans }}</p></div>
-            </div>
-            <div id="documentsPagination" class="kb-pagination"></div>
-        </div>
-
-        {# Indexed Domains Table #}
-        <div class="kb-section" class="kb-section">
-            <div class="kb-section-header">
-                <h2>{{ 'kb.domains.title'|trans }}</h2>
-            </div>
-            <div id="domainsTable">
-                <div class="empty-state"><p>{{ 'kb.domains.loading'|trans }}</p></div>
+            {# Snippet documents #}
+            <div class="kb-section">
+                <div class="kb-section-header">
+                    <h2>{{ 'kb.documents.title'|trans }}</h2>
+                </div>
+                <div id="documentsTable-snippet">
+                    <div class="empty-state"><p>{{ 'kb.documents.loading'|trans }}</p></div>
+                </div>
             </div>
         </div>
 
-        {# Knowledge Base Sources Table #}
-        <div class="kb-section" class="kb-section">
-            <div class="kb-section-header">
-                <h2>{{ 'kb.sources.title'|trans }}</h2>
-                <button type="button" class="btn btn-small btn-secondary" onclick="loadSources()">
-                    <i class="fas fa-sync-alt"></i> {{ 'kb.sources.refresh'|trans }}
-                </button>
-            </div>
-            <div id="sourcesTable">
-                <div class="empty-state"><p>{{ 'kb.sources.loading'|trans }}</p></div>
+        {# Sources Tab #}
+        <div class="kb-tab-content" id="tab-sources">
+            <div class="kb-section">
+                <div class="kb-section-header">
+                    <h2>{{ 'kb.sources.title'|trans }}</h2>
+                    <button type="button" class="btn btn-small btn-secondary" onclick="loadSources()">
+                        <i class="fas fa-sync-alt"></i> {{ 'kb.sources.refresh'|trans }}
+                    </button>
+                </div>
+                <div id="sourcesTable">
+                    <div class="empty-state"><p>{{ 'kb.sources.loading'|trans }}</p></div>
+                </div>
             </div>
         </div>
+
+        {# Global pagination (shared across document tables) #}
+        <div id="documentsPagination" class="kb-pagination"></div>
     </div>
 </div>
 
@@ -288,13 +315,32 @@ const API_BASE = '{{ path('app_knowledge_base') }}api';
 let currentPage = 1;
 let refreshInterval = null;
 let crawlRefreshInterval = null;
+let allDocuments = [];
+let activeTab = 'upload';
+const VALID_TABS = ['upload', 'sitemap', 'snippet', 'sources'];
+const TAB_EXPLANATIONS = {
+    upload: {{ 'kb.tab_explanation.upload'|trans|json_encode|raw }},
+    sitemap: {{ 'kb.tab_explanation.sitemap'|trans|json_encode|raw }},
+    snippet: {{ 'kb.tab_explanation.snippet'|trans|json_encode|raw }},
+    sources: {{ 'kb.tab_explanation.sources'|trans|json_encode|raw }},
+};
 
-// Tab switching
+// Tab switching with URL hash persistence
 function switchTab(tab) {
+    if (!VALID_TABS.includes(tab)) tab = 'upload';
+    activeTab = tab;
     document.querySelectorAll('.kb-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.kb-tab-content').forEach(c => c.classList.remove('active'));
     document.querySelector(`.kb-tab[data-tab="${tab}"]`).classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
+    history.replaceState(null, '', '#' + tab);
+    document.getElementById('tabExplanation').textContent = TAB_EXPLANATIONS[tab];
+
+    // Load tab-specific data
+    if (tab === 'upload') { loadDocuments(); }
+    else if (tab === 'sitemap') { loadDocuments(); loadCrawlJobs(); loadDomains(); }
+    else if (tab === 'snippet') { loadDocuments(); }
+    else if (tab === 'sources') { loadSources(); }
 }
 
 // File upload
@@ -388,34 +434,37 @@ async function startCrawl() {
     finally { document.getElementById('crawlSpinner').classList.add('hidden'); }
 }
 
-// Load documents
+// Load documents and distribute to tab-specific tables
 async function loadDocuments(page) {
     if (page) currentPage = page;
     try {
-        const resp = await fetch(`{{ path('app_kb_api_documents') }}?page=${currentPage}&per_page=25`);
+        const resp = await fetch(`{{ path('app_kb_api_documents') }}?page=${currentPage}&per_page=100`);
         const data = await resp.json();
-        renderDocumentsTable(data);
+        allDocuments = data.documents || [];
+        renderFilteredDocuments('upload', 'documentsTable-upload');
+        renderFilteredDocuments('web_crawl', 'documentsTable-web_crawl');
+        renderFilteredDocuments('snippet', 'documentsTable-snippet');
         renderPagination(data);
         // Auto-refresh if any docs are pending/processing
-        const hasPending = (data.documents || []).some(d => d.status === 'pending' || d.status === 'processing');
+        const hasPending = allDocuments.some(d => d.status === 'pending' || d.status === 'processing');
         if (hasPending) startAutoRefresh();
         else stopAutoRefresh();
     } catch (e) { console.error('Failed to load documents:', e); }
 }
 
-function renderDocumentsTable(data) {
-    const docs = data.documents || [];
-    const container = document.getElementById('documentsTable');
+function renderFilteredDocuments(sourceType, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const docs = allDocuments.filter(d => d.source_type === sourceType);
     if (docs.length === 0) {
         container.innerHTML = '<div class="empty-state"><p>{{ "kb.documents.empty"|trans }}</p></div>';
         return;
     }
-    let html = '<div class="files-table"><table><thead><tr><th>{{ "kb.documents.filename"|trans }}</th><th>{{ "kb.documents.source_type"|trans }}</th><th>{{ "kb.documents.status"|trans }}</th><th>{{ "kb.documents.chunks"|trans }}</th><th>{{ "kb.documents.date"|trans }}</th><th>{{ "action.actions"|trans }}</th></tr></thead><tbody>';
+    let html = '<div class="files-table"><table><thead><tr><th>{{ "kb.documents.filename"|trans }}</th><th>{{ "kb.documents.status"|trans }}</th><th>{{ "kb.documents.chunks"|trans }}</th><th>{{ "kb.documents.date"|trans }}</th><th>{{ "action.actions"|trans }}</th></tr></thead><tbody>';
     docs.forEach(d => {
         const statusClass = `status-${d.status}`;
         html += `<tr>
             <td class="file-name">${d.filename}</td>
-            <td><span class="status-badge status-${d.source_type}">${d.source_type}</span></td>
             <td><span class="status-badge ${statusClass}">${d.status}</span>${d.error ? ` <small title="${d.error}" style="color:var(--danger-color);cursor:help;">&#9888;</small>` : ''}</td>
             <td>${d.chunk_count || 0}</td>
             <td>${new Date(d.created_at).toLocaleDateString()}</td>
@@ -428,7 +477,7 @@ function renderDocumentsTable(data) {
 
 function renderPagination(data) {
     const total = data.total || 0;
-    const perPage = data.per_page || 25;
+    const perPage = data.per_page || 100;
     const pages = Math.ceil(total / perPage);
     const container = document.getElementById('documentsPagination');
     if (pages <= 1) { container.innerHTML = ''; return; }
@@ -444,7 +493,7 @@ async function deleteDocument(docId) {
     try {
         await fetch(`{{ path('app_knowledge_base') }}api/documents/${docId}`, { method: 'DELETE' });
         loadDocuments();
-        loadSources();
+        if (activeTab === 'sources') loadSources();
     } catch (e) { alert('Delete failed: ' + e.message); }
 }
 
@@ -565,12 +614,17 @@ function stopAutoRefresh() { if (refreshInterval) { clearInterval(refreshInterva
 function startCrawlRefresh() { if (!crawlRefreshInterval) crawlRefreshInterval = setInterval(() => { loadCrawlJobs(); loadDomains(); }, 5000); }
 function stopCrawlRefresh() { if (crawlRefreshInterval) { clearInterval(crawlRefreshInterval); crawlRefreshInterval = null; } }
 
-// Initial load
+// Handle browser back/forward navigation
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    if (VALID_TABS.includes(hash) && hash !== activeTab) switchTab(hash);
+});
+
+// Initial load — restore tab from URL hash
 document.addEventListener('DOMContentLoaded', () => {
-    loadDocuments();
-    loadDomains();
-    loadSources();
-    loadCrawlJobs();
+    const hash = window.location.hash.replace('#', '');
+    const initialTab = VALID_TABS.includes(hash) ? hash : 'upload';
+    switchTab(initialTab);
 });
 </script>
 {% endblock %}

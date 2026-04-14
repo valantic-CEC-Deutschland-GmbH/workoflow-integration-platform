@@ -310,6 +310,8 @@ The platform uses two separate encryption mechanisms:
 // Preconfigured test users
 puppeteer.test1@example.com (Admin)
 puppeteer.test2@example.com (Member)
+
+http://localhost:3979/?X-Test-Auth-Email=puppeteer.test1@example.com
 ```
 
 ### REST API Tests

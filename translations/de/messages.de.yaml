@@ -828,6 +828,12 @@ kb:
     upload: Hochladen
     sitemap: Sitemap
     snippet: Textbaustein
+    sources: Indexierte Inhalte
+  tab_explanation:
+    upload: Laden Sie Dokumente hoch, um sie in Ihre Wissensdatenbank aufzunehmen. Unterstützte Formate sind PDF, DOCX, TXT und MD. Dateien werden automatisch in Abschnitte aufgeteilt und für den KI-Zugriff indexiert.
+    sitemap: Crawlen Sie Webseiten über ihre Sitemap-URL, um Webseiten automatisch zu importieren und zu indexieren. Verfolgen Sie aktive Crawl-Aufträge und verwalten Sie indexierte Domains.
+    snippet: Fügen Sie Textbausteine direkt hinzu — ideal für FAQs, interne Richtlinien oder Wissen, das nicht in einer Datei oder auf einer Webseite existiert.
+    sources: Alle Inhalte, die erfolgreich in Ihre Wissensdatenbank indexiert wurden — aus Datei-Uploads, Web-Crawls und Textbausteinen zusammengefasst.
   upload:
     drag_drop: Dateien hier ablegen
     select_files: Dateien auswählen

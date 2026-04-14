@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased] - 2026-04-10
+## [Unreleased] - 2026-04-14
+
+### Improved
+- **Knowledge Base tabs now persist in the URL** — Clicking a tab updates the URL hash (#upload, #sitemap, #snippet, #sources), so refreshing the page stays on the same tab
+- **Tables are now organised per tab** — Upload Pipeline, Indexed Domains and crawl data are shown only in their relevant tab instead of all at once
+- **New "Indexed Content" tab** — Consolidated view of all successfully indexed content across uploads, web crawls and snippets
+- **Tab-specific descriptions** — Each tab shows a contextual explanation of what it does and what data is shown
+
+## 2026-04-10
 
 ### Added
 - **Knowledge Base admin page** — New page under Workspace to manage your organisation's knowledge base. Upload documents (PDF, DOCX, TXT, MD), add text snippets, and crawl websites via sitemap URL
