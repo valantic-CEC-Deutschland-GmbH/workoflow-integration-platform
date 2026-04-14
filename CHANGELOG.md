@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - 2026-04-14
 
+### Added
+- **View and edit snippets** — Knowledge Base snippets now have View and Edit buttons in the snippet table. View shows the snippet content in a read-only modal, Edit lets you update the title and text with automatic re-indexing
+
 ### Improved
 - **Knowledge Base tabs now persist in the URL** — Clicking a tab updates the URL hash (#upload, #sitemap, #snippet, #sources), so refreshing the page stays on the same tab
 - **Tables are now organised per tab** — Upload Pipeline, Indexed Domains and crawl data are shown only in their relevant tab instead of all at once

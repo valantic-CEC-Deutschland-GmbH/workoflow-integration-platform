@@ -78,6 +78,22 @@ class KnowledgeBaseService
         ]);
     }
 
+    public function getSnippetContent(Organisation $organisation, string $docId): array
+    {
+        return $this->request($organisation, 'GET', "/api/kb/snippet/{$docId}/content");
+    }
+
+    public function updateSnippet(Organisation $organisation, string $docId, string $title, string $text, string $uploadedBy): array
+    {
+        return $this->request($organisation, 'PUT', "/api/kb/snippet/{$docId}", [
+            'json' => [
+                'title' => $title,
+                'text' => $text,
+                'uploaded_by' => $uploadedBy,
+            ],
+        ]);
+    }
+
     public function listSources(Organisation $organisation): array
     {
         return $this->request($organisation, 'GET', '/api/kb/sources', [

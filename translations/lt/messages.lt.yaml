@@ -536,6 +536,8 @@ action:
   configure: Konfigūruoti
   manage_platform_skills: Valdyti platformos įgūdžius
   filter: Filtruoti
+  view: Peržiūrėti
+  save: Išsaugoti
 
 file:
   title: Failai

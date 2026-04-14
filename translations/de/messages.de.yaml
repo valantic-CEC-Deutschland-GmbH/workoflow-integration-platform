@@ -536,6 +536,8 @@ action:
   configure: Konfigurieren
   manage_platform_skills: Platform Skills verwalten
   filter: Filtern
+  view: Ansehen
+  save: Speichern
 
 file:
   title: Dateien
@@ -855,6 +857,8 @@ kb:
     text_label: Inhalt
     text_placeholder: Textinhalt eingeben, der zur Wissensdatenbank hinzugefügt werden soll...
     save: Textbaustein speichern
+    view_title: Textbaustein anzeigen
+    edit_title: Textbaustein bearbeiten
   documents:
     title: Upload-Pipeline
     filename: Dateiname

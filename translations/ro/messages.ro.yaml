@@ -536,6 +536,8 @@ action:
   configure: Configurare
   manage_platform_skills: Gestionați abilitățile platformei
   filter: Filtrare
+  view: Vizualizare
+  save: Salvare
 
 file:
   title: Fișiere

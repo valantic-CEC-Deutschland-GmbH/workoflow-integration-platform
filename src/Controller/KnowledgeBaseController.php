@@ -112,6 +112,43 @@ class KnowledgeBaseController extends AbstractController
         return new JsonResponse($result, $statusCode);
     }
 
+    #[Route('/api/snippet/{docId}/content', name: 'app_kb_api_snippet_content', methods: ['GET'])]
+    public function apiSnippetContent(string $docId, Request $request): JsonResponse
+    {
+        $organisation = $this->getOrganisation($request);
+        if (!$organisation) {
+            return new JsonResponse(['error' => 'No organisation'], 400);
+        }
+
+        $result = $this->kbService->getSnippetContent($organisation, $docId);
+        $statusCode = isset($result['error']) ? 400 : 200;
+        return new JsonResponse($result, $statusCode);
+    }
+
+    #[Route('/api/snippet/{docId}', name: 'app_kb_api_snippet_update', methods: ['PUT'])]
+    public function apiSnippetUpdate(string $docId, Request $request): JsonResponse
+    {
+        $organisation = $this->getOrganisation($request);
+        if (!$organisation) {
+            return new JsonResponse(['error' => 'No organisation'], 400);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true) ?? [];
+
+        $result = $this->kbService->updateSnippet(
+            $organisation,
+            $docId,
+            $data['title'] ?? '',
+            $data['text'] ?? '',
+            (string) $user->getId()
+        );
+
+        $statusCode = isset($result['error']) ? 400 : 200;
+        return new JsonResponse($result, $statusCode);
+    }
+
     #[Route('/api/sources', name: 'app_kb_api_sources', methods: ['GET'])]
     public function apiSources(Request $request): JsonResponse
     {

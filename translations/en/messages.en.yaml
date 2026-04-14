@@ -534,6 +534,8 @@ action:
   configure: Configure
   manage_platform_skills: Manage Platform Skills
   filter: Filter
+  view: View
+  save: Save
 
 file:
   title: Files
@@ -851,6 +853,8 @@ kb:
     text_label: Content
     text_placeholder: Enter text content to add to the knowledge base...
     save: Save Snippet
+    view_title: View Snippet
+    edit_title: Edit Snippet
   documents:
     title: Upload Pipeline
     filename: Filename

@@ -149,6 +149,56 @@
     </div>
 </div>
 
+{# View Snippet Modal #}
+<div class="modal" id="snippetViewModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ 'kb.snippet.view_title'|trans }}</h3>
+            <button type="button" class="modal-close" onclick="hideSnippetViewModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>{{ 'kb.snippet.title_label'|trans }}</label>
+                <p id="snippetViewTitleText" style="color: var(--text-primary); padding: var(--space-sm) 0;"></p>
+            </div>
+            <div class="form-group">
+                <label>{{ 'kb.snippet.text_label'|trans }}</label>
+                <pre id="snippetViewContentText" style="white-space: pre-wrap; word-wrap: break-word; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: var(--space-md); color: var(--text-primary); font-family: var(--font-sans); font-size: var(--text-sm); max-height: 400px; overflow-y: auto;"></pre>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="hideSnippetViewModal()">{{ 'action.close'|trans }}</button>
+        </div>
+    </div>
+</div>
+
+{# Edit Snippet Modal #}
+<div class="modal" id="snippetEditModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ 'kb.snippet.edit_title'|trans }}</h3>
+            <button type="button" class="modal-close" onclick="hideSnippetEditModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="snippetEditTitleInput">{{ 'kb.snippet.title_label'|trans }}</label>
+                <input type="text" id="snippetEditTitleInput" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="snippetEditTextInput">{{ 'kb.snippet.text_label'|trans }}</label>
+                <textarea id="snippetEditTextInput" class="form-control" rows="8"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="hideSnippetEditModal()">{{ 'action.cancel'|trans }}</button>
+            <button type="button" class="btn btn-primary" id="snippetEditSaveBtn" onclick="saveSnippetEdit()">
+                <span class="spinner hidden" id="snippetEditSpinner"></span>
+                {{ 'action.save'|trans }}
+            </button>
+        </div>
+    </div>
+</div>
+
 <style>
 /* Tabs */
 .kb-tabs {
@@ -468,7 +518,7 @@ function renderFilteredDocuments(sourceType, containerId) {
             <td><span class="status-badge ${statusClass}">${d.status}</span>${d.error ? ` <small title="${d.error}" style="color:var(--danger-color);cursor:help;">&#9888;</small>` : ''}</td>
             <td>${d.chunk_count || 0}</td>
             <td>${new Date(d.created_at).toLocaleDateString()}</td>
-            <td class="file-actions"><button class="btn btn-small btn-danger" onclick="deleteDocument('${d.id}')">{{ "action.delete"|trans }}</button></td>
+            <td class="file-actions">${sourceType === 'snippet' ? `<button class="btn btn-small btn-secondary" onclick="viewSnippet('${d.id}')">{{ "action.view"|trans }}</button> <button class="btn btn-small btn-primary" onclick="editSnippet('${d.id}')">{{ "action.edit"|trans }}</button> ` : ''}<button class="btn btn-small btn-danger" onclick="deleteDocument('${d.id}')">{{ "action.delete"|trans }}</button></td>
         </tr>`;
     });
     html += '</tbody></table></div>';
@@ -496,6 +546,76 @@ async function deleteDocument(docId) {
         if (activeTab === 'sources') loadSources();
     } catch (e) { alert('Delete failed: ' + e.message); }
 }
+
+// Snippet View / Edit
+let editingDocId = null;
+
+async function viewSnippet(docId) {
+    try {
+        const resp = await fetch(`{{ path('app_knowledge_base') }}api/snippet/${docId}/content`);
+        const data = await resp.json();
+        if (resp.ok) {
+            document.getElementById('snippetViewTitleText').textContent = data.title || '(no title)';
+            document.getElementById('snippetViewContentText').textContent = data.text || '';
+            document.getElementById('snippetViewModal').classList.add('show');
+        } else { alert(data.error || 'Failed to load snippet'); }
+    } catch (e) { alert('Error: ' + e.message); }
+}
+
+function hideSnippetViewModal() {
+    document.getElementById('snippetViewModal').classList.remove('show');
+}
+
+async function editSnippet(docId) {
+    try {
+        const resp = await fetch(`{{ path('app_knowledge_base') }}api/snippet/${docId}/content`);
+        const data = await resp.json();
+        if (resp.ok) {
+            editingDocId = docId;
+            document.getElementById('snippetEditTitleInput').value = data.title || '';
+            document.getElementById('snippetEditTextInput').value = data.text || '';
+            document.getElementById('snippetEditModal').classList.add('show');
+        } else { alert(data.error || 'Failed to load snippet'); }
+    } catch (e) { alert('Error: ' + e.message); }
+}
+
+function hideSnippetEditModal() {
+    document.getElementById('snippetEditModal').classList.remove('show');
+    editingDocId = null;
+}
+
+async function saveSnippetEdit() {
+    if (!editingDocId) return;
+    const btn = document.getElementById('snippetEditSaveBtn');
+    btn.disabled = true;
+    document.getElementById('snippetEditSpinner').classList.remove('hidden');
+    try {
+        const resp = await fetch(`{{ path('app_knowledge_base') }}api/snippet/${editingDocId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: document.getElementById('snippetEditTitleInput').value.trim(),
+                text: document.getElementById('snippetEditTextInput').value.trim(),
+            }),
+        });
+        const data = await resp.json();
+        if (resp.ok) {
+            hideSnippetEditModal();
+            loadDocuments();
+        } else { alert(data.error || 'Failed to update snippet'); }
+    } catch (e) { alert('Error: ' + e.message); }
+    finally {
+        btn.disabled = false;
+        document.getElementById('snippetEditSpinner').classList.add('hidden');
+    }
+}
+
+document.getElementById('snippetViewModal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hideSnippetViewModal();
+});
+document.getElementById('snippetEditModal')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hideSnippetEditModal();
+});
 
 // Load domains
 async function loadDomains() {
