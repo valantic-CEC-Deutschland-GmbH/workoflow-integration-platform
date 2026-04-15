@@ -251,6 +251,13 @@ The search base in `src/search/base.py` is generic and reusable for future colle
 - Conversation history injected as real ADK events (last 10 turns from Redis)
 - System prompt: fetched via `fetch_main_prompt()` from platform API, with hardcoded fallback
 
+**Routing priority (see `main_agent.twig:<routing-priority>`):**
+1. User names a business system (SharePoint, Jira, …) → `transfer_to_agent` to that sub-agent. Named integration always wins.
+2. No integration named, factual/people/web question → `internal_agent` (KB, People Finder, Web, Debug).
+3. Multiple systems named → transfer to the most specific external one this turn, mention the others in the reply (ADK allows only one transfer per turn).
+
+Each platform sub-agent's routing `description` (what main_agent sees) is derived from the `<agent><description>` block inside the integration's Twig prompt (e.g. `sharepoint_full.xml.twig`). No separate routing metadata — the prompt template is the single source of truth.
+
 ### Sub-Agent Pattern (Platform-Proxied)
 
 Each platform-proxied sub-agent has exactly two tools:

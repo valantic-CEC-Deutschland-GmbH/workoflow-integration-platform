@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - 2026-04-15
 
+### Fixed
+- **Assistant now respects "in SharePoint / in Jira" requests** — When you explicitly name a system in your message (e.g. "Findest du dazu etwas im SharePoint?"), the assistant now routes directly to that integration instead of defaulting to the internal knowledge base. Also stops the assistant from claiming it searched SharePoint when it only searched the knowledge base.
+
 ### Improved
 - **Visible feedback while uploading Knowledge Base files** — Files now appear instantly in the Upload Pipeline with an "Uploading…" status as soon as you click Upload, instead of waiting until the upload finishes. Each file refreshes individually so you see progress as it moves through upload → pending → processing → completed.
 
