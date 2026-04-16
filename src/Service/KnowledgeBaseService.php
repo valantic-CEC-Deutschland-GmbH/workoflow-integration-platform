@@ -88,7 +88,9 @@ class KnowledgeBaseService
             $contentDisposition = $response->getHeaders()['content-disposition'][0] ?? '';
             $contentType = $response->getHeaders()['content-type'][0] ?? 'application/octet-stream';
             $filename = 'document';
-            if (preg_match('/filename="?([^";\s]+)"?/', $contentDisposition, $m)) {
+            if (preg_match('/filename="([^"]+)"/', $contentDisposition, $m)) {
+                $filename = $m[1];
+            } elseif (preg_match('/filename=([^;\s]+)/', $contentDisposition, $m)) {
                 $filename = $m[1];
             }
 
