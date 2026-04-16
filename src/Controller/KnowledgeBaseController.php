@@ -76,9 +76,11 @@ class KnowledgeBaseController extends AbstractController
             return new JsonResponse(['error' => $result['error']], 404);
         }
 
+        $safeFilename = preg_replace('/[^\w\-. ()]+/', '_', $result['filename']);
         $response = new Response($result['content']);
         $response->headers->set('Content-Type', $result['content_type']);
-        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $result['filename']));
+        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $safeFilename));
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
 
         return $response;
     }

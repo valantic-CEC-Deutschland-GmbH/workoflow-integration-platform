@@ -31,12 +31,16 @@ class KnowledgeBaseService
 
     public function getDocument(Organisation $organisation, string $docId): array
     {
-        return $this->request($organisation, 'GET', "/api/kb/documents/{$docId}");
+        return $this->request($organisation, 'GET', "/api/kb/documents/{$docId}", [
+            'query' => ['org_uuid' => $organisation->getUuid()],
+        ]);
     }
 
     public function deleteDocument(Organisation $organisation, string $docId): array
     {
-        return $this->request($organisation, 'DELETE', "/api/kb/documents/{$docId}");
+        return $this->request($organisation, 'DELETE', "/api/kb/documents/{$docId}", [
+            'query' => ['org_uuid' => $organisation->getUuid()],
+        ]);
     }
 
     public function uploadDocument(Organisation $organisation, string $filePath, string $filename, string $uploadedBy): array
@@ -77,6 +81,7 @@ class KnowledgeBaseService
             $response = $this->httpClient->request('GET', $baseUrl . "/api/kb/documents/{$docId}/download", [
                 'auth_basic' => [$this->apiAuthUser, $this->apiAuthPassword],
                 'timeout' => 30,
+                'query' => ['org_uuid' => $organisation->getUuid()],
             ]);
 
             $contentDisposition = $response->getHeaders()['content-disposition'][0] ?? '';
