@@ -116,7 +116,9 @@ class KnowledgeBaseService
 
     public function getSnippetContent(Organisation $organisation, string $docId): array
     {
-        return $this->request($organisation, 'GET', "/api/kb/snippet/{$docId}/content");
+        return $this->request($organisation, 'GET', "/api/kb/snippet/{$docId}/content", [
+            'query' => ['org_uuid' => $organisation->getUuid()],
+        ]);
     }
 
     public function updateSnippet(Organisation $organisation, string $docId, string $title, string $text, string $uploadedBy): array
@@ -127,6 +129,7 @@ class KnowledgeBaseService
                 'text' => $text,
                 'uploaded_by' => $uploadedBy,
             ],
+            'query' => ['org_uuid' => $organisation->getUuid()],
         ]);
     }
 
