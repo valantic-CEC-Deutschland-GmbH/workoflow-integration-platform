@@ -29,7 +29,15 @@ echo "Setting up for environment: $ENVIRONMENT"
 echo ""
 echo "Checking dependencies..."
 command -v docker >/dev/null 2>&1 || { echo "Docker is required but not installed. Aborting." >&2; exit 1; }
-command -v docker-compose >/dev/null 2>&1 || { echo "Docker Compose is required but not installed. Aborting." >&2; exit 1; }
+
+if docker compose version >/dev/null 2>&1; then
+    COMPOSE_CMD=(docker compose)
+elif command -v docker-compose >/dev/null 2>&1; then
+    COMPOSE_CMD=(docker-compose)
+else
+    echo "Docker Compose is required but not installed. Aborting." >&2
+    exit 1
+fi
 
 # Create .env file if not exists
 if [ ! -f .env ]; then
@@ -130,11 +138,11 @@ echo ""
 echo "Building and starting Docker containers..."
 if [ "$ENVIRONMENT" != "dev" ]; then
     # Force clean build in production/stage to ensure all assets are properly built
-    docker-compose -f $COMPOSE_FILE build
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" build
 else
-    docker-compose -f $COMPOSE_FILE build
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" build
 fi
-docker-compose -f $COMPOSE_FILE up -d
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" up -d
 
 # Wait for services to be ready
 echo ""
@@ -144,13 +152,13 @@ sleep 10
 # Clear cache first to ensure new configurations are loaded
 echo ""
 echo "Clearing cache to load new configurations..."
-docker-compose -f $COMPOSE_FILE exec -T frankenphp php bin/console cache:clear --env=$ENVIRONMENT || true
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp php bin/console cache:clear --env="$ENVIRONMENT" || true
 
 # Install dependencies (dev only - prod installs during Docker build)
 if [ "$ENVIRONMENT" != "prod" ]; then
     echo ""
     echo "Installing PHP dependencies..."
-    docker-compose -f $COMPOSE_FILE exec -T frankenphp composer install --optimize-autoloader
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp composer install --optimize-autoloader
 fi
 
 # Install npm dependencies and build assets
@@ -158,19 +166,19 @@ if [ "$ENVIRONMENT" == "dev" ]; then
     # Dev: Install dependencies and build for development
     echo ""
     echo "Installing npm dependencies..."
-    docker-compose -f $COMPOSE_FILE exec -T frankenphp npm install
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp npm install
 
     echo ""
     echo "Building frontend assets..."
-    docker-compose -f $COMPOSE_FILE exec -T frankenphp npm run dev
+    "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp npm run dev
 else
     # Production/Stage: Verify assets were built during Docker image creation
     echo ""
     echo "Verifying frontend assets..."
-    if ! docker-compose -f $COMPOSE_FILE exec -T frankenphp test -f /app/public/build/entrypoints.json; then
+    if ! "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp test -f /app/public/build/entrypoints.json; then
         echo "Assets not found, building them now..."
-        docker-compose -f $COMPOSE_FILE exec -T frankenphp npm install
-        docker-compose -f $COMPOSE_FILE exec -T frankenphp npm run build
+        "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp npm install
+        "${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp npm run build
     else
         echo "Frontend assets verified successfully"
     fi
@@ -179,24 +187,24 @@ fi
 # Update database schema from entities
 echo ""
 echo "Updating database schema from entity definitions..."
-docker-compose -f $COMPOSE_FILE exec -T frankenphp php bin/console doctrine:schema:update --force
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp php bin/console doctrine:schema:update --force
 
 # Clear and warm up cache
 echo ""
 echo "Clearing and warming up cache..."
-docker-compose -f $COMPOSE_FILE exec -T frankenphp php bin/console cache:clear --env=$ENVIRONMENT
-docker-compose -f $COMPOSE_FILE exec -T frankenphp php bin/console cache:warmup --env=$ENVIRONMENT
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp php bin/console cache:clear --env="$ENVIRONMENT"
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp php bin/console cache:warmup --env="$ENVIRONMENT"
 
 # Create MinIO bucket
 echo ""
 echo "Setting up MinIO bucket..."
-docker-compose -f $COMPOSE_FILE exec -T frankenphp php bin/console app:create-bucket || true
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp php bin/console app:create-bucket || true
 
 # Set proper permissions
 echo ""
 echo "Setting file permissions..."
-docker-compose -f $COMPOSE_FILE exec -T frankenphp chown -R www-data:www-data var/
-docker-compose -f $COMPOSE_FILE exec -T frankenphp chmod -R 775 var/
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp chown -R www-data:www-data var/
+"${COMPOSE_CMD[@]}" -f "$COMPOSE_FILE" exec -T frankenphp chmod -R 775 var/
 
 echo ""
 echo "========================================="
