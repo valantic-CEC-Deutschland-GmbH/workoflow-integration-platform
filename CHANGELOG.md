@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] - 2026-04-18
+
+### Fixed
+- **MCP tools now work reliably with Claude Code and other AI clients** — Fixed invalid JSON schemas from remote Atlassian MCP tools that prevented AI agents from loading the full tool list
+
 ## [Unreleased] - 2026-04-16
 
 ### Added

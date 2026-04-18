@@ -460,15 +460,62 @@ class ToolProviderService
             ];
         }
 
-        // MCP inputSchema is already JSON Schema format, pass through
-        $properties = $inputSchema['properties'] ?? [];
-        $required = $inputSchema['required'] ?? [];
+        $sanitized = $this->sanitizeJsonSchema($inputSchema);
+
+        $properties = $sanitized['properties'] ?? [];
+        $required = $sanitized['required'] ?? [];
 
         return [
             'type' => 'object',
             'properties' => empty($properties) ? new \stdClass() : $properties,
             'required' => $required,
         ];
+    }
+
+    /**
+     * Sanitize a JSON Schema to comply with draft 2020-12.
+     *
+     * Fixes known issues from upstream MCP servers (e.g. Atlassian)
+     * where "additionalProperties" is an empty array instead of a boolean or schema object.
+     */
+    private function sanitizeJsonSchema(array $schema): array
+    {
+        if (isset($schema['additionalProperties']) && \is_array($schema['additionalProperties']) && !$this->isAssociativeArray($schema['additionalProperties'])) {
+            $schema['additionalProperties'] = true;
+        }
+
+        if (isset($schema['properties']) && \is_array($schema['properties'])) {
+            foreach ($schema['properties'] as $key => $value) {
+                if (\is_array($value)) {
+                    $schema['properties'][$key] = $this->sanitizeJsonSchema($value);
+                }
+            }
+        }
+
+        if (isset($schema['items']) && \is_array($schema['items'])) {
+            $schema['items'] = $this->sanitizeJsonSchema($schema['items']);
+        }
+
+        if (isset($schema['additionalProperties']) && \is_array($schema['additionalProperties']) && $this->isAssociativeArray($schema['additionalProperties'])) {
+            $schema['additionalProperties'] = $this->sanitizeJsonSchema($schema['additionalProperties']);
+        }
+
+        foreach (['anyOf', 'oneOf', 'allOf'] as $keyword) {
+            if (isset($schema[$keyword]) && \is_array($schema[$keyword])) {
+                foreach ($schema[$keyword] as $i => $subSchema) {
+                    if (\is_array($subSchema)) {
+                        $schema[$keyword][$i] = $this->sanitizeJsonSchema($subSchema);
+                    }
+                }
+            }
+        }
+
+        return $schema;
+    }
+
+    private function isAssociativeArray(array $arr): bool
+    {
+        return $arr !== [] && array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     /**
